@@ -9,13 +9,7 @@
     public class InitAction : IAction<InitArgs>
     {
         readonly ILogger log = LogManager.GetCurrentClassLogger();
-        readonly Context ctx;
-
-        public InitAction(Context ctx)
-        {
-            this.ctx = ctx;
-        }
-
+    
         public void Execute(InitArgs args)
         {
             var tasks = new LinkedList<Action>();
@@ -39,7 +33,7 @@
                     }
 
                     Directory.SetCurrentDirectory(wd);
-                    this.log.Info($"Working directory changed to {wd}");
+                    this.log.Debug($"Working directory changed to {wd}");
                 }
             });
 

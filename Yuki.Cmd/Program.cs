@@ -64,8 +64,7 @@
             "Force init in a folder that is not empty, overwriting any existing files")]
         public void Init(InitArgs args)
         {
-            var ctx = Context.GetCurrent();
-            var action = new InitAction(ctx);
+            var action = new InitAction();
             action.Execute(args);
         }
 
@@ -83,7 +82,7 @@
         public void Scaffold(ScaffoldArgs args)
         {
             var ctx = Context.GetCurrent();
-            var action = new ScaffoldAction(ctx.Config);
+            var action = new ScaffoldAction(ctx);
             action.Execute(args);
         }
 
@@ -105,9 +104,9 @@
         {
             var ctx = Context.GetCurrent();
 
-            this.log.Info($"Using config file at {ctx.ConfigFile}");
+            this.log.Info($"Using config file at {ctx.ProjectFile}");
             this.log.Info($"Connecting with database server instance {args.Server}");
-            this.log.Info($"Looking in {ctx.CurrentDirectory} for scripts to run");
+            this.log.Info($"Looking in {ctx.ProjectDirectory} for scripts to run");
 
             var action = new MigrateAction(ctx);
             action.Execute(args);

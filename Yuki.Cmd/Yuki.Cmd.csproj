@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Folder.cs" />
     <Compile Include="IAction.cs" />

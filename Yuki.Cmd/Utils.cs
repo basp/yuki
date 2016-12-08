@@ -6,10 +6,31 @@
 
     public static class Utils
     {
-        public static Tuple<string,dynamic> ReadConfiguration(string path)
+        public static ScriptType ParseScriptType(string value, ScriptType defaultScriptType)
+        {
+            ScriptType st;
+            if (TryParseScriptType(value, out st))
+            {
+                return st;
+            }
+
+            return defaultScriptType;
+        }
+
+        public static bool TryParseScriptType(string value, out ScriptType result)
+        {
+            if (Enum.TryParse<ScriptType>(value, out result))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static Tuple<string,Config> ReadConfiguration(string path)
         {
             var json = File.ReadAllText(path);
-            var obj = JsonConvert.DeserializeObject(json);
+            var obj = JsonConvert.DeserializeObject<Config>(json);
             return Tuple.Create(json, obj);
         }
 

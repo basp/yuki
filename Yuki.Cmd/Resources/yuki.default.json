@@ -4,47 +4,47 @@
   "folders": [
     {
       "name": "alterDatabase",
-      "type": "anytime"
+      "type": "AnyTime"
     },
     {
       "name": "runAfterCreateDatabase",
-      "type": "onetime"
+      "type": "OneTime"
     },
     {
       "name": "runBeforeUpdate",
-      "type": "anytime"
+      "type": "AnyTime"
     },
     {
       "name": "up",
-      "type": "onetime"
+      "type": "OneTime"
     },
     {
       "name": "runFirstAfterUp",
-      "type": "anytime"
+      "type": "AnyTime"
     },
     {
       "name": "functions",
-      "type": "anytime"
+      "type": "AnyTime"
     },
     {
       "name": "views",
-      "type": "anytime"
+      "type": "AnyTime"
     },
     {
       "name": "sprocs",
-      "type": "anytime"
+      "type": "AnyTime"
     },
     {
       "name": "indexes",
-      "type": "anytime"
+      "type": "AnyTime"
     },
     {
       "name": "runAfterOtherAnytimeScripts",
-      "type": "anytime"
+      "type": "AnyTime"
     },
     {
       "name": "permissions",
-      "type": "everytime"
+      "type": "EveryTime"
     }
   ]
 }

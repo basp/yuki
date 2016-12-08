@@ -8,10 +8,10 @@ namespace Yuki.Cmd
     {
         public const string DefaultConfigFile = "yuki.json";
 
-        public dynamic Config { get; set; }
+        public Config Config { get; set; }
         public string ConfigString { get; set; }
-        public string ConfigFile { get; set; }
-        public string CurrentDirectory { get; set; }
+        public string ProjectFile { get; set; }
+        public string ProjectDirectory { get; set; }
         public static Context GetCurrent()
         {
             var cwd = Directory.GetCurrentDirectory();
@@ -24,12 +24,12 @@ namespace Yuki.Cmd
             {
                 Config = cfg,
                 ConfigString = json,
-                ConfigFile = cf,
-                CurrentDirectory = cwd
+                ProjectFile = cf,
+                ProjectDirectory = cwd
             };
         }
 
-        static Tuple<string, dynamic> ReadConfiguration(string path)
+        static Tuple<string, Config> ReadConfiguration(string path)
         {
             return Utils.ReadConfiguration(path);
         }
