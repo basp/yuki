@@ -25,8 +25,11 @@
             if (File.Exists(Path.Combine(pd, Context.DefaultConfigFile)))
             {
                 var msgs = new string[] {
-                    $"The {pd} folder already contains a {Context.DefaultConfigFile} file",
-                    $"Nested projects are not supported",
+                    $"The {pd} folder already contains a {Context.DefaultConfigFile} file.",
+                    $"I was just trying to initialize a project at {Path.Combine(wd, Context.DefaultConfigFile)}",
+                    $"but it looks like you're trying to initialize a new project inside a",
+                    $"folder that is already a Yuki project folder; nested projects are not supported",
+                    $"without forcing them."
                 };
 
                 if (!args.Force)
