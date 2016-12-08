@@ -37,7 +37,7 @@
         public static string ReadEmbeddedString<T>(string resourceName)
         {
             var asm = typeof(T).Assembly;
-            resourceName = $"Yuki.Cmd.{resourceName}";
+            resourceName = $"Yuki.{resourceName}";
             using (var stream = asm.GetManifestResourceStream(resourceName))
             {
                 if (stream == null)
