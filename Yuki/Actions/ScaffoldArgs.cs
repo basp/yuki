@@ -1,6 +1,5 @@
 ﻿namespace Yuki.Actions
 {
-    using System.IO;
     using PowerArgs;
 
     public class ScaffoldArgs

@@ -1,8 +1,6 @@
 ﻿namespace Yuki.Actions
 {
-    using System.Diagnostics.Contracts;
     using System.IO;
-    using System.Linq;
     using NLog;
 
     public class ScaffoldAction : IAction<ScaffoldArgs>

@@ -1,7 +1,5 @@
 ﻿namespace Yuki.Actions
 {
-    using System;
-    using System.IO;
     using NLog;
 
     public interface IDropFolder

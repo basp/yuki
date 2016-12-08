@@ -7,3 +7,6 @@ very heavily inspired by the `RoundhousE` migration tool.
 when the system detects any changes after already running them.
 * `anytime` scripts are run any time they have changes.
 * `everytime` scripts are run every migration run.
+
+Sometimes a script might be classified as `unknown` in which case it will be 
+ignored.
