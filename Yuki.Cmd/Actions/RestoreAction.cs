@@ -2,7 +2,7 @@
 {
     public class RestoreAction : IAction<RestoreArgs>
     {
-        readonly Context ctx;
+        private readonly Context ctx;
 
         public RestoreAction(Context ctx)
         {

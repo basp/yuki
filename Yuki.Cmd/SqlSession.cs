@@ -52,8 +52,8 @@
         }
 
         public object ExecuteScalar(
-            string commandText, 
-            IDictionary<string, object> args, 
+            string commandText,
+            IDictionary<string, object> args,
             CommandType commandType)
         {
             using (var cmd = this.CreateCommand(commandText, args, commandType))
@@ -63,8 +63,9 @@
         }
 
         public int ExecuteNonQuery(
-            string commandText, 
-            IDictionary<string, object> args, CommandType commandType)
+            string commandText,
+            IDictionary<string, object> args,
+            CommandType commandType)
         {
             using (var cmd = this.CreateCommand(commandText, args, commandType))
             {
@@ -84,8 +85,8 @@
         }
 
         private IDbCommand CreateCommand(
-            string commandText, 
-            IDictionary<string, object> args, 
+            string commandText,
+            IDictionary<string, object> args,
             CommandType commandType)
         {
             var cmd = this.connection.CreateCommand();

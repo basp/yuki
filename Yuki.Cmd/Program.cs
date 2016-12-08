@@ -2,57 +2,22 @@
 {
     using System;
     using System.IO;
+    using Actions;
     using NLog;
     using NLog.Config;
     using NLog.Targets;
     using PowerArgs;
-    using Actions;
-
+ 
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
-        {
-            InitializeLogManager();
+        private const string DefaultLoggingLayout = @"${pad:padding=5:inner=${level:uppercase=true}} ${date:format=HH\:mm\:ss} ${logger} ${message}";
 
-            try
-            {
-                // TODO: I wanna `new`-up `Program` myself.
-                Args.InvokeAction<Program>(args);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-
-        const string DefaultLoggingLayout = @"${pad:padding=5:inner=${level:uppercase=true}} ${date:format=HH\:mm\:ss} ${logger} ${message}";
-
-        static void InitializeLogManager()
-        {
-            var loggingConfig = new LoggingConfiguration();
-
-            var target = new ColoredConsoleTarget()
-            {
-                Name = "console",
-                Layout = DefaultLoggingLayout
-            };
-
-            var rule = new LoggingRule("*", LogLevel.Debug, target);
-
-            loggingConfig.AddTarget(target);
-            loggingConfig.LoggingRules.Add(rule);
-
-            LogManager.Configuration = loggingConfig;
-        }
+        private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
         [HelpHook]
         [ArgDescription("Display help")]
         public bool Help { get; set; }
-
-        //[ArgDescription("Set the log level for the default console target")]
-        //[ArgDefaultValue("Info")]
-        //public string LogLevel { get; set; }
 
         [ArgActionMethod]
         [ArgDescription("Create a new Yuki project folder")]
@@ -121,6 +86,37 @@
             action.Execute(args);
         }
 
-        readonly ILogger log = LogManager.GetCurrentClassLogger();
+        private static void Main(string[] args)
+        {
+            InitializeLogManager();
+
+            try
+            {
+                // TODO: I wanna `new`-up `Program` myself.
+                Args.InvokeAction<Program>(args);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private static void InitializeLogManager()
+        {
+            var loggingConfig = new LoggingConfiguration();
+
+            var target = new ColoredConsoleTarget()
+            {
+                Name = "console",
+                Layout = DefaultLoggingLayout
+            };
+
+            var rule = new LoggingRule("*", LogLevel.Debug, target);
+
+            loggingConfig.AddTarget(target);
+            loggingConfig.LoggingRules.Add(rule);
+
+            LogManager.Configuration = loggingConfig;
+        }
     }
 }

@@ -70,7 +70,6 @@
         {
             // If this fails we don't get a fancy exception by default
             // Just: "Exception has been thrown by the target of an invocation"
-
             if (string.IsNullOrEmpty(value))
             {
                 return new Dictionary<string, string>();

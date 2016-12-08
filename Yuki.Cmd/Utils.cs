@@ -27,7 +27,7 @@
             return false;
         }
 
-        public static Tuple<string,Config> ReadConfiguration(string path)
+        public static Tuple<string, Config> ReadConfiguration(string path)
         {
             var json = File.ReadAllText(path);
             var obj = JsonConvert.DeserializeObject<Config>(json);

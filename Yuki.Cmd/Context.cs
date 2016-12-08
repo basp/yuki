@@ -1,5 +1,4 @@
-﻿
-namespace Yuki
+﻿namespace Yuki
 {
     using System;
     using System.IO;
@@ -9,9 +8,13 @@ namespace Yuki
         public const string DefaultConfigFile = "yuki.json";
 
         public Config Config { get; set; }
+
         public string ConfigString { get; set; }
+
         public string ProjectFile { get; set; }
+
         public string ProjectDirectory { get; set; }
+
         public static Context GetCurrent()
         {
             var cwd = Directory.GetCurrentDirectory();
@@ -29,7 +32,7 @@ namespace Yuki
             };
         }
 
-        static Tuple<string, Config> ReadConfiguration(string path)
+        private static Tuple<string, Config> ReadConfiguration(string path)
         {
             return Utils.ReadConfiguration(path);
         }

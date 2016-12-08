@@ -8,7 +8,7 @@
 
     public class InitAction : IAction<InitArgs>
     {
-        readonly ILogger log = LogManager.GetCurrentClassLogger();
+        private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
         public void Execute(InitArgs args)
         {
@@ -24,7 +24,8 @@
 
             if (File.Exists(Path.Combine(pd, Context.DefaultConfigFile)))
             {
-                var msgs = new string[] {
+                var msgs = new string[] 
+                {
                     $"The {pd} folder already contains a {Context.DefaultConfigFile} file.",
                     $"I was just trying to initialize a project at {Path.Combine(wd, Context.DefaultConfigFile)}",
                     $"but it looks like you're trying to initialize a new project inside a",

@@ -5,12 +5,10 @@
 
     public class ScaffoldArgs
     {
-
         [ArgDescription("Path to a Yuki config file")]
         [ArgDefaultValue(Context.DefaultConfigFile)]
         [ArgShortcut("cfg")]
         public string Config { get; set; }
-
 
         [ArgDescription("Force in a folder that is not empty")]
         [ArgShortcut(ArgShortcutPolicy.NoShortcut)]

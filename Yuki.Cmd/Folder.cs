@@ -17,7 +17,7 @@
             get
             {
                 ScriptType v;
-                if(Utils.TryParseScriptType(this.TypeString, out v))
+                if (Utils.TryParseScriptType(this.TypeString, out v))
                 {
                     return v;
                 }
@@ -26,7 +26,6 @@
             }
         }
 
-      
         public IEnumerable<string> Folders { get; private set; }
     }
 }
