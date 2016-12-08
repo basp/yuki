@@ -9,13 +9,35 @@
     public class InitAction : IAction<InitArgs>
     {
         readonly ILogger log = LogManager.GetCurrentClassLogger();
-    
+
         public void Execute(InitArgs args)
         {
+            string msg;
+
             var tasks = new LinkedList<Action>();
+
             var wd = string.IsNullOrWhiteSpace(args.Folder)
                 ? Directory.GetCurrentDirectory()
                 : Path.GetFullPath(args.Folder);
+
+            var pd = Directory.GetParent(wd).FullName;
+
+            if (File.Exists(Path.Combine(pd, Context.DefaultConfigFile)))
+            {
+                var msgs = new string[] {
+                    $"The {pd} folder already contains a {Context.DefaultConfigFile} file",
+                    $"Nested projects are not supported",
+                };
+
+                if (!args.Force)
+                {
+                    Array.ForEach(msgs, this.log.Error);
+                    return;
+                }
+
+                Array.ForEach(msgs, this.log.Warn);
+                this.log.Warn("Continue anyway [force]");
+            }
 
             tasks.AddLast(() =>
             {
@@ -40,9 +62,6 @@
             tasks.AddLast(() =>
             {
                 var cf = Path.Combine(wd, Context.DefaultConfigFile);
-
-                string msg;
-
                 var hasEntries = Directory.EnumerateFileSystemEntries(wd).Any();
                 if (hasEntries)
                 {
@@ -55,7 +74,7 @@
                     }
 
                     log.Warn(msg);
-                    log.Warn("Continue anyway [forced]");
+                    log.Warn("Continue anyway [force]");
                 }
 
                 if (File.Exists(cf))
@@ -68,7 +87,7 @@
                     }
 
                     log.Warn(msg);
-                    log.Warn($"Overwriting {cf} [forced]");
+                    log.Warn($"Overwriting {cf} [overwrite]");
                 }
 
                 var json = Utils.ReadEmbeddedString<Program>("Resources.yuki.default.json");
@@ -77,17 +96,6 @@
             });
 
             Array.ForEach(tasks.ToArray(), t => t());
-        }
-
-        private static bool IsNestedProject(string cf, string twd)
-        {
-            var projectExists = File.Exists(cf);
-            var tgtIsSiblingOfProjectDir = string.Equals(
-                Path.GetDirectoryName(twd),
-                Path.GetDirectoryName(cf),
-                StringComparison.InvariantCultureIgnoreCase);
-
-            return projectExists && tgtIsSiblingOfProjectDir;
         }
     }
 }

@@ -25,6 +25,8 @@
             }
         }
 
+        const string DefaultLoggingLayout = @"${pad:padding=5:inner=${level:uppercase=true}} ${date:format=HH\:mm\:ss} ${logger} ${message}";
+
         static void InitializeLogManager()
         {
             var loggingConfig = new LoggingConfiguration();
@@ -32,10 +34,10 @@
             var target = new ColoredConsoleTarget()
             {
                 Name = "console",
-                Layout = @"${date:format=HH\:mm\:ss} ${logger} ${message}"
+                Layout = DefaultLoggingLayout
             };
 
-            var rule = new LoggingRule("*", NLog.LogLevel.Debug, target);
+            var rule = new LoggingRule("*", LogLevel.Debug, target);
 
             loggingConfig.AddTarget(target);
             loggingConfig.LoggingRules.Add(rule);

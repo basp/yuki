@@ -36,7 +36,7 @@
                     }
 
                     log.Warn(msg);
-                    log.Warn($"Continue anyway [forced]");
+                    log.Warn($"Continue anyway [force]");
                 }
                 
                 if(!Directory.Exists(sd))
