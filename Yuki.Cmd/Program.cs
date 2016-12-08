@@ -106,9 +106,14 @@
         {
             var ctx = Context.GetCurrent();
 
-            this.log.Info($"Using config file at {ctx.ProjectFile}");
-            this.log.Info($"Connecting with database server instance {args.Server}");
-            this.log.Info($"Looking in {ctx.ProjectDirectory} for scripts to run");
+            var msgs = new[]
+            {
+                $"Using config file at {ctx.ProjectFile}",
+                $"Connecting with database server instance {args.Server}",
+                $"Looking in {ctx.ProjectDirectory} for scripts to run"
+            };
+
+            Array.ForEach(msgs, this.log.Info);
 
             var action = new MigrateAction(ctx);
             action.Execute(args);
