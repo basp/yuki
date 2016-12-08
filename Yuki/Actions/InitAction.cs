@@ -5,12 +5,18 @@
     using System.IO;
     using System.Linq;
     using NLog;
+    using Maybe;
 
-    public class InitAction : IAction<InitArgs>
+    public enum InitResult
+    {
+        None
+    }
+
+    public class InitAction : IAction<InitArgs, InitResult>
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
-        public IMaybeError Execute(InitArgs args)
+        public IMaybeError<InitResult> Execute(InitArgs args)
         {
             string msg;
 
@@ -37,7 +43,7 @@
                 {
                     Array.ForEach(msgs, this.log.Error);
                     var ex = new Exception();
-                    return new MaybeError(ex);
+                    return MaybeError.Create(InitResult.None, ex);
                 }
 
                 Array.ForEach(msgs, this.log.Warn);
@@ -95,13 +101,13 @@
                     log.Warn($"Overwriting {cf} [overwrite]");
                 }
 
-                var json = Utils.ReadEmbeddedString<Program>("Resources.yuki.default.json");
+                var json = Utils.ReadEmbeddedString<Program>("yuki.default.json");
                 File.WriteAllText(cf, json);
                 log.Info($"Wrote {cf}");
             });
 
             Array.ForEach(tasks.ToArray(), t => t());
-            return new MaybeError();
+            return MaybeError.Create(InitResult.None);
         }
     }
 }

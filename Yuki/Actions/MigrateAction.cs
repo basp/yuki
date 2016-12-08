@@ -1,12 +1,18 @@
 ﻿namespace Yuki.Actions
 {
     using NLog;
+    using Maybe;
+
+    public enum MigrateResult
+    {
+        None
+    }
 
     public interface IDropFolder
     {
     }
 
-    public class MigrateAction : IAction<MigrateArgs>
+    public class MigrateAction : IAction<MigrateArgs, MigrateResult>
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
         private readonly Context ctx;
@@ -16,7 +22,7 @@
             this.ctx = ctx;
         }
 
-        public IMaybeError Execute(MigrateArgs args)
+        public IMaybeError<MigrateResult> Execute(MigrateArgs args)
         {
             var folders = this.ctx.Config.Folders;
             foreach (var f in folders)
@@ -24,7 +30,7 @@
                 this.log.Info($"{f.Name} ({f.Type})");
             }
 
-            return new MaybeError();
+            return MaybeError.Create(MigrateResult.None);
         }
     }
 }

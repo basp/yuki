@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using NLog;
+    using Maybe;
 
     // TODO: 
     // Generalize so we can just specify a folder/name
@@ -31,7 +32,7 @@
 
             var databases = Directory.GetDirectories(this.databaseFolder);
             Array.ForEach(databases, action);
-            return new MaybeError();
+            return new Nothing();
         }
     }
 }

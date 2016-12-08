@@ -2,8 +2,15 @@
 {
     using System.IO;
     using NLog;
+    using Maybe;
 
-    public class RestoreAction : IAction<RestoreArgs>
+    public enum RestoreResult
+    {
+        None,
+        Error
+    }
+
+    public class RestoreAction : IAction<RestoreArgs, RestoreResult>
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
@@ -21,14 +28,16 @@
             this.migrator = migrator;
         }
 
-        public IMaybeError Execute(RestoreArgs args)
+        public IMaybeError<RestoreResult> Execute(RestoreArgs args)
         {
             var maybe = this.migrator.ForEachDatabase(x =>
             {
                 this.log.Info($"=> ${x}");
             });
 
-            return maybe.IsError ? maybe : new MaybeError();
+            return maybe.IsError 
+                ? MaybeError.Create(RestoreResult.Error, maybe.Exception)
+                : MaybeError.Create(RestoreResult.None);
         }
 
         private void SetupDatabase(string folder)
@@ -36,7 +45,7 @@
             var name = Path.GetFileName(folder);
             this.log.Info($"Creating database [{name}] if it doesn't exist");
 
-            
+
         }
     }
 }

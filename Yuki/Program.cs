@@ -7,7 +7,8 @@
     using NLog.Config;
     using NLog.Targets;
     using PowerArgs;
- 
+    using System.ComponentModel;
+
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
     internal class Program
     {
@@ -30,6 +31,7 @@
         [ArgExample(
             @"yuki init -force -overwrite",
             "Force init in a folder that is not empty, overwriting any existing files")]
+        [DisplayName("init")]
         public void Init(InitArgs args)
         {
             var action = new InitAction();
@@ -47,6 +49,7 @@
         [ArgExample(
             @"yuki scaffold -force -overwrite",
             "Force scaffold in a folder that is not empty, overwriting any existing files")]
+        [DisplayName("scaffold")]
         public void Scaffold(ScaffoldArgs args)
         {
             var ctx = Context.GetCurrent();
@@ -55,14 +58,33 @@
         }
 
         [ArgActionMethod]
+        [ArgDescription("Create a new database")]
+        [DisplayName("create-database")]
+        public void CreateDatabase(CreateDatabaseArgs args)
+        {
+            var ctx = Context.GetCurrent();
+            using (var session = args.Server.Connect())
+            {
+                var action = new CreateDatabaseAction(session);
+                var maybe = action.Execute(args);
+                if(maybe.IsError)
+                {
+                    throw maybe.Exception;
+                }
+            }
+        }
+
+        [ArgActionMethod]
         [ArgDescription("Restore databases")]
+        [DisplayName("restore")]
         public void Restore(RestoreArgs args)
         {
             var ctx = Context.GetCurrent();
             var cs = $"Server=ROSPC0297\\SQLEXPRESS;Integrated Security=SSPI";
             var migrator = new Migrator(args.Folder);
-            using (var session = SqlSession.Open(cs))
+            using (var session = SqlSession.Create(cs))
             {
+                session.Connect();
                 var action = new RestoreAction(ctx, session, migrator);
                 action.Execute(args);
             }
@@ -78,6 +100,7 @@
         [ArgExample(
             @"yuki migrate -s SQL\INSTANCE -r $/project -ts foo=bar, quux=frotz",
             "Suplly a list of tokens to be used during token replacement")]
+        [DisplayName("migrate")]
         public void Migrate(MigrateArgs args)
         {
             var ctx = Context.GetCurrent();

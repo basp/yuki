@@ -1,7 +1,9 @@
 ﻿namespace Yuki
 {
-    public interface IAction<TArgs>
+    using Maybe;
+
+    public interface IAction<TArgs,TResult>
     {
-        IMaybeError Execute(TArgs args);
+        IMaybeError<TResult> Execute(TArgs args);
     }
 }

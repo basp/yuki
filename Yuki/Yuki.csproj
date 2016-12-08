@@ -60,6 +60,7 @@
     <Compile Include="Actions\RestoreAction.cs" />
     <Compile Include="Actions\RestoreArgs.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="SessionArgs.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Default.cs" />
@@ -69,14 +70,17 @@
     <Compile Include="IHasher.cs" />
     <Compile Include="Actions\InitAction.cs" />
     <Compile Include="Actions\InitArgs.cs" />
-    <Compile Include="IMaybeError.cs" />
+    <Compile Include="Maybe\IMaybeError.cs" />
     <Compile Include="IMigrator.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ITransaction.cs" />
     <Compile Include="Actions\MigrateAction.cs" />
     <Compile Include="Actions\MigrateArgs.cs" />
-    <Compile Include="MaybeError.cs" />
+    <Compile Include="Maybe\Error.cs" />
+    <Compile Include="Maybe\MaybeError.cs" />
+    <Compile Include="Maybe\Result.cs" />
+    <Compile Include="Maybe\Void.cs" />
     <Compile Include="Migrator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

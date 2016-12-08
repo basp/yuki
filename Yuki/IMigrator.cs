@@ -1,6 +1,7 @@
 ﻿namespace Yuki
 {
     using System;
+    using Maybe;
 
     public interface IMigrator
     {

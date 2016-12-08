@@ -3,8 +3,14 @@
     using System;
     using System.IO;
     using NLog;
- 
-    public class ScaffoldAction : IAction<ScaffoldArgs>
+    using Maybe;
+
+    public enum ScaffoldResult
+    {
+        None
+    }
+
+    public class ScaffoldAction : IAction<ScaffoldArgs,ScaffoldResult>
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
         private readonly Context ctx;
@@ -14,7 +20,7 @@
             this.ctx = ctx;
         }
 
-        public IMaybeError Execute(ScaffoldArgs args)
+        public IMaybeError<ScaffoldResult> Execute(ScaffoldArgs args)
         {
             var projectDir = this.ctx.ProjectDirectory;
             var wd = projectDir;
@@ -34,7 +40,7 @@
                     {
                         this.log.Error(msg);
                         var ex = new Exception(msg);
-                        return new Error(ex);
+                        return MaybeError.Create(ScaffoldResult.None, ex);
                     }
 
                     this.log.Warn(msg);
@@ -51,7 +57,7 @@
                 this.log.Debug($"Working directory changed to {sd}");
             }
 
-            return new Ok();
+            return MaybeError.Create(ScaffoldResult.None);
         }
     }
 }

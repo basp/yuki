@@ -8,6 +8,8 @@
     {
         int CommandTimeout { get; set; }
 
+        ISession Connect();
+
         void BeginTransaction();
 
         void CommitTransaction();

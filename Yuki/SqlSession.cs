@@ -17,11 +17,16 @@
 
         public int CommandTimeout { get; set; }
 
-        public static ISession Open(string connectionString)
+        public static ISession Create(string connectionString)
         {
             var conn = new SqlConnection(connectionString);
-            conn.Open();
             return new SqlSession(conn);
+        }
+
+        public ISession Connect()
+        {
+            this.connection.Open();
+            return this;
         }
 
         public void BeginTransaction()

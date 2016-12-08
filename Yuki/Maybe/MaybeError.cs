@@ -1,51 +1,6 @@
-﻿namespace Yuki
+﻿namespace Yuki.Maybe
 {
     using System;
-
-    public class Ok : IMaybeError
-    {
-        public Exception Exception
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        public bool IsError
-        {
-            get
-            {
-                return false;
-            }
-        }
-    }
-
-    public class Error : IMaybeError
-    {
-        private readonly Exception error;
-
-        public Error(Exception ex = null)
-        {
-            this.error = ex;
-        }
-
-        public bool IsError
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        public Exception Exception
-        {
-            get
-            {
-                return this.error;
-            }
-        }
-    }
 
     public class MaybeError : IMaybeError
     {
@@ -71,16 +26,22 @@
                 return this.error != null;
             }
         }
+
+        public static IMaybeError<T> Create<T>(T value, Exception error = null)
+        {
+            return new MaybeError<T>(value, error);
+        }
     }
 
-    public class MaybeError<T>
+    public class MaybeError<T> : IMaybeError<T>
     {
         private readonly T value;
         private readonly Exception error;
 
-        public MaybeError(T value)
+        public MaybeError(T value, Exception error = null)
         {
             this.value = value;
+            this.error = error;
         }
 
         public MaybeError(Exception error)
@@ -93,6 +54,14 @@
             get
             {
                 return this.value;
+            }
+        }
+
+        public Exception Exception
+        {
+            get
+            {
+                return this.error;
             }
         }
 

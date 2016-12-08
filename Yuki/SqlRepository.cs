@@ -28,7 +28,7 @@
         {
             this.log.Info($"Creating repository database [{this.systemDatabase}] if it doesn't exist");
 
-            var resourceName = "Yuki.Resources.CreateSystemDatabase.sql";
+            var resourceName = "CreateSystemDatabase.sql";
             var template = Utils.ReadEmbeddedString<Program>(resourceName);
             var sql = string.Format(
                 template,
