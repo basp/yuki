@@ -1,4 +1,4 @@
-﻿namespace Yuki.Cmd
+﻿namespace Yuki
 {
     using System.Collections.Generic;
     using System.Linq;

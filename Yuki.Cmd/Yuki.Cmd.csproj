@@ -66,15 +66,16 @@
     <Compile Include="IRepository.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ITransaction.cs" />
-    <Compile Include="MigrateAction.cs" />
-    <Compile Include="MigrateArgs.cs" />
+    <Compile Include="Actions\MigrateAction.cs" />
+    <Compile Include="Actions\MigrateArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RestoreAction.cs" />
-    <Compile Include="RestoreArgs.cs" />
-    <Compile Include="ScaffoldAction.cs" />
-    <Compile Include="ScaffoldArgs.cs" />
+    <Compile Include="Actions\RestoreAction.cs" />
+    <Compile Include="Actions\RestoreArgs.cs" />
+    <Compile Include="Actions\ScaffoldAction.cs" />
+    <Compile Include="Actions\ScaffoldArgs.cs" />
     <Compile Include="ScriptType.cs" />
+    <Compile Include="SqlSession.cs" />
     <Compile Include="StatementSplitter.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>

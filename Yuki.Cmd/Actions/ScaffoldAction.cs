@@ -1,4 +1,4 @@
-﻿namespace Yuki.Cmd
+﻿namespace Yuki.Actions
 {
     using NLog;
     using System.IO;

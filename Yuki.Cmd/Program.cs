@@ -1,4 +1,4 @@
-﻿namespace Yuki.Cmd
+﻿namespace Yuki
 {
     using System;
     using System.IO;
@@ -6,6 +6,7 @@
     using NLog.Config;
     using NLog.Targets;
     using PowerArgs;
+    using Actions;
 
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
     class Program
@@ -90,7 +91,8 @@
 
         public void Restore(RestoreArgs args)
         {
-            var action = new RestoreAction();
+            var ctx = Context.GetCurrent();
+            var action = new RestoreAction(ctx);
             action.Execute(args);
         }
 

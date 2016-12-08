@@ -1,4 +1,4 @@
-﻿namespace Yuki.Cmd
+﻿namespace Yuki.Actions
 {
     using System;
     using System.IO;
@@ -6,6 +6,7 @@
 
     interface IDropFolder
     {
+
     }
 
     public class MigrateAction : IAction<MigrateArgs>
