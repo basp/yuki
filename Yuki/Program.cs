@@ -54,11 +54,20 @@
             action.Execute(args);
         }
 
+        [ArgActionMethod]
+        [ArgDescription("Restore databases")]
         public void Restore(RestoreArgs args)
         {
             var ctx = Context.GetCurrent();
-            var action = new RestoreAction(ctx);
-            action.Execute(args);
+            var cs = $"Server=ROSPC0297\\SQLEXPRESS;Integrated Security=SSPI";
+            var migrator = new Migrator(args.Folder);
+            using (var session = SqlSession.Open(cs))
+            {
+                var action = new RestoreAction(ctx, session, migrator);
+                action.Execute(args);
+            }
+            // var action = new RestoreAction(ctx);
+            // action.Execute(args);
         }
 
         [ArgActionMethod]
@@ -86,21 +95,6 @@
             action.Execute(args);
         }
 
-        private static void Main(string[] args)
-        {
-            InitializeLogManager();
-
-            try
-            {
-                // TODO: I wanna `new`-up `Program` myself.
-                Args.InvokeAction<Program>(args);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-
         private static void InitializeLogManager()
         {
             var loggingConfig = new LoggingConfiguration();
@@ -117,6 +111,21 @@
             loggingConfig.LoggingRules.Add(rule);
 
             LogManager.Configuration = loggingConfig;
+        }
+
+        private static void Main(string[] args)
+        {
+            InitializeLogManager();
+
+            try
+            {
+                // TODO: I wanna `new`-up `Program` myself.
+                Args.InvokeAction<Program>(args);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 }

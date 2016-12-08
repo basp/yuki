@@ -1,9 +1,10 @@
 ﻿namespace Yuki.Actions
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using PowerArgs;
-
+  
     public class MigrateArgs
     {
         [ArgDescription("The database server to update")]
@@ -24,7 +25,7 @@
         public string VersionFile { get; set; }
 
         [ArgDescription("Path to a Yuki config file")]
-        [ArgDefaultValue(Context.DefaultConfigFile)]
+        [ArgDefaultValue(Default.ConfigFile)]
         [ArgShortcut("cfg")]
         public string Config { get; set; }
 
@@ -77,8 +78,20 @@
 
             return value.Split(',')
                 .Select(x => x.Trim())
-                .Select(x => x.Split('=').Select(y => y.Trim()).ToArray())
-                .ToDictionary(x => x[0], x => x[1]);
+                .Select(ParseKeyValuePair)
+                .ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        private static KeyValuePair<string,string> ParseKeyValuePair(string value)
+        {
+            var operands = value.Split('=').Select(x => x.Trim()).ToArray();
+            if(operands.Length < 2)
+            {
+                var msg = $"{value} is not a valid key-value pair (e.g. foo=bar)";
+                throw new ArgumentException(msg, nameof(value));
+            }
+
+            return Utils.CreateKeyValuePair(operands[0], operands[1]);
         }
     }
 }

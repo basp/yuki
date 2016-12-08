@@ -2,6 +2,6 @@
 {
     public interface IAction<TArgs>
     {
-        void Execute(TArgs args);
+        IMaybeError Execute(TArgs args);
     }
 }

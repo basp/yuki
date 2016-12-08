@@ -1,11 +1,17 @@
 ﻿namespace Yuki
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using Newtonsoft.Json;
 
     public static class Utils
     {
+        public static KeyValuePair<TKey,TValue> CreateKeyValuePair<TKey,TValue>(TKey key, TValue value)
+        {
+            return new KeyValuePair<TKey, TValue>(key, value);
+        }
+
         public static ScriptType ParseScriptType(string value, ScriptType defaultScriptType)
         {
             ScriptType st;

@@ -1,8 +1,9 @@
 ﻿namespace Yuki.Actions
 {
+    using System;
     using System.IO;
     using NLog;
-
+ 
     public class ScaffoldAction : IAction<ScaffoldArgs>
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
@@ -13,11 +14,12 @@
             this.ctx = ctx;
         }
 
-        public void Execute(ScaffoldArgs args)
+        public IMaybeError Execute(ScaffoldArgs args)
         {
             var projectDir = this.ctx.ProjectDirectory;
             var wd = projectDir;
             var folders = this.ctx.Config.Folders;
+
             string msg;
             foreach (var f in folders)
             {
@@ -31,7 +33,8 @@
                     if (!args.Force)
                     {
                         this.log.Error(msg);
-                        return;
+                        var ex = new Exception(msg);
+                        return new Error(ex);
                     }
 
                     this.log.Warn(msg);
@@ -47,6 +50,8 @@
                 Directory.SetCurrentDirectory(sd);
                 this.log.Debug($"Working directory changed to {sd}");
             }
+
+            return new Ok();
         }
     }
 }

@@ -5,7 +5,7 @@
     public class ScaffoldArgs
     {
         [ArgDescription("Path to a Yuki config file")]
-        [ArgDefaultValue(Context.DefaultConfigFile)]
+        [ArgDefaultValue(Default.ConfigFile)]
         [ArgShortcut("cfg")]
         public string Config { get; set; }
 

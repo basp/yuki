@@ -10,7 +10,7 @@
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
-        public void Execute(InitArgs args)
+        public IMaybeError Execute(InitArgs args)
         {
             string msg;
 
@@ -22,12 +22,12 @@
 
             var pd = Directory.GetParent(wd).FullName;
 
-            if (File.Exists(Path.Combine(pd, Context.DefaultConfigFile)))
+            if (File.Exists(Path.Combine(pd, Default.ConfigFile)))
             {
                 var msgs = new string[] 
                 {
-                    $"The {pd} folder already contains a {Context.DefaultConfigFile} file.",
-                    $"I was just trying to initialize a project at {Path.Combine(wd, Context.DefaultConfigFile)}",
+                    $"The {pd} folder already contains a {Default.ConfigFile} file.",
+                    $"I was just trying to initialize a project at {Path.Combine(wd, Default.ConfigFile)}",
                     $"but it looks like you're trying to initialize a new project inside a",
                     $"folder that is already a Yuki project folder; nested projects are not supported",
                     $"without forcing them."
@@ -36,7 +36,8 @@
                 if (!args.Force)
                 {
                     Array.ForEach(msgs, this.log.Error);
-                    return;
+                    var ex = new Exception();
+                    return new MaybeError(ex);
                 }
 
                 Array.ForEach(msgs, this.log.Warn);
@@ -65,7 +66,7 @@
 
             tasks.AddLast(() =>
             {
-                var cf = Path.Combine(wd, Context.DefaultConfigFile);
+                var cf = Path.Combine(wd, Default.ConfigFile);
                 var hasEntries = Directory.EnumerateFileSystemEntries(wd).Any();
                 if (hasEntries)
                 {
@@ -100,6 +101,7 @@
             });
 
             Array.ForEach(tasks.ToArray(), t => t());
+            return new MaybeError();
         }
     }
 }

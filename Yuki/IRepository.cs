@@ -2,7 +2,7 @@
 {
     public interface IRepository
     {
-        void Initialize();
+        // void Initialize();
 
         int InsertVersion(
             string repositoryPath,
@@ -11,6 +11,7 @@
         int InsertScriptRun(
             string scriptName,
             string sql,
+            string hash,
             bool isOneTimeScript,
             int versionId);
 
