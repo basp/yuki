@@ -61,8 +61,8 @@
     <Compile Include="IAction.cs" />
     <Compile Include="IDatabase.cs" />
     <Compile Include="IHasher.cs" />
-    <Compile Include="InitAction.cs" />
-    <Compile Include="InitArgs.cs" />
+    <Compile Include="Actions\InitAction.cs" />
+    <Compile Include="Actions\InitArgs.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ITransaction.cs" />

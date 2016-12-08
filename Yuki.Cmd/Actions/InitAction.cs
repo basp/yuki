@@ -1,4 +1,4 @@
-﻿namespace Yuki
+﻿namespace Yuki.Actions
 {
     using System;
     using System.Collections.Generic;

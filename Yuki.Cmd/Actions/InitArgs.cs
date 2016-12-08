@@ -1,4 +1,4 @@
-﻿namespace Yuki
+﻿namespace Yuki.Actions
 {
     using PowerArgs;
 
