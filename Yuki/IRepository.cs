@@ -2,8 +2,6 @@
 {
     public interface IRepository
     {
-        // void Initialize();
-
         int InsertVersion(
             string repositoryPath,
             string repositoryVersion);

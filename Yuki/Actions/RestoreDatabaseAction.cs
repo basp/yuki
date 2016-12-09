@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Data;
     using Maybe;
- 
+
     public enum RestoreDatabaseResult
     {
         Restored,
@@ -18,8 +18,8 @@
         {
             var template = Utils.ReadEmbeddedString<Program>("RestoreDatabase.sql");
             var cmdText = string.Format(
-                template, 
-                args.DatabaseName, 
+                template,
+                args.DatabaseName,
                 args.BackupFile);
 
             try
@@ -29,7 +29,7 @@
                     new Dictionary<string, object>(),
                     CommandType.Text);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return MaybeError.Create(
                     RestoreDatabaseResult.Error,

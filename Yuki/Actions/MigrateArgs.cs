@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using PowerArgs;
-  
+
     public class MigrateArgs
     {
         [ArgDescription("The database server to update")]
@@ -82,10 +82,10 @@
                 .ToDictionary(x => x.Key, x => x.Value);
         }
 
-        private static KeyValuePair<string,string> ParseKeyValuePair(string value)
+        private static KeyValuePair<string, string> ParseKeyValuePair(string value)
         {
             var operands = value.Split('=').Select(x => x.Trim()).ToArray();
-            if(operands.Length < 2)
+            if (operands.Length < 2)
             {
                 var msg = $"{value} is not a valid key-value pair (e.g. foo=bar)";
                 throw new ArgumentException(msg, nameof(value));

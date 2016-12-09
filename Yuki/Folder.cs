@@ -12,6 +12,7 @@
         [JsonProperty(PropertyName = "type")]
         public string TypeString { get; set; }
 
+        [JsonIgnore]
         public ScriptType Type
         {
             get
@@ -26,6 +27,7 @@
             }
         }
 
+        [JsonProperty(PropertyName = "folders")]
         public IEnumerable<string> Folders { get; private set; }
     }
 }

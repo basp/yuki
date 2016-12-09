@@ -2,15 +2,15 @@
 {
     using System;
     using System.IO;
-    using NLog;
     using Maybe;
+    using NLog;
 
     public enum ScaffoldResult
     {
         None
     }
 
-    public class ScaffoldAction : IAction<ScaffoldArgs,ScaffoldResult>
+    public class ScaffoldAction : IAction<ScaffoldArgs, ScaffoldResult>
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
         private readonly Context ctx;

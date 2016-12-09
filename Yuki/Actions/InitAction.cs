@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using NLog;
     using Maybe;
-
+    using NLog;
+  
     public enum InitResult
     {
         None

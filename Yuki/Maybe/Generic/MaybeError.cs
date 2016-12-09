@@ -2,14 +2,30 @@
 {
     using System;
     using Newtonsoft.Json;
-  
-    public class MaybeError : IMaybeError
+
+    public class MaybeError<T> : IMaybeError<T>
     {
+        private readonly T value;
         private readonly Exception error;
 
-        public MaybeError(Exception error = null)
+        public MaybeError(T value, Exception error = null)
+        {
+            this.value = value;
+            this.error = error;
+        }
+
+        public MaybeError(Exception error)
         {
             this.error = error;
+        }
+
+        [JsonProperty(PropertyName = "value")]
+        public T Value
+        {
+            get
+            {
+                return this.value;
+            }
         }
 
         [JsonProperty(PropertyName = "exception")]
@@ -28,11 +44,6 @@
             {
                 return this.error != null;
             }
-        }
-
-        public static IMaybeError<T> Create<T>(T value, Exception error = null)
-        {
-            return new MaybeError<T>(value, error);
         }
     }
 }

@@ -57,11 +57,16 @@
   <ItemGroup>
     <Compile Include="Actions\CreateDatabaseAction.cs" />
     <Compile Include="Actions\CreateDatabaseArgs.cs" />
-    <Compile Include="Actions\SetupDatabaseAction.cs" />
-    <Compile Include="Actions\SetupDatabaseArgs.cs" />
+    <Compile Include="Actions\InfoAction.cs" />
+    <Compile Include="Actions\InfoArgs.cs" />
+    <Compile Include="Actions\InfoResponse.cs" />
+    <Compile Include="Actions\SetupAction.cs" />
+    <Compile Include="Actions\SetupArgs.cs" />
     <Compile Include="Actions\RestoreDatabaseAction.cs" />
     <Compile Include="Actions\RestoreDatabaseArgs.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Maybe\Generic\IMaybeError.cs" />
+    <Compile Include="Maybe\Generic\MaybeError.cs" />
     <Compile Include="SessionArgs.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Database.cs" />
@@ -79,10 +84,7 @@
     <Compile Include="ITransaction.cs" />
     <Compile Include="Actions\MigrateAction.cs" />
     <Compile Include="Actions\MigrateArgs.cs" />
-    <Compile Include="Maybe\Error.cs" />
     <Compile Include="Maybe\MaybeError.cs" />
-    <Compile Include="Maybe\Result.cs" />
-    <Compile Include="Maybe\Void.cs" />
     <Compile Include="Migrator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

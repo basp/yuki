@@ -2,15 +2,20 @@
 {
     using System;
     using System.IO;
-
+    using Newtonsoft.Json;
+ 
     public class Context
     {
+        [JsonProperty(PropertyName = "config")]
         public Config Config { get; set; }
 
+        [JsonProperty(PropertyName = "configString")]
         public string ConfigString { get; set; }
 
+        [JsonProperty(PropertyName = "projectFile")]
         public string ProjectFile { get; set; }
 
+        [JsonProperty(PropertyName = "projectDirectory")]
         public string ProjectDirectory { get; set; }
 
         public static Context GetCurrent()

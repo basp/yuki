@@ -2,10 +2,12 @@
 {
     using System;
 
-    public interface IMaybeError
+    public interface IMaybeError<T>
     {
-        bool IsError { get; }
+        T Value { get; }
 
         Exception Exception { get; }
+
+        bool IsError { get; }
     }
 }

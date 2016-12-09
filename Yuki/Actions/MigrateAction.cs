@@ -1,8 +1,8 @@
 ﻿namespace Yuki.Actions
 {
-    using NLog;
     using Maybe;
-
+    using NLog;
+  
     public enum MigrateResult
     {
         None

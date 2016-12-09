@@ -1,10 +1,10 @@
 ﻿namespace Yuki.Actions
 {
     using System;
-    using System.Linq;
     using System.IO;
-    using NLog;
+    using System.Linq;
     using Maybe;
+    using NLog;
 
     public enum SetupDatabaseResult
     {
@@ -12,22 +12,15 @@
         Error
     }
 
-    public class SetupDatabaseAction : IAction<SetupDatabaseArgs, SetupDatabaseResult>
+    public class SetupAction : IAction<SetupArgs, SetupDatabaseResult>
     {
-        private enum IntermediateResult
-        {
-            None,
-            Something,
-            Error
-        }
-
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
         private readonly Context ctx;
         private readonly ISession session;
         private readonly IMigrator migrator;
 
-        public SetupDatabaseAction(
+        public SetupAction(
             Context ctx,
             ISession session,
             IMigrator migrator)
@@ -37,12 +30,27 @@
             this.migrator = migrator;
         }
 
-        public IMaybeError<SetupDatabaseResult> Execute(SetupDatabaseArgs args)
+        private enum IntermediateResult
+        {
+            None,
+            Something,
+            Error
+        }
+
+        public IMaybeError<SetupDatabaseResult> Execute(SetupArgs args)
         {
             var maybe = this.migrator.ForEachDatabase(this.SetupDatabase);
             return maybe.IsError
                 ? MaybeError.Create(SetupDatabaseResult.Error, maybe.Exception)
                 : MaybeError.Create(SetupDatabaseResult.None);
+        }
+
+        private static string GetMostRecentBackup(string folder)
+        {
+            return Directory.GetFiles(folder)
+                .FirstOrDefault(x => x.EndsWith(
+                    ".bak",
+                    StringComparison.InvariantCultureIgnoreCase));
         }
 
         private void SetupDatabase(string folder)
@@ -53,7 +61,7 @@
 
             this.log.Info($"Creating database [{name}] if it doesn't exist");
             temp = this.CreateDatabase(name);
-            if(temp.IsError)
+            if (temp.IsError)
             {
                 throw temp.Exception;
             }
@@ -70,14 +78,6 @@
             {
                 throw temp.Exception;
             }
-        }
-
-        private static string GetMostRecentBackup(string folder)
-        {
-            return Directory.GetFiles(folder)
-                .FirstOrDefault(x => x.EndsWith(
-                    ".bak",
-                    StringComparison.InvariantCultureIgnoreCase));
         }
 
         private IMaybeError<IntermediateResult> RestoreDatabase(

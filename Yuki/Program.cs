@@ -1,13 +1,13 @@
 ﻿namespace Yuki
 {
     using System;
-    using System.IO;
+    using System.ComponentModel;
     using Actions;
+    using Newtonsoft.Json;
     using NLog;
     using NLog.Config;
     using NLog.Targets;
     using PowerArgs;
-    using System.ComponentModel;
 
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
     internal class Program
@@ -19,6 +19,20 @@
         [HelpHook]
         [ArgDescription("Display help")]
         public bool Help { get; set; }
+
+        [ArgActionMethod]
+        [ArgDescription("Validate a Yuki project folder")]
+        public void Info(InfoArgs args)
+        {
+            var ctx = Context.GetCurrent();
+            var action = new InfoAction(ctx);
+            var result = action.Execute(args);
+            var json = JsonConvert.SerializeObject(
+                result.Value,
+                Formatting.Indented);
+
+            Console.WriteLine(json);
+        }
 
         [ArgActionMethod]
         [ArgDescription("Create a new Yuki project folder")]
@@ -67,7 +81,7 @@
             {
                 var action = new CreateDatabaseAction(session);
                 var result = action.Execute(args);
-                if(result.IsError)
+                if (result.IsError)
                 {
                     throw result.Exception;
                 }
@@ -75,9 +89,9 @@
         }
 
         [ArgActionMethod]
-        [ArgDescription("Restore databases")]
-        [DisplayName("restore")]
-        public void Restore(SetupDatabaseArgs args)
+        [ArgDescription("Setup databases")]
+        [DisplayName("setup")]
+        public void Setup(SetupArgs args)
         {
             var ctx = Context.GetCurrent();
             var cs = $"Server=ROSPC0297\\SQLEXPRESS;Integrated Security=SSPI";
@@ -85,9 +99,9 @@
             using (var session = SqlSession.Create(cs))
             {
                 session.Connect();
-                var action = new SetupDatabaseAction(ctx, session, migrator);
+                var action = new SetupAction(ctx, session, migrator);
                 var result = action.Execute(args);
-                if(result.IsError)
+                if (result.IsError)
                 {
                     throw result.Exception;
                 }

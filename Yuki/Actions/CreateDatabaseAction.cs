@@ -5,8 +5,7 @@
     using System.Data;
     using Maybe;
     using NLog;
-    using PowerArgs;
-
+ 
     public enum CreateDatabaseResult
     {
         Created,

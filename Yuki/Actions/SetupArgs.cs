@@ -2,7 +2,7 @@
 {
     using PowerArgs;
 
-    public class SetupDatabaseArgs
+    public class SetupArgs
     {
         [ArgRequired]
         [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
