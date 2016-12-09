@@ -57,8 +57,10 @@
   <ItemGroup>
     <Compile Include="Actions\CreateDatabaseAction.cs" />
     <Compile Include="Actions\CreateDatabaseArgs.cs" />
-    <Compile Include="Actions\RestoreAction.cs" />
-    <Compile Include="Actions\RestoreArgs.cs" />
+    <Compile Include="Actions\SetupDatabaseAction.cs" />
+    <Compile Include="Actions\SetupDatabaseArgs.cs" />
+    <Compile Include="Actions\RestoreDatabaseAction.cs" />
+    <Compile Include="Actions\RestoreDatabaseArgs.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="SessionArgs.cs" />
     <Compile Include="Context.cs" />

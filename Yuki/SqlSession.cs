@@ -89,6 +89,11 @@
             }
         }
 
+        public override string ToString()
+        {
+            return this.connection.ConnectionString;
+        }
+
         private IDbCommand CreateCommand(
             string commandText,
             IDictionary<string, object> args,

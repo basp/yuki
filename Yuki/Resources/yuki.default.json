@@ -1,5 +1,7 @@
 ﻿{
   "versionFile": "version.txt",
+  "restoreTimeout": 30,
+  "commandTimeout": 10,
   "folders": [
     {
       "name": "alterDatabase",

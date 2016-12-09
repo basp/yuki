@@ -66,10 +66,10 @@
             using (var session = args.Server.Connect())
             {
                 var action = new CreateDatabaseAction(session);
-                var maybe = action.Execute(args);
-                if(maybe.IsError)
+                var result = action.Execute(args);
+                if(result.IsError)
                 {
-                    throw maybe.Exception;
+                    throw result.Exception;
                 }
             }
         }
@@ -77,7 +77,7 @@
         [ArgActionMethod]
         [ArgDescription("Restore databases")]
         [DisplayName("restore")]
-        public void Restore(RestoreArgs args)
+        public void Restore(SetupDatabaseArgs args)
         {
             var ctx = Context.GetCurrent();
             var cs = $"Server=ROSPC0297\\SQLEXPRESS;Integrated Security=SSPI";
@@ -85,11 +85,13 @@
             using (var session = SqlSession.Create(cs))
             {
                 session.Connect();
-                var action = new RestoreAction(ctx, session, migrator);
-                action.Execute(args);
+                var action = new SetupDatabaseAction(ctx, session, migrator);
+                var result = action.Execute(args);
+                if(result.IsError)
+                {
+                    throw result.Exception;
+                }
             }
-            // var action = new RestoreAction(ctx);
-            // action.Execute(args);
         }
 
         [ArgActionMethod]
