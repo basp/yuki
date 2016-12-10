@@ -10,14 +10,14 @@
     using Req = RestoreDatabaseRequest;
     using Res = RestoreDatabaseResponse;
 
-    public class RestoreDatabase : ICommand<Req, Res, Exception>
+    public class RestoreDatabaseCommand : ICommand<Req, Res, Exception>
     {
         private static readonly string RestoreDatabaseTemplate =
             $"{nameof(Yuki)}.Resources.RestoreDatabase.sql";
 
         private readonly ISession session;
 
-        public RestoreDatabase(ISession session)
+        public RestoreDatabaseCommand(ISession session)
         {
             Contract.Requires(session != null);
 
@@ -28,7 +28,7 @@
         {
             try
             {
-                var asm = typeof(RestoreDatabase).Assembly;
+                var asm = typeof(RestoreDatabaseCommand).Assembly;
                 var tmpl = asm.ReadEmbeddedString(RestoreDatabaseTemplate);
 
                 var cmdText = Smart.Format(tmpl, request);

@@ -12,15 +12,24 @@
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
     internal class Program
     {
-        private const string DefaultLoggingLayout = @"${pad:padding=5:inner=${level:uppercase=true}} ${date:format=HH\:mm\:ss} ${logger} ${message}";
+        private const string DefaultLoggingLayout =
+            @"${pad:padding=5:inner=${level:uppercase=true}} ${date:format=HH\:mm\:ss} ${logger} ${message}";
 
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
+
+        [HelpHook]
+        [ArgShortcut("-?")]
+        public bool Help
+        {
+            get;
+            set;
+        }
 
         [ArgActionMethod]
         public void CreateDatabase(CreateDatabaseRequest request)
         {
             var res = ExecuteDatabaseRequest(
-                session => new CreateDatabase(session),
+                session => new CreateDatabaseCommand(session),
                 request);
 
             res.MatchSome(x => this.log.Info(x));
@@ -31,7 +40,7 @@
         public void DropDatabase(DropDatabaseRequest request)
         {
             var res = ExecuteDatabaseRequest(
-                session => new DropDatabase(session),
+                session => new DropDatabaseCommand(session),
                 request);
 
             res.MatchSome(x => this.log.Info(x));
@@ -42,7 +51,7 @@
         public void RestoreDatabase(RestoreDatabaseRequest request)
         {
             var res = ExecuteDatabaseRequest(
-                session => new RestoreDatabase(session),
+                session => new RestoreDatabaseCommand(session),
                 request);
 
             res.MatchSome(x => this.log.Info(x));
@@ -52,11 +61,23 @@
         [ArgActionMethod]
         public void CreateRepository(CreateRepositoryRequest request)
         {
+            var id = new WindowsIdentityProvider();
             var res = ExecuteDatabaseRequest(
-                session => new CreateRepository(session),
+                session => new CreateRepositoryCommand(session, id),
                 request);
 
             res.MatchSome(x => this.log.Info(x));
+            res.MatchNone(x => this.log.Error(x));
+        }
+
+        [ArgActionMethod]
+        public void HashFile(HashFileRequest request)
+        {
+            var hasher = new MD5Hasher();
+            var cmd = new HashFileCommand(hasher);
+            var res = cmd.Execute(request);
+
+            res.MatchSome(x => this.log.Info(x.Hash));
             res.MatchNone(x => this.log.Error(x));
         }
 

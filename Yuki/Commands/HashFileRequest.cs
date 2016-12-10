@@ -2,10 +2,12 @@
 {
     using PowerArgs;
 
-    public class HashRequest
+    public class HashFileRequest
     {
         [ArgRequired]
         [ArgPosition(1)]
+        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
+        [ArgExistingFile]
         public string File
         {
             get;

@@ -3,26 +3,8 @@
     using System.Diagnostics.Contracts;
     using PowerArgs;
 
-    public class RestoreDatabaseRequest : ISessionRequest
+    public class RestoreDatabaseRequest : DatabaseRequest, ISessionRequest
     {
-        [ArgRequired]
-        [ArgPosition(1)]
-        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public string Server
-        {
-            get;
-            set;
-        }
-
-        [ArgRequired]
-        [ArgPosition(2)]
-        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public string Database
-        {
-            get;
-            set;
-        }
-
         [ArgRequired]
         [ArgPosition(3)]
         [ArgExistingFile]

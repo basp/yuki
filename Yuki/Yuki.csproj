@@ -108,23 +108,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\CreateDatabase.cs" />
+    <Compile Include="Commands\CreateDatabaseCommand.cs" />
     <Compile Include="Commands\CreateDatabaseRequest.cs" />
     <Compile Include="Commands\CreateDatabaseResponse.cs" />
-    <Compile Include="Commands\CreateRepository.cs" />
+    <Compile Include="Commands\CreateRepositoryCommand.cs" />
     <Compile Include="Commands\CreateRepositoryRequest.cs" />
     <Compile Include="Commands\CreateRepositoryResponse.cs" />
-    <Compile Include="Commands\DropDatabase.cs" />
+    <Compile Include="Commands\DatabaseRequest.cs" />
+    <Compile Include="Commands\DropDatabaseCommand.cs" />
     <Compile Include="Commands\DropDatabaseRequest.cs" />
     <Compile Include="Commands\DropDatabaseResponse.cs" />
-    <Compile Include="Commands\HashFile.cs" />
-    <Compile Include="Commands\HashRequest.cs" />
-    <Compile Include="Commands\HashResponse.cs" />
+    <Compile Include="Commands\HashFileCommand.cs" />
+    <Compile Include="Commands\HashFileRequest.cs" />
+    <Compile Include="Commands\HashFileResponse.cs" />
+    <Compile Include="Commands\TestConnection.cs" />
     <Compile Include="ICommand.cs" />
-    <Compile Include="Commands\RestoreDatabase.cs" />
+    <Compile Include="Commands\RestoreDatabaseCommand.cs" />
     <Compile Include="Commands\RestoreDatabaseRequest.cs" />
     <Compile Include="Commands\RestoreDatabaseResponse.cs" />
     <Compile Include="IHasher.cs" />
+    <Compile Include="IIdentityProvider.cs" />
     <Compile Include="ISessionRequest.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="ISessionFactory.cs" />
@@ -141,6 +144,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VersionRecord.cs" />
+    <Compile Include="WindowsIdentityProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

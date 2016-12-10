@@ -10,14 +10,14 @@
     using Req = DropDatabaseRequest;
     using Res = DropDatabaseResponse;
 
-    public class DropDatabase : ICommand<Req, Res, Exception>
+    public class DropDatabaseCommand : ICommand<Req, Res, Exception>
     {
         private static readonly string ResourceName =
             $"{nameof(Yuki)}.Resources.DropDatabase.sql";
 
         private readonly ISession session;
 
-        public DropDatabase(ISession session)
+        public DropDatabaseCommand(ISession session)
         {
             Contract.Requires(session != null);
 
@@ -28,7 +28,7 @@
         {
             try
             {
-                var asm = typeof(DropDatabase).Assembly;
+                var asm = typeof(DropDatabaseCommand).Assembly;
                 var tmpl = asm.ReadEmbeddedString(ResourceName);
                 var cmdText = Smart.Format(tmpl, request);
 

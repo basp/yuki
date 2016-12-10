@@ -7,20 +7,28 @@
     using Req = CreateRepositoryRequest;
     using Res = CreateRepositoryResponse;
 
-    public class CreateRepository : ICommand<Req, Res, Ex>
+    public class CreateRepositoryCommand : ICommand<Req, Res, Ex>
     {
         private readonly ISession session;
+        private readonly IIdentityProvider identity;
 
-        public CreateRepository(ISession session)
+        public CreateRepositoryCommand(
+            ISession session,
+            IIdentityProvider identity)
         {
             Contract.Requires(session != null);
+            Contract.Requires(identity != null);
 
             this.session = session;
+            this.identity = identity;
         }
 
         public Option<Res, Ex> Execute(Req request)
         {
-            var repository = new SqlRepository(this.session);
+            var repository = new SqlRepository(
+                this.session,
+                this.identity);
+
             var res = repository.Initialize(
                 request.Database,
                 request.Schema);

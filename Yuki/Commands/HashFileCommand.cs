@@ -5,14 +5,14 @@
     using System.IO;
     using Optional;
 
-    using Req = HashRequest;
-    using Res = HashResponse;
+    using Req = HashFileRequest;
+    using Res = HashFileResponse;
 
-    public class HashFile : ICommand<Req, Res, Exception>
+    public class HashFileCommand : ICommand<Req, Res, Exception>
     {
         private readonly IHasher hasher;
 
-        public HashFile(IHasher hasher)
+        public HashFileCommand(IHasher hasher)
         {
             Contract.Requires(hasher != null);
 
@@ -24,8 +24,7 @@
             try
             {
                 var value = File.ReadAllText(request.File);
-                return this.hasher.Hash(value)
-                    .Map(x => new Res(x));
+                return this.hasher.Hash(value).Map(x => new Res(x));
             }
             catch (Exception ex)
             {

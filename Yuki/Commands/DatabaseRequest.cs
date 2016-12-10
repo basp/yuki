@@ -2,21 +2,21 @@
 {
     using PowerArgs;
 
-    public class CreateRepositoryRequest : DatabaseRequest, ISessionRequest
+    public class DatabaseRequest : ISessionRequest
     {
-        [ArgPosition(2)]
-        [ArgDefaultValue("yuki")]
+        [ArgRequired]
+        [ArgPosition(1)]
         [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public override string Database
+        public virtual string Server
         {
             get;
             set;
         }
 
-        [ArgPosition(3)]
-        [ArgDefaultValue("dbo")]
+        [ArgRequired]
+        [ArgPosition(2)]
         [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public string Schema
+        public virtual string Database
         {
             get;
             set;

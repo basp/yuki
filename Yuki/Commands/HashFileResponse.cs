@@ -2,9 +2,9 @@
 {
     using System.Diagnostics.Contracts;
 
-    public class HashResponse
+    public class HashFileResponse
     {
-        public HashResponse(string hash)
+        public HashFileResponse(string hash)
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(hash));
 

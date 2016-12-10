@@ -10,14 +10,14 @@
     using Req = CreateDatabaseRequest;
     using Res = CreateDatabaseResponse;
 
-    public class CreateDatabase : ICommand<Req, Res, Exception>
+    public class CreateDatabaseCommand : ICommand<Req, Res, Exception>
     {
         private static readonly string CreateDatabaseTemplate =
             $"{nameof(Yuki)}.Resources.CreateDatabase.sql";
 
         private readonly ISession session;
 
-        public CreateDatabase(ISession session)
+        public CreateDatabaseCommand(ISession session)
         {
             Contract.Requires(session != null);
 
@@ -28,7 +28,7 @@
         {
             try
             {
-                var asm = typeof(CreateDatabase).Assembly;
+                var asm = typeof(CreateDatabaseCommand).Assembly;
                 var tmpl = asm.ReadEmbeddedString(CreateDatabaseTemplate);
 
                 var cmdText = Smart.Format(tmpl, request);

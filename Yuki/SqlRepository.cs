@@ -8,6 +8,7 @@
     using NLog;
     using Optional;
     using SmartFormat;
+    using System.Security.Principal;
 
     public class SqlRepository : IRepository<int, SqlRepositoryException>
     {
@@ -16,12 +17,19 @@
 
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
         private readonly ISession session;
+        private readonly IIdentityProvider identity;
 
-        public SqlRepository(ISession session)
+        public SqlRepository(
+            ISession session,
+            IIdentityProvider identity)
         {
             Contract.Requires(session != null);
+            Contract.Requires(session.Connection.State == ConnectionState.Open);
+            Contract.Requires(identity != null);
+            Contract.Requires(identity != null);
 
             this.session = session;
+            this.identity = identity;
         }
 
         public Option<bool, SqlRepositoryException> Initialize(
@@ -61,8 +69,8 @@
         public Option<int, SqlRepositoryException> InsertVersion(
             VersionRecord record)
         {
-
-
+            
+            
             throw new NotImplementedException();
         }
 

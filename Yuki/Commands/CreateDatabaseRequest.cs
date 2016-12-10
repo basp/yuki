@@ -2,24 +2,7 @@
 {
     using PowerArgs;
 
-    public class CreateDatabaseRequest : ISessionRequest
+    public class CreateDatabaseRequest : DatabaseRequest
     {
-        [ArgRequired]
-        [ArgPosition(1)]
-        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public string Server
-        {
-            get;
-            set;
-        }
-
-        [ArgRequired]
-        [ArgPosition(2)]
-        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public string Database
-        {
-            get;
-            set;
-        }
     }
 }
