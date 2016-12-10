@@ -1,7 +1,10 @@
 ﻿namespace Yuki
 {
+    using System;
+    using Optional;
+
     public interface IHasher
     {
-        string Hash(string value);
+        Option<string, Exception> Hash(string value);
     }
 }

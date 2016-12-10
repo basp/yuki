@@ -1,14 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.25928.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki", "Yuki\Yuki.csproj", "{440ECDD4-9F0D-4ED9-82D0-FDC790C1D468}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D2D11DFB-B814-4CC7-B84E-552351ED9418}"
-	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki", "Yuki\Yuki.csproj", "{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{440ECDD4-9F0D-4ED9-82D0-FDC790C1D468}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{440ECDD4-9F0D-4ED9-82D0-FDC790C1D468}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{440ECDD4-9F0D-4ED9-82D0-FDC790C1D468}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{440ECDD4-9F0D-4ED9-82D0-FDC790C1D468}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

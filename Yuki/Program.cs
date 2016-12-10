@@ -1,12 +1,12 @@
 ﻿namespace Yuki
 {
     using System;
-    using System.ComponentModel;
-    using Actions;
-    using Newtonsoft.Json;
+    using System.Data.SqlClient;
+    using Commands;
     using NLog;
     using NLog.Config;
     using NLog.Targets;
+    using Optional;
     using PowerArgs;
 
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
@@ -16,128 +16,68 @@
 
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
-        [HelpHook]
-        [ArgDescription("Display help")]
-        public bool Help { get; set; }
-
         [ArgActionMethod]
-        [ArgDescription("Validate a Yuki project folder")]
-        public void Info(InfoArgs args)
+        public void CreateDatabase(CreateDatabaseRequest request)
         {
-            var ctx = Context.GetCurrent();
-            var action = new InfoAction(ctx);
-            var result = action.Execute(args);
-            var json = JsonConvert.SerializeObject(
-                result.Value,
-                Formatting.Indented);
+            var res = ExecuteDatabaseRequest(
+                session => new CreateDatabase(session),
+                request);
 
-            Console.WriteLine(json);
+            res.MatchSome(x => this.log.Info(x));
+            res.MatchNone(x => this.log.Error(x));
         }
 
         [ArgActionMethod]
-        [ArgDescription("Create a new Yuki project folder")]
-        [ArgExample(
-            @"yuki init",
-            "Initialize a Yuki project in the current working directory")]
-        [ArgExample(
-            @"yuki init -f .\frotz",
-            "Initialize a project in the frotz folder")]
-        [ArgExample(
-            @"yuki init -force -overwrite",
-            "Force init in a folder that is not empty, overwriting any existing files")]
-        [DisplayName("init")]
-        public void Init(InitArgs args)
+        public void DropDatabase(DropDatabaseRequest request)
         {
-            var action = new InitAction();
-            action.Execute(args);
+            var res = ExecuteDatabaseRequest(
+                session => new DropDatabase(session),
+                request);
+
+            res.MatchSome(x => this.log.Info(x));
+            res.MatchNone(x => this.log.Error(x));
         }
 
         [ArgActionMethod]
-        [ArgDescription("Scaffold a Yuki project")]
-        [ArgExample(
-            @"yuki scaffold",
-            "Scaffold a Yuki project")]
-        [ArgExample(
-            @"yuki scaffold -cfg alternate-config.json",
-            "Specify an alternate configuration file")]
-        [ArgExample(
-            @"yuki scaffold -force -overwrite",
-            "Force scaffold in a folder that is not empty, overwriting any existing files")]
-        [DisplayName("scaffold")]
-        public void Scaffold(ScaffoldArgs args)
+        public void RestoreDatabase(RestoreDatabaseRequest request)
         {
-            var ctx = Context.GetCurrent();
-            var action = new ScaffoldAction(ctx);
-            action.Execute(args);
+            var res = ExecuteDatabaseRequest(
+                session => new RestoreDatabase(session),
+                request);
+
+            res.MatchSome(x => this.log.Info(x));
+            res.MatchNone(x => this.log.Error(x));
         }
 
         [ArgActionMethod]
-        [ArgDescription("Create a new database")]
-        [DisplayName("create-database")]
-        public void CreateDatabase(CreateDatabaseArgs args)
+        public void CreateRepository(CreateRepositoryRequest request)
         {
-            var ctx = Context.GetCurrent();
-            using (var session = args.Server.Connect())
+            var res = ExecuteDatabaseRequest(
+                session => new CreateRepository(session),
+                request);
+
+            res.MatchSome(x => this.log.Info(x));
+            res.MatchNone(x => this.log.Error(x));
+        }
+
+        private static Option<TResponse, TException> ExecuteDatabaseRequest<TRequest, TResponse, TException>(
+            Func<ISession, ICommand<TRequest, TResponse, TException>> commandFactory,
+            TRequest request)
+            where TRequest : ISessionRequest
+        {
+            var sessionFactory = CreateSessionFactory(request.Server);
+            using (var session = sessionFactory.Create())
             {
-                var action = new CreateDatabaseAction(session);
-                var result = action.Execute(args);
-                if (result.IsError)
-                {
-                    throw result.Exception;
-                }
+                session.Open();
+
+                var cmd = commandFactory(session);
+                return cmd.Execute(request);
             }
-        }
-
-        [ArgActionMethod]
-        [ArgDescription("Setup databases")]
-        [DisplayName("setup")]
-        public void Setup(SetupArgs args)
-        {
-            var ctx = Context.GetCurrent();
-            var cs = $"Server=ROSPC0297\\SQLEXPRESS;Integrated Security=SSPI";
-            var migrator = new Migrator(args.Folder);
-            using (var session = SqlSession.Create(cs))
-            {
-                session.Connect();
-                var action = new SetupAction(ctx, session, migrator);
-                var result = action.Execute(args);
-                if (result.IsError)
-                {
-                    throw result.Exception;
-                }
-            }
-        }
-
-        [ArgActionMethod]
-        [ArgDescription("Migrate a SQL Server instance")]
-        [ArgExample(
-            @"yuki migrate -s SQL\INSTANCE -r $/proj",
-            "Basic usage")]
-        [ArgExample(
-            @"yuki migrate -s SQL\INSTANCE -r $/project -ts foo=bar, quux=frotz",
-            "Suplly a list of tokens to be used during token replacement")]
-        [DisplayName("migrate")]
-        public void Migrate(MigrateArgs args)
-        {
-            var ctx = Context.GetCurrent();
-
-            var msgs = new[]
-            {
-                $"Using config file at {ctx.ProjectFile}",
-                $"Connecting with database server instance {args.Server}",
-                $"Looking in {ctx.ProjectDirectory} for scripts to run"
-            };
-
-            Array.ForEach(msgs, this.log.Info);
-
-            var action = new MigrateAction(ctx);
-            action.Execute(args);
         }
 
         private static void InitializeLogManager()
         {
             var loggingConfig = new LoggingConfiguration();
-
             var target = new ColoredConsoleTarget()
             {
                 Name = "console",
@@ -152,19 +92,21 @@
             LogManager.Configuration = loggingConfig;
         }
 
+        private static SqlConnectionStringBuilder CreateConnectionStringBuilder(string server) =>
+             new SqlConnectionStringBuilder()
+             {
+                 ["Server"] = server,
+                 ["Integrated Security"] = "SSPI"
+             };
+
+        private static ISessionFactory CreateSessionFactory(string server) =>
+            new SqlSessionFactory(CreateConnectionStringBuilder(server));
+
         private static void Main(string[] args)
         {
             InitializeLogManager();
 
-            try
-            {
-                // TODO: I wanna `new`-up `Program` myself.
-                Args.InvokeAction<Program>(args);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            Args.InvokeAction<Program>(args);
         }
     }
 }

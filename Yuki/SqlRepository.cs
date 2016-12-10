@@ -3,157 +3,97 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Security.Principal;
+    using System.Diagnostics.Contracts;
+    using Dapper;
     using NLog;
+    using Optional;
+    using SmartFormat;
 
-    public class SqlRepository : IRepository
+    public class SqlRepository : IRepository<int, SqlRepositoryException>
     {
-        private readonly ILogger log = LogManager.GetCurrentClassLogger();
-     
-        private readonly ISession session;
-        private readonly string systemDatabase;
-        private readonly string systemSchema;
+        private static string CreateRepositoryTemplate =
+            $"{nameof(Yuki)}.Resources.CreateRepository.sql";
 
-        public SqlRepository(
-            ISession session,
-            string systemDatabase = Default.SystemDatabase,
-            string systemSchema = Default.SystemSchema)
+        private readonly ILogger log = LogManager.GetCurrentClassLogger();
+        private readonly ISession session;
+
+        public SqlRepository(ISession session)
         {
+            Contract.Requires(session != null);
+
             this.session = session;
-            this.systemDatabase = systemDatabase;
-            this.systemSchema = systemSchema;
         }
 
-        public void Initialize(string systemDatabase, string systemSchema)
+        public Option<bool, SqlRepositoryException> Initialize(
+            string database,
+            string schema)
         {
-            this.log.Info($"Creating repository database [{this.systemDatabase}] if it doesn't exist");
-
-            var resourceName = "CreateSystemDatabase.sql";
-            var template = Utils.ReadEmbeddedString<Program>(resourceName);
-            var sql = string.Format(
-                template,
-                systemDatabase,
-                systemSchema);
-
             try
             {
-                var parts = StatementSplitter.Split(sql);
-                foreach (var p in parts)
+                var asm = typeof(SqlRepository).Assembly;
+                var tmpl = asm.ReadEmbeddedString(CreateRepositoryTemplate);
+                var args = new
+                {
+                    Database = database,
+                    Schema = schema
+                };
+
+                var cmdText = Smart.Format(tmpl, args);
+                var stmts = StatementSplitter.Split(cmdText);
+                foreach (var stmt in stmts)
                 {
                     this.session.ExecuteNonQuery(
-                        p, 
-                        new Dictionary<string, object>(), 
+                        stmt,
+                        new Dictionary<string, object>(),
                         CommandType.Text);
                 }
+
+                return Option.Some<bool, SqlRepositoryException>(true);
             }
             catch (Exception ex)
             {
-                this.log.Error(ex, ex.Message);
-                throw;
+                var msg = $"Could not initialize repository in '[{database}].[{schema}]'.";
+                var error = new SqlRepositoryException(msg, ex);
+                return Option.None<bool, SqlRepositoryException>(error);
             }
         }
 
-        public int InsertVersion(string repositoryPath, string repositoryVersion)
+        public Option<int, SqlRepositoryException> InsertVersion(
+            VersionRecord record)
         {
-            var sp = this.FullyQualifiedObjectName("InsertVersion");
-            var args = new Dictionary<string, object>
-            {
-                { "VersionName", repositoryVersion },
-                { "RepositoryPath", repositoryPath },
-                { "EnteredBy", GetIdentity() }
-            };
 
-            return (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
+
+            throw new NotImplementedException();
         }
 
-        public int InsertScriptRun(
-            string scriptName, 
-            string sql, 
-            string hash, 
-            bool isOneTimeScript, 
-            int versionId)
+        public Option<int, SqlRepositoryException> InsertScriptRun(
+            ScriptRunRecord<int> record)
         {
-            var sp = this.FullyQualifiedObjectName("InsertScriptRun");
-            var args = new Dictionary<string, object>
-            {
-                { "VersionId", versionId },
-                { "ScriptName", scriptName },
-                { "TextOfScript", sql },
-                { "TextHash", hash },
-                { "OneTimeScript", isOneTimeScript },
-                { "EnteredBy", GetIdentity() }
-            };
-
-            return (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
+            throw new NotImplementedException();
         }
 
-        public int InsertScriptRunError(
-            string scriptName, 
-            string sql, 
-            string sqlErrorPart, 
-            string errorMessage, 
-            string repositoryVersion, 
+        public Option<int, SqlRepositoryException> InsertScriptRunError(
+            ScriptRunErrorRecord record)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Option<string, SqlRepositoryException> GetHash(
+            string scriptName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Option<string, SqlRepositoryException> GetVersion(
             string repositoryPath)
         {
-            var sp = this.FullyQualifiedObjectName("InsertScriptRunError");
-            var args = new Dictionary<string, object>
-            {
-                { "RepositoryPath", repositoryPath },
-                { "ScriptName", scriptName },
-                { "VersionName", repositoryVersion },
-                { "TextOfScript", sql },
-                { "ErroneousPart", sqlErrorPart },
-                { "ErrorMessage", errorMessage },
-                { "EnteredBy", GetIdentity() }
-            };
-
-            return (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
+            throw new NotImplementedException();
         }
 
-        public bool HasScriptRunAlready(string scriptName)
+        public Option<bool, SqlRepositoryException> HasScriptRunAlready(
+            string scriptName)
         {
-            var sp = this.FullyQualifiedObjectName("HasScriptRunAlready");
-            var args = new Dictionary<string, object>
-            {
-                { "ScriptName", scriptName }
-            };
-
-            var count = (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
-            return count > 0;
-        }
-
-        public string GetVersion(string repositoryPath)
-        {
-            var sp = this.FullyQualifiedObjectName("GetVersion");
-            var args = new Dictionary<string, object>
-            {
-                { "RepositoryPath", repositoryPath }
-            };
-
-            var result = (string)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
-            return string.IsNullOrEmpty(result) ? "0" : result;
-        }
-
-        public string GetHash(string scriptName)
-        {
-            var sp = this.FullyQualifiedObjectName("GetCurrentScriptHash");
-            var args = new Dictionary<string, object>
-            {
-                { "ScriptName", scriptName }
-            };
-
-            return (string)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
-        }
-
-        private static string GetIdentity()
-        {
-            var current = WindowsIdentity.GetCurrent();
-            return current != null ? current.Name : string.Empty;
-        }
-
-        private string FullyQualifiedObjectName(string name)
-        {
-            return $"[{this.systemDatabase}].[{this.systemSchema}].{name}";
+            throw new NotImplementedException();
         }
     }
 }

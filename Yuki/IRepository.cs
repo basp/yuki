@@ -1,30 +1,26 @@
 ﻿namespace Yuki
 {
-    public interface IRepository
+    using System;
+    using Optional;
+
+    public interface IRepository<TIdentity, TException>
     {
-        int InsertVersion(
-            string repositoryPath,
-            string repositoryVersion);
+        Option<TIdentity, TException> InsertVersion(
+            VersionRecord record);
 
-        int InsertScriptRun(
-            string scriptName,
-            string sql,
-            string hash,
-            bool isOneTimeScript,
-            int versionId);
+        Option<TIdentity, TException> InsertScriptRun(
+            ScriptRunRecord<TIdentity> record);
 
-        int InsertScriptRunError(
-            string scriptName,
-            string sql,
-            string sqlErrorPart,
-            string errorMessage,
-            string repositoryVersion,
+        Option<TIdentity, TException> InsertScriptRunError(
+            ScriptRunErrorRecord record);
+
+        Option<bool, TException> HasScriptRunAlready(
+            string scriptName);
+
+        Option<string, TException> GetVersion(
             string repositoryPath);
 
-        bool HasScriptRunAlready(string scriptName);
-
-        string GetVersion(string repositoryPath);
-
-        string GetHash(string scriptName);
+        Option<string, TException> GetHash(
+            string scriptName);
     }
 }

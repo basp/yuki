@@ -1,37 +1,49 @@
 ﻿namespace Yuki
 {
+    using System;
     using System.Collections.Generic;
     using System.Data;
-    using System.Data.SqlClient;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Diagnostics.Contracts;
 
     public class SqlSession : ISession
     {
-        private readonly IDbConnection connection;
-
         private IDbTransaction transaction;
+        private bool disposed = false;
 
-        private SqlSession(IDbConnection connection)
+        public SqlSession(IDbConnection connection)
         {
-            this.connection = connection;
+            Contract.Requires(connection != null);
+            Contract.Requires(connection.State == ConnectionState.Closed);
+
+            this.Connection = connection;
         }
 
-        public int CommandTimeout { get; set; }
-
-        public static ISession Create(string connectionString)
+        public IDbConnection Connection
         {
-            var conn = new SqlConnection(connectionString);
-            return new SqlSession(conn);
+            get;
+            private set;
         }
 
-        public ISession Connect()
+        public int CommandTimeout
         {
-            this.connection.Open();
-            return this;
+            get;
+            set;
+        }
+
+        public void Open()
+        {
+            this.Connection.Open();
         }
 
         public void BeginTransaction()
         {
-            this.transaction = this.connection.BeginTransaction();
+            this.transaction = this.Connection.BeginTransaction();
+        }
+
+        public void CommitTransaction()
+        {
+            this.transaction.Commit();
         }
 
         public void RollbackTransaction()
@@ -45,65 +57,47 @@
             this.transaction = null;
         }
 
-        public void CommitTransaction()
-        {
-            if (this.transaction == null)
-            {
-                return;
-            }
-
-            this.transaction.Commit();
-            this.transaction = null;
-        }
-
-        public object ExecuteScalar(
-            string commandText,
-            IDictionary<string, object> args,
-            CommandType commandType)
-        {
-            using (var cmd = this.CreateCommand(commandText, args, commandType))
-            {
-                return cmd.ExecuteScalar();
-            }
-        }
-
         public int ExecuteNonQuery(
-            string commandText,
+            string cmdText,
             IDictionary<string, object> args,
             CommandType commandType)
         {
-            using (var cmd = this.CreateCommand(commandText, args, commandType))
+            using (var cmd = this.CreateCommand(cmdText, args, commandType))
             {
                 return cmd.ExecuteNonQuery();
             }
         }
 
-        public void Dispose()
-        {
-            this.connection.Close();
-            this.connection.Dispose();
-
-            if (this.transaction != null)
-            {
-                this.transaction.Dispose();
-            }
-        }
-
-        public override string ToString()
-        {
-            return this.connection.ConnectionString;
-        }
-
-        private IDbCommand CreateCommand(
-            string commandText,
+        public object ExecuteScalar(
+            string cmdText,
             IDictionary<string, object> args,
             CommandType commandType)
         {
-            var cmd = this.connection.CreateCommand();
-            cmd.CommandText = commandText;
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        [SuppressMessage(
+            "Microsoft.Security",
+            "CA2100:Review SQL queries for security vulnerabilities",
+            Justification = "This is handled by commands individually")]
+        private IDbCommand CreateCommand(
+            string cmdText,
+            IDictionary<string, object> args,
+            CommandType commandType)
+        {
+            var cmd = this.Connection.CreateCommand();
+
+            cmd.CommandText = cmdText;
             cmd.CommandType = commandType;
             cmd.CommandTimeout = this.CommandTimeout;
             cmd.Transaction = this.transaction;
+
             foreach (var a in args)
             {
                 var p = cmd.CreateParameter();
@@ -113,6 +107,27 @@
             }
 
             return cmd;
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                this.Connection.Close();
+                this.Connection.Dispose();
+
+                if (this.transaction != null)
+                {
+                    this.transaction.Dispose();
+                }
+            }
+
+            this.disposed = true;
         }
     }
 }

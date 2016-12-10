@@ -8,13 +8,15 @@
     {
         int CommandTimeout { get; set; }
 
-        ISession Connect();
+        void Open();
 
         void BeginTransaction();
 
         void CommitTransaction();
 
         void RollbackTransaction();
+
+        IDbConnection Connection { get; }
 
         object ExecuteScalar(
             string cmdText,

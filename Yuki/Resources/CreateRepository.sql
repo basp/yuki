@@ -1,22 +1,22 @@
 ﻿USE master
-IF NOT EXISTS(SELECT * FROM sys.databases WHERE [name] = '{0}')
+IF NOT EXISTS(SELECT * FROM sys.databases WHERE [name] = '{Database}')
 BEGIN
-    CREATE DATABASE [{0}]
+    CREATE DATABASE [{Database}]
 END
 GO
 
-USE [{0}]
-IF NOT EXISTS(SELECT * FROM sys.schemas WHERE [name] = '{1}')
+USE [{Database}]
+IF NOT EXISTS(SELECT * FROM sys.schemas WHERE [name] = '{Schema}')
 BEGIN
-    EXEC('CREATE SCHEMA [{1}]')
+    EXEC('CREATE SCHEMA [{Schema}]')
 END
 GO
 
 DECLARE @schemaId INT
-SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{1}')
+SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{Schema}')
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE [name] = 'Version' AND [schema_id] = @schemaId)
 BEGIN
-    CREATE TABLE [{1}].[Version] (
+    CREATE TABLE [{Schema}].[Version] (
         VersionId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
         VersionName NVARCHAR(MAX) NOT NULL,
         RepositoryPath NVARCHAR(MAX) NOT NULL
@@ -25,10 +25,10 @@ END
 GO
 
 DECLARE @schemaId INT
-SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{1}')
+SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{Schema}')
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE [name] = 'ScriptRun' AND [schema_id] = @schemaId)
 BEGIN
-    CREATE TABLE [{1}].[ScriptRun] (
+    CREATE TABLE [{Schema}].[ScriptRun] (
         ScriptRunId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
         VersionId INT NOT NULL,
         ScriptName NVARCHAR(MAX) NOT NULL,
@@ -40,10 +40,10 @@ END
 GO
 
 DECLARE @schemaId INT
-SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{1}')
+SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{Schema}')
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE [name] = 'ScriptRunError' AND [schema_id] = @schemaId)
 BEGIN
-    CREATE TABLE [{1}].[ScriptRunError] (
+    CREATE TABLE [{Schema}].[ScriptRunError] (
         ScriptRunErrorId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
         ScriptName NVARCHAR(MAX) NOT NULL,
         RepositoryPath NVARCHAR(MAX) NOT NULL,
@@ -57,49 +57,49 @@ GO
 
 IF NOT EXISTS(SELECT * FROM sys.columns WHERE [name] = 'DateCreated' AND object_id = OBJECT_ID('Version'))
 BEGIN
-    ALTER TABLE [{1}].Version ADD DateCreated DATETIME NULL
+    ALTER TABLE [{Schema}].Version ADD DateCreated DATETIME NULL
 END
 GO
 
 IF NOT EXISTS(SELECT * FROM sys.columns WHERE [name] = 'EnteredBy' AND object_id = OBJECT_ID('Version'))
 BEGIN
-    ALTER TABLE [{1}].Version ADD EnteredBy NVARCHAR(MAX) NULL
+    ALTER TABLE [{Schema}].Version ADD EnteredBy NVARCHAR(MAX) NULL
 END
 
 IF NOT EXISTS(SELECT * FROM sys.columns WHERE [name] = 'DateCreated' AND object_id = OBJECT_ID('ScriptRun'))
 BEGIN
-    ALTER TABLE [{1}].ScriptRun ADD DateCreated DATETIME NULL
+    ALTER TABLE [{Schema}].ScriptRun ADD DateCreated DATETIME NULL
 END
 GO
 
 IF NOT EXISTS(SELECT * FROM sys.columns WHERE [name] = 'EnteredBy' AND object_id = OBJECT_ID('Scriptrun'))
 BEGIN
-    ALTER TABLE [{1}].ScriptRun ADD EnteredBy NVARCHAR(MAX) NULL
+    ALTER TABLE [{Schema}].ScriptRun ADD EnteredBy NVARCHAR(MAX) NULL
 END
 
 IF NOT EXISTS(SELECT * FROM sys.columns WHERE [name] = 'DateCreated' AND object_id = OBJECT_ID('ScriptRunError'))
 BEGIN
-    ALTER TABLE [{1}].ScriptRunError ADD DateCreated DATETIME NULL
+    ALTER TABLE [{Schema}].ScriptRunError ADD DateCreated DATETIME NULL
 END
 GO
 
 IF NOT EXISTS(SELECT * FROM sys.columns WHERE [name] = 'EnteredBy' AND object_id = OBJECT_ID('ScriptRunError'))
 BEGIN
-    ALTER TABLE [{1}].ScriptRunError ADD EnteredBy NVARCHAR(MAX) NULL
+    ALTER TABLE [{Schema}].ScriptRunError ADD EnteredBy NVARCHAR(MAX) NULL
 END
 GO
 
 DECLARE @schemaId INT
-SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{1}')
+SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{Schema}')
 IF NOT EXISTS(SELECT * FROM sys.procedures WHERE [name] = 'InsertScriptRun' AND [schema_id] = @schemaId)
 BEGIN
     DECLARE @sql VARCHAR(1000)
-    SET @sql = 'CREATE PROCEDURE [{1}].InsertScriptRun AS SELECT * FROM sysobjects'
+    SET @sql = 'CREATE PROCEDURE [{Schema}].InsertScriptRun AS SELECT * FROM sysobjects'
     EXEC(@sql)
 END
 GO
 
-ALTER PROCEDURE [{1}].InsertScriptRun (
+ALTER PROCEDURE [{Schema}].InsertScriptRun (
     @VersionId INT,
     @ScriptName NVARCHAR(MAX),
     @TextOfScript NTEXT,
@@ -108,7 +108,7 @@ ALTER PROCEDURE [{1}].InsertScriptRun (
     @EnteredBy NVARCHAR(MAX)
 )
 AS
-INSERT INTO [{1}].ScriptRun (
+INSERT INTO [{Schema}].ScriptRun (
     VersionId, 
     ScriptName, 
     TextOfScript, 
@@ -130,16 +130,16 @@ SELECT CAST(SCOPE_IDENTITY() AS INT)
 GO
 
 DECLARE @schemaId INT
-SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{1}')
+SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{Schema}')
 IF NOT EXISTS(SELECT * FROM sys.procedures WHERE [name] = 'InsertScriptRunError' AND [schema_id] = @schemaId)
 BEGIN
     DECLARE @sql VARCHAR(1000)
-    SET @sql = 'CREATE PROCEDURE [{1}].InsertScriptRunError AS SELECT * FROM sysobjects'
+    SET @sql = 'CREATE PROCEDURE [{Schema}].InsertScriptRunError AS SELECT * FROM sysobjects'
     EXEC(@sql)
 END
 GO
 
-ALTER PROCEDURE [{1}].InsertScriptRunError (
+ALTER PROCEDURE [{Schema}].InsertScriptRunError (
     @RepositoryPath NVARCHAR(MAX),
     @ScriptName NVARCHAR(MAX),
     @VersionName NVARCHAR(MAX),
@@ -149,7 +149,7 @@ ALTER PROCEDURE [{1}].InsertScriptRunError (
     @EnteredBy NVARCHAR(MAX)
 )
 AS
-INSERT INTO [{1}].ScriptRunError (
+INSERT INTO [{Schema}].ScriptRunError (
     RepositoryPath,
     ScriptName,
     VersionName,
@@ -173,81 +173,81 @@ SELECT CAST(SCOPE_IDENTITY() AS INT)
 GO
 
 DECLARE @schemaId INT
-SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{1}')
+SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{Schema}')
 IF NOT EXISTS(SELECT * FROM sys.procedures WHERE [name] = 'GetVersion' AND [schema_id] = @schemaId)
 BEGIN
     DECLARE @sql VARCHAR(1000)
-    SET @sql = 'CREATE PROCEDURE [{1}].GetVersion AS SELECT * FROM sysobjects'
+    SET @sql = 'CREATE PROCEDURE [{Schema}].GetVersion AS SELECT * FROM sysobjects'
     EXEC(@sql)
 END
 GO
 
-ALTER PROCEDURE [{1}].GetVersion (
+ALTER PROCEDURE [{Schema}].GetVersion (
     @RepositoryPath NVARCHAR(MAX)
 )
 AS
 SELECT TOP 1 VersionName
-FROM [{1}].Version
+FROM [{Schema}].Version
 WHERE RepositoryPath = @RepositoryPath
 ORDER BY VersionId DESC
 GO
 
 DECLARE @schemaId INT
-SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{1}')
+SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{Schema}')
 IF NOT EXISTS(SELECT * FROM sys.procedures WHERE [name] = 'InsertVersion' AND [schema_id] = @schemaId)
 BEGIN
     DECLARE @sql VARCHAR(1000)
-    SET @sql = 'CREATE PROCEDURE [{1}].InsertVersion AS SELECT * FROM sysobjects'
+    SET @sql = 'CREATE PROCEDURE [{Schema}].InsertVersion AS SELECT * FROM sysobjects'
     EXEC(@sql)
 END
 GO
 
-ALTER PROCEDURE [{1}].InsertVersion (
+ALTER PROCEDURE [{Schema}].InsertVersion (
     @VersionName NVARCHAR(MAX),
     @RepositoryPath NVARCHAR(MAX),
     @EnteredBy NVARCHAR(MAX)
 )
 AS
-INSERT INTO [{1}].Version (VersionName, RepositoryPath, DateCreated, EnteredBy)
+INSERT INTO [{Schema}].Version (VersionName, RepositoryPath, DateCreated, EnteredBy)
 VALUES (@VersionName, @RepositoryPath, GETDATE(), @EnteredBy)
 SELECT CAST(SCOPE_IDENTITY() AS INT)
 GO
 
 DECLARE @schemaId INT
-SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{1}')
+SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = 'RepositorySchema')
 IF NOT EXISTS(SELECT * FROM sys.procedures WHERE [name] = 'HasScriptRunAlready' AND [schema_id] = @schemaId)
 BEGIN
     DECLARE @sql VARCHAR(1000)
-    SET @sql = 'CREATE PROCEDURE [{1}].HasScriptRunAlready AS SELECT * FROM sysobjects'
+    SET @sql = 'CREATE PROCEDURE [{Schema}].HasScriptRunAlready AS SELECT * FROM sysobjects'
     EXEC(@sql)
 END
 GO
 
-ALTER PROCEDURE [{1}].HasScriptRunAlready (
+ALTER PROCEDURE [{Schema}].HasScriptRunAlready (
     @ScriptName NVARCHAR(MAX)
 )
 AS
 SELECT COUNT(ScriptRunId)
-FROM [{1}].ScriptRun
+FROM [{Schema}].ScriptRun
 WHERE ScriptName = @ScriptName
 GO
 
 DECLARE @schemaId INT
-SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{1}')
+SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{Schema}')
 IF NOT EXISTS(SELECT * FROM sys.procedures WHERE [name] = 'GetCurrentScriptHash' AND [schema_id] = @schemaId)
 BEGIN
     DECLARE @sql VARCHAR(1000)
-    SET @sql = 'CREATE PROCEDURE [{1}].GetCurrentScriptHash AS SELECT * FROM sysobjects'
+    SET @sql = 'CREATE PROCEDURE [{Schema}].GetCurrentScriptHash AS SELECT * FROM sysobjects'
     EXEC(@sql)
 END
 GO
 
-ALTER PROCEDURE [{1}].GetCurrentScriptHash (
+ALTER PROCEDURE [{Schema}].GetCurrentScriptHash (
     @ScriptName NVARCHAR(MAX)
 )
 AS
 SELECT TOP 1 TextHash
-FROM [{1}].ScriptRun
+FROM [{Schema}].ScriptRun
 WHERE ScriptName = @ScriptName
 ORDER BY ScriptRunId DESC
 GO

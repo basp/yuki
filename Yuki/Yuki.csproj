@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{440ECDD4-9F0D-4ED9-82D0-FDC790C1D468}</ProjectGuid>
+    <ProjectGuid>{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Yuki</RootNamespace>
-    <AssemblyName>yuki</AssemblyName>
+    <AssemblyName>Yuki</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -22,6 +22,51 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsAssertsToContractsCheckBox>True</CodeContractsAssertsToContractsCheckBox>
+    <CodeContractsRedundantTests>True</CodeContractsRedundantTests>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsMissingPublicEnsuresAsWarnings>False</CodeContractsMissingPublicEnsuresAsWarnings>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferEnsuresAutoProperties>True</CodeContractsInferEnsuresAutoProperties>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestAssumptionsForCallees>False</CodeContractsSuggestAssumptionsForCallees>
+    <CodeContractsSuggestRequires>False</CodeContractsSuggestRequires>
+    <CodeContractsNecessaryEnsures>True</CodeContractsNecessaryEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsSQLServerOption />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsSkipAnalysisIfCannotConnectToCache>False</CodeContractsSkipAnalysisIfCannotConnectToCache>
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
+    <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,16 +78,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.3.11\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Optional, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Optional.3.2.0\lib\net452\Optional.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PowerArgs, Version=2.7.2.0, Culture=neutral, PublicKeyToken=26a276264bbd55b8, processorArchitecture=MSIL">
       <HintPath>..\packages\PowerArgs.2.7.2.0\lib\net45\PowerArgs.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SmartFormat, Version=2.0.0.0, Culture=neutral, PublicKeyToken=568866805651201f, processorArchitecture=MSIL">
+      <HintPath>..\packages\SmartFormat.NET.2.0.0.0\lib\net45\SmartFormat.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -55,65 +108,55 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions\CreateDatabaseAction.cs" />
-    <Compile Include="Actions\CreateDatabaseArgs.cs" />
-    <Compile Include="Actions\InfoAction.cs" />
-    <Compile Include="Actions\InfoArgs.cs" />
-    <Compile Include="Actions\InfoResponse.cs" />
-    <Compile Include="Actions\SetupAction.cs" />
-    <Compile Include="Actions\SetupArgs.cs" />
-    <Compile Include="Actions\RestoreDatabaseAction.cs" />
-    <Compile Include="Actions\RestoreDatabaseArgs.cs" />
-    <Compile Include="Config.cs" />
-    <Compile Include="Maybe\Generic\IMaybeError.cs" />
-    <Compile Include="Maybe\Generic\MaybeError.cs" />
-    <Compile Include="SessionArgs.cs" />
-    <Compile Include="Context.cs" />
-    <Compile Include="Database.cs" />
-    <Compile Include="Default.cs" />
-    <Compile Include="Folder.cs" />
-    <Compile Include="IAction.cs" />
-    <Compile Include="IDatabase.cs" />
+    <Compile Include="Commands\CreateDatabase.cs" />
+    <Compile Include="Commands\CreateDatabaseRequest.cs" />
+    <Compile Include="Commands\CreateDatabaseResponse.cs" />
+    <Compile Include="Commands\CreateRepository.cs" />
+    <Compile Include="Commands\CreateRepositoryRequest.cs" />
+    <Compile Include="Commands\CreateRepositoryResponse.cs" />
+    <Compile Include="Commands\DropDatabase.cs" />
+    <Compile Include="Commands\DropDatabaseRequest.cs" />
+    <Compile Include="Commands\DropDatabaseResponse.cs" />
+    <Compile Include="Commands\HashFile.cs" />
+    <Compile Include="Commands\HashRequest.cs" />
+    <Compile Include="Commands\HashResponse.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="Commands\RestoreDatabase.cs" />
+    <Compile Include="Commands\RestoreDatabaseRequest.cs" />
+    <Compile Include="Commands\RestoreDatabaseResponse.cs" />
     <Compile Include="IHasher.cs" />
-    <Compile Include="Actions\InitAction.cs" />
-    <Compile Include="Actions\InitArgs.cs" />
-    <Compile Include="Maybe\IMaybeError.cs" />
-    <Compile Include="IMigrator.cs" />
+    <Compile Include="ISessionRequest.cs" />
     <Compile Include="IRepository.cs" />
+    <Compile Include="ISessionFactory.cs" />
     <Compile Include="ISession.cs" />
-    <Compile Include="ITransaction.cs" />
-    <Compile Include="Actions\MigrateAction.cs" />
-    <Compile Include="Actions\MigrateArgs.cs" />
-    <Compile Include="Maybe\MaybeError.cs" />
-    <Compile Include="Migrator.cs" />
+    <Compile Include="MD5Hasher.cs" />
+    <Compile Include="StatementSplitter.cs" />
+    <Compile Include="ScriptRunErrorRecord.cs" />
+    <Compile Include="ScriptRunRecord.cs" />
+    <Compile Include="SqlRepository.cs" />
+    <Compile Include="SqlRepositoryException.cs" />
+    <Compile Include="SqlSession.cs" />
+    <Compile Include="SqlSessionFactory.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Actions\ScaffoldAction.cs" />
-    <Compile Include="Actions\ScaffoldArgs.cs" />
-    <Compile Include="ScriptType.cs" />
-    <Compile Include="SqlRepository.cs" />
-    <Compile Include="SqlSession.cs" />
-    <Compile Include="StatementSplitter.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="VersionRecord.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\yuki.default.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\CreateDatabase.sql" />
-    <EmbeddedResource Include="Resources\CreateSystemDatabase.sql" />
-    <EmbeddedResource Include="Resources\SetRecoveryMode.sql" />
-    <EmbeddedResource Include="Resources\DropDatabase.sql" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Resources\RestoreDatabase.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DropDatabase.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\CreateRepository.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
