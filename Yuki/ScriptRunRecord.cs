@@ -1,15 +1,17 @@
 ﻿namespace Yuki
 {
-    public class ScriptRunRecord<TIdentity>
+    public interface IScriptRunRecord<TIdentity>
     {
-        public string ScriptName { get; set; }
+        string ScriptName { get; set; }
 
-        public string Sql { get; set; }
+        string Sql { get; set; }
 
-        public string Hash { get; set; }
+        string Hash { get; set; }
 
-        public bool IsOneTimeScript { get; set; }
+        bool IsOneTimeScript { get; set; }
 
-        public TIdentity VersionId { get; set; }
+        TIdentity VersionId { get; set; }
+
+        string EnteredBy { get; set; }
     }
 }

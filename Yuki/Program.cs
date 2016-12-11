@@ -76,17 +76,29 @@
         public void InsertVersion(InsertVersionRequest request)
         {
             var identityProvider = new WindowsIdentityProvider();
-            var sessionFactory = CreateSessionFactory(request.Server);
-            using (var session = sessionFactory.Create())
-            {
-                session.Open();
+            var res = ExecuteDatabaseRequest(
+                session => new InsertVersionCommand(session, identityProvider),
+                request);
 
-                var cmd = new InsertVersionCommand(session, identityProvider);
-                var res = cmd.Execute(request);
+            res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
+            res.MatchNone(x => this.log.Error(x));
+        }
 
-                res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
-                res.MatchNone(x => this.log.Error(x));
-            }
+        [ArgActionMethod]
+        public void GetVersion(GetVersionRequest request)
+        {
+            var res = ExecuteDatabaseRequest(
+                session => new GetVersionCommand(session),
+                request);
+
+            res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
+            res.MatchNone(x => this.log.Error(x));
+        }
+
+        [ArgActionMethod]
+        public void GetHash(GetHashRequest request)
+        {
+            throw new NotImplementedException();
         }
 
         [ArgActionMethod]
@@ -143,6 +155,33 @@
             var res = cmd.Execute(request);
 
             res.MatchSome(x => WriteLine(x.Hash));
+            res.MatchNone(x => this.log.Error(x));
+        }
+
+        [ArgActionMethod]
+        public void ReadFile(ReadFileRequest request)
+        {
+            var hasher = new MD5Hasher();
+            var cmd = new ReadFileCommand(hasher);
+            var res = cmd.Execute(request);
+
+            res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
+            res.MatchNone(x => this.log.Error(x));
+        }
+
+        [ArgActionMethod]
+        public void WalkFolders(WalkFoldersRequest request)
+        {
+            Func<string, Option<WalkFoldersResponse, Exception>> walker = dir =>
+            {
+                this.log.Info(dir);
+                return Option.Some<WalkFoldersResponse, Exception>(WalkFoldersResponse.Done);
+            };
+
+            var cmd = new WalkFoldersCommand(walker);
+            var res = cmd.Execute(request);
+
+            res.MatchSome(x => this.log.Info(x));
             res.MatchNone(x => this.log.Error(x));
         }
 

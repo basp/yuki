@@ -90,7 +90,7 @@
         }
 
         public Option<int, Ex> InsertScriptRun(
-            ScriptRunRecord<int> record)
+            IScriptRunRecord<int> record)
         {
             try
             {
@@ -110,7 +110,7 @@
         }
 
         public Option<int, Ex> InsertScriptRunError(
-            ScriptRunErrorRecord record)
+            IScriptRunErrorRecord record)
         {
             try
             {

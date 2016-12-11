@@ -1,9 +1,16 @@
 ﻿namespace Yuki.Commands
 {
+    using System;
     using Newtonsoft.Json;
 
-    public class InsertVersionResponse
+    public class InsertVersionResponse : IRepositoryResponse
     {
+        public string Server { get; set; }
+
+        public string Database { get; set; }
+
+        public string Schema { get; set; }
+
         public int VersionId { get; set; }
 
         public string VersionName { get; set; }

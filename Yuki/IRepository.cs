@@ -9,10 +9,10 @@
             IVersionRecord record);
 
         Option<TIdentity, TException> InsertScriptRun(
-            ScriptRunRecord<TIdentity> record);
+            IScriptRunRecord<TIdentity> record);
 
         Option<TIdentity, TException> InsertScriptRunError(
-            ScriptRunErrorRecord record);
+            IScriptRunErrorRecord record);
 
         Option<bool, TException> HasScriptRunAlready(
             string scriptName);

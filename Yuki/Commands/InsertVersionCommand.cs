@@ -23,34 +23,30 @@
             this.identity = identity;
         }
 
-        public Option<Res, Exception> Execute(Req request)
+        public Option<Res, Exception> Execute(Req req)
         {
-            try
-            {
-                request.EnteredBy = this.identity.GetCurrent()
-                    .ValueOr(Environment.MachineName);
+            req.EnteredBy = this.identity
+                .GetCurrent()
+                .ValueOr(Environment.MachineName);
 
-                var repository = new SqlRepository(this.session, request);
-                var result = repository.InsertVersion(request);
-                return result.Map(x => CreateResponse(x, request))
-                    .MapException(x => (Exception)x);
-            }
-            catch (Exception ex)
-            {
-                var msg = $"Could not insert version.";
-                var error = new Exception(msg, ex);
-                return None<Res, Exception>(error);
-            }
+            var repository = new SqlRepository(this.session, req);
+            var result = repository.InsertVersion(req);
+            return result
+                .Map(x => CreateResponse(x, req))
+                .MapException(x => (Exception)x);
         }
 
-        private static Res CreateResponse(int versionId, Req request)
+        private static Res CreateResponse(int versionId, Req req)
         {
             return new Res()
             {
                 VersionId = versionId,
-                VersionName = request.VersionName,
-                RepositoryPath = request.RepositoryPath,
-                EnteredBy = request.EnteredBy
+                VersionName = req.VersionName,
+                RepositoryPath = req.RepositoryPath,
+                EnteredBy = req.EnteredBy,
+                Server = req.Server,
+                Database = req.Database,
+                Schema = req.Schema
             };
         }
     }

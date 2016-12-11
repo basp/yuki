@@ -1,17 +1,19 @@
 ﻿namespace Yuki
 {
-    public class ScriptRunErrorRecord
+    public interface IScriptRunErrorRecord
     {
-        public string ScriptName { get; set; }
+        string ScriptName { get; set; }
 
-        public string Sql { get; set; }
+        string Sql { get; set; }
 
-        public string SqlErrorPart { get; set; }
+        string SqlErrorPart { get; set; }
 
-        public string ErrorMessage { get; set; }
+        string ErrorMessage { get; set; }
 
-        public string RepositoryVersion { get; set; }
+        string RepositoryVersion { get; set; }
 
-        public string RepositoryPath { get; set; }
+        string RepositoryPath { get; set; }
+
+        string EnteredBy { get; set; }
     }
 }

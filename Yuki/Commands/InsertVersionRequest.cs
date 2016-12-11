@@ -1,7 +1,7 @@
-﻿using PowerArgs;
-
-namespace Yuki.Commands
+﻿namespace Yuki.Commands
 {
+    using PowerArgs;
+
     public class InsertVersionRequest : RepositoryRequest, IVersionRecord
     {
         [ArgRequired]
