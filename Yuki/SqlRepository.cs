@@ -9,43 +9,41 @@
     using NLog;
     using Optional;
     using SmartFormat;
-   
-    public class SqlRepository : IRepository<int, SqlRepositoryException>
+    using static Optional.Option;
+    using Ex = SqlRepositoryException;
+
+    public class SqlRepository : IRepository<int, Ex>
     {
-        private static string CreateRepositoryTemplate =
+        private static string createRepositoryTemplate =
             $"{nameof(Yuki)}.Resources.CreateRepository.sql";
 
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
         private readonly ISession session;
-        private readonly IIdentityProvider identity;
         private readonly ISqlRepositoryConfig config;
 
         public SqlRepository(
             ISession session,
-            IIdentityProvider identity,
             ISqlRepositoryConfig config)
         {
             Contract.Requires(session != null);
             Contract.Requires(session.Connection.State == ConnectionState.Open);
-            Contract.Requires(identity != null);
             Contract.Requires(config != null);
 
             this.session = session;
-            this.identity = identity;
             this.config = config;
         }
 
-        public Option<bool, SqlRepositoryException> Initialize()
+        public Option<bool, Ex> Initialize()
         {
             try
             {
                 var asm = typeof(SqlRepository).Assembly;
-                var tmpl = asm.ReadEmbeddedString(CreateRepositoryTemplate);
+                var tmpl = asm.ReadEmbeddedString(createRepositoryTemplate);
                 var cmdText = Smart.Format(tmpl, this.config);
                 var stmts = StatementSplitter.Split(cmdText).ToList();
 
                 this.log.Debug($"Got {stmts.Count} statement(s) to execute after splitting");
-               
+
                 foreach (var stmt in stmts)
                 {
                     this.session.ExecuteNonQuery(
@@ -54,52 +52,149 @@
                         CommandType.Text);
                 }
 
-                return Option.Some<bool, SqlRepositoryException>(true);
+                return Some<bool, Ex>(true);
             }
             catch (Exception ex)
             {
                 var msg = $"Could not initialize repository in '[{this.config.Database}].[{this.config.Schema}]'.";
-                var error = new SqlRepositoryException(msg, ex);
-                return Option.None<bool, SqlRepositoryException>(error);
+                var error = new Ex(msg, ex);
+                return None<bool, Ex>(error);
             }
         }
 
-        public Option<int, SqlRepositoryException> InsertVersion(
-            VersionRecord record)
+        public Option<int, Ex> InsertVersion(
+            IVersionRecord record)
         {
+            try
+            {
+                var sp = this.FullyQualified("InsertVersion");
+                var args = new
+                {
+                    record.VersionName,
+                    record.RepositoryPath,
+                    record.EnteredBy
+                };
 
+                var result = this.session
+                    .Connection
+                    .ExecuteScalar<int>(sp, args, commandType: CommandType.StoredProcedure);
 
-            throw new NotImplementedException();
+                return Some<int, Ex>(result);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Could not insert version.";
+                var error = new Ex(msg, ex);
+                return None<int, Ex>(error);
+            }
         }
 
-        public Option<int, SqlRepositoryException> InsertScriptRun(
+        public Option<int, Ex> InsertScriptRun(
             ScriptRunRecord<int> record)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sp = this.FullyQualified("InsertScriptRun");
+                var result = this.session
+                    .Connection
+                    .ExecuteScalar<int>(sp, record, commandType: CommandType.StoredProcedure);
+
+                return Some<int, Ex>(result);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Could not insert script run.";
+                var error = new Ex(msg, ex);
+                return None<int, Ex>(error);
+            }
         }
 
-        public Option<int, SqlRepositoryException> InsertScriptRunError(
+        public Option<int, Ex> InsertScriptRunError(
             ScriptRunErrorRecord record)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sp = this.FullyQualified("InsertScriptRunError");
+                var result = this.session
+                    .Connection
+                    .ExecuteScalar<int>(sp, record, commandType: CommandType.StoredProcedure);
+
+                return Some<int, Ex>(result);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Could not insert script run error.";
+                var error = new Ex(msg, ex);
+                return None<int, Ex>(error);
+            }
         }
 
-        public Option<string, SqlRepositoryException> GetHash(
+        public Option<string, Ex> GetHash(
             string scriptName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sp = this.FullyQualified("GetHash");
+                var args = new { ScriptName = scriptName };
+                var result = this.session
+                    .Connection
+                    .ExecuteScalar<string>(sp, args, commandType: CommandType.StoredProcedure);
+
+                return Some<string, Ex>(result);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Could not get script hash.";
+                var error = new Ex(msg, ex);
+                return None<string, Ex>(error);
+            }
         }
 
-        public Option<string, SqlRepositoryException> GetVersion(
+        public Option<string, Ex> GetVersion(
             string repositoryPath)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sp = this.FullyQualified("GetVersion");
+                var args = new { RepositoryPath = repositoryPath };
+                var result = this.session
+                    .Connection
+                    .ExecuteScalar<string>(sp, args, commandType: CommandType.StoredProcedure);
+
+                return Some<string, Ex>(result)
+                    .Map(x => string.IsNullOrWhiteSpace(x) ? "0" : x);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Could not get version.";
+                var error = new Ex(msg, ex);
+                return None<string, Ex>(error);
+            }
         }
 
-        public Option<bool, SqlRepositoryException> HasScriptRunAlready(
+        public Option<bool, Ex> HasScriptRunAlready(
             string scriptName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sp = this.FullyQualified("HasScriptRunAlready");
+                var args = new { ScriptName = scriptName };
+                var result = this.session
+                    .Connection
+                    .ExecuteScalar<int>(sp, args, commandType: CommandType.StoredProcedure);
+
+                return Some<int, Ex>(result)
+                    .Map(x => x > 0);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Could not get script run status.";
+                var error = new Ex(msg, ex);
+                return None<bool, Ex>(error);
+            }
         }
+
+        private string FullyQualified(string name) =>
+            $"[{this.config.Database}].[{this.config.Schema}].{name}";
     }
 }

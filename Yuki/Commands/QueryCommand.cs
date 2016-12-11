@@ -2,13 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Diagnostics.Contracts;
     using Dapper;
     using Optional;
 
-    using Res = QueryResponse;
     using Req = QueryRequest;
+    using Res = QueryResponse;
 
     public class QueryCommand : ICommand<Req, Res, Exception>
     {
@@ -25,12 +24,9 @@
         {
             try
             {
-                var @default = new Dictionary<string, object>();
-                var @params = request.Args.ValueOr(@default);
-
                 var result = this.session
                     .Connection
-                    .Query(request.Sql, @params);
+                    .Query(request.Sql);
 
                 var res = new Res(
                     request.Server,

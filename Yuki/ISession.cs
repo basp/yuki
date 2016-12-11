@@ -8,6 +8,8 @@
     {
         int CommandTimeout { get; set; }
 
+        IDbConnection Connection { get; }
+
         void Open();
 
         void BeginTransaction();
@@ -15,8 +17,6 @@
         void CommitTransaction();
 
         void RollbackTransaction();
-
-        IDbConnection Connection { get; }
 
         object ExecuteScalar(
             string cmdText,

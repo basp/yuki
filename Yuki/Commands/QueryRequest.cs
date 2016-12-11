@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using PowerArgs;
     using Optional;
+    using PowerArgs;
 
     public class QueryRequest : ISessionRequest
     {
@@ -20,14 +20,6 @@
         [ArgPosition(2)]
         [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
         public string Sql
-        {
-            get;
-            set;
-        }
-
-        [ArgPosition(3)]
-        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public Option<IDictionary<string, object>, Exception> Args
         {
             get;
             set;

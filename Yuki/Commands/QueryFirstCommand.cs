@@ -1,7 +1,6 @@
 ﻿namespace Yuki.Commands
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using Dapper;
     using Optional;
@@ -24,8 +23,6 @@
         {
             try
             {
-                var @default = new Dictionary<string, object>();
-                var @params = request.Args.ValueOr(@default);
                 var result = this.session.Connection.QueryFirst(request.Sql);
                 var res = new Res(request.Server, Option.Some<dynamic>(result));
                 return Option.Some<Res, Exception>(res);

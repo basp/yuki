@@ -4,10 +4,17 @@
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using Optional;
+    using static Optional.Option;
+    using static Utils;
 
     public class ArgumentEvaluator : IArgumentEvaluator
     {
         private readonly Func<string, object> eval;
+
+        public ArgumentEvaluator()
+            : this(ArgumentEvaluator.DefaultEval)
+        {
+        }
 
         public ArgumentEvaluator(Func<string, object> eval)
         {
@@ -24,35 +31,20 @@
             {
                 var obj = this.eval(value);
                 var kvp = Utils.CreateKeyValuePair(name, obj);
-                return Option.Some<KeyValuePair<string, object>, Exception>(kvp);
+                return Some<KeyValuePair<string, object>, Exception>(kvp);
             }
             catch (Exception ex)
             {
-                return Option.None<KeyValuePair<string, object>, Exception>(ex);
+                return None<KeyValuePair<string, object>, Exception>(ex);
             }
         }
 
-        public static object DefaultEval(string value)
+        private static object DefaultEval(string value)
         {
-            DateTime dt;
-            if (DateTime.TryParse(value, out dt))
-            {
-                return dt;
-            }
-
-            decimal dec;
-            if (decimal.TryParse(value, out dec))
-            {
-                return dec;
-            }
-
-            int i;
-            if (int.TryParse(value, out i))
-            {
-                return i;
-            }
-
-            return value;
+            return MaybeInt(value)
+                .Else(() => MaybeDecimal(value))
+                .Else(() => MaybeDateTime(value))
+                .Else(() => Some<object>(value));
         }
     }
 }

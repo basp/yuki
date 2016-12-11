@@ -64,13 +64,29 @@
         [ArgActionMethod]
         public void CreateRepository(CreateRepositoryRequest request)
         {
-            var id = new WindowsIdentityProvider();
             var res = ExecuteDatabaseRequest(
-                session => new CreateRepositoryCommand(session, id),
+                session => new CreateRepositoryCommand(session),
                 request);
 
             res.MatchSome(x => this.log.Info(x));
             res.MatchNone(x => this.log.Error(x));
+        }
+
+        [ArgActionMethod]
+        public void InsertVersion(InsertVersionRequest request)
+        {
+            var identityProvider = new WindowsIdentityProvider();
+            var sessionFactory = CreateSessionFactory(request.Server);
+            using (var session = sessionFactory.Create())
+            {
+                session.Open();
+
+                var cmd = new InsertVersionCommand(session, identityProvider);
+                var res = cmd.Execute(request);
+
+                res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
+                res.MatchNone(x => this.log.Error(x));
+            }
         }
 
         [ArgActionMethod]

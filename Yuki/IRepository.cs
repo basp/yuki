@@ -6,7 +6,7 @@
     public interface IRepository<TIdentity, TException>
     {
         Option<TIdentity, TException> InsertVersion(
-            VersionRecord record);
+            IVersionRecord record);
 
         Option<TIdentity, TException> InsertScriptRun(
             ScriptRunRecord<TIdentity> record);
