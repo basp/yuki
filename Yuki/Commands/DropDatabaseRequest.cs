@@ -1,8 +1,6 @@
 ﻿namespace Yuki.Commands
 {
-    using PowerArgs;
-
-    public class DropDatabaseRequest : DatabaseRequest, ISessionRequest
+    public class DropDatabaseRequest : DatabaseRequest
     {
     }
 }

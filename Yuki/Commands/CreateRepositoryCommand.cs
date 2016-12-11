@@ -23,17 +23,15 @@
             this.identity = identity;
         }
 
-        public Option<Res, Ex> Execute(Req request)
+        public Option<Res, Ex> Execute(Req req)
         {
             var repository = new SqlRepository(
                 this.session,
-                this.identity);
+                this.identity,
+                req);
 
-            var res = repository.Initialize(
-                request.Database,
-                request.Schema);
-
-            return res.Map(x => x ? Res.Created : Res.None);
+            var res = repository.Initialize();
+            return res.Map(x => new Res(req.Database, req.Schema));
         }
     }
 }

@@ -24,24 +24,25 @@
             this.session = session;
         }
 
-        public Option<Res, Exception> Execute(Req request)
+        public Option<Res, Exception> Execute(Req req)
         {
             try
             {
                 var asm = typeof(DropDatabaseCommand).Assembly;
                 var tmpl = asm.ReadEmbeddedString(ResourceName);
-                var cmdText = Smart.Format(tmpl, request);
+                var cmdText = Smart.Format(tmpl, req);
 
                 this.session.ExecuteNonQuery(
                     cmdText,
                     new Dictionary<string, object>(),
                     CommandType.Text);
 
-                return Option.Some<Res, Exception>(Res.Dropped);
+                return Option.Some<Res, Exception>(
+                    new Res(req.Server, req.Database));
             }
             catch (Exception ex)
             {
-                var msg = $"Could not drop database '{request.Database}' on server '{request.Server}'.";
+                var msg = $"Could not drop database '{req.Database}' on server '{req.Server}'.";
                 var error = new Exception(msg, ex);
                 return Option.None<Res, Exception>(error);
             }

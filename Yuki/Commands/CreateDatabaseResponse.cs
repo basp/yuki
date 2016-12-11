@@ -1,7 +1,10 @@
 ﻿namespace Yuki.Commands
 {
-    public enum CreateDatabaseResponse
+    public class CreateDatabaseResponse : DatabaseResponse
     {
-        Created
+        public CreateDatabaseResponse(string server, string database)
+            : base(server, database)
+        {
+        }
     }
 }

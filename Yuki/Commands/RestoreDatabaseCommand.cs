@@ -24,17 +24,17 @@
             this.session = session;
         }
 
-        public Option<Res, Exception> Execute(Req request)
+        public Option<Res, Exception> Execute(Req req)
         {
             try
             {
                 var asm = typeof(RestoreDatabaseCommand).Assembly;
                 var tmpl = asm.ReadEmbeddedString(RestoreDatabaseTemplate);
 
-                var cmdText = Smart.Format(tmpl, request);
+                var cmdText = Smart.Format(tmpl, req);
                 var args = new Dictionary<string, object>()
                 {
-                    ["Backup"] = request.Backup
+                    ["Backup"] = req.Backup
                 };
 
                 var res = this.session.ExecuteNonQuery(
@@ -42,11 +42,12 @@
                     args,
                     CommandType.Text);
 
-                return Option.Some<Res, Exception>(Res.Restored);
+                return Option.Some<Res, Exception>(
+                    new Res(req.Server, req.Database));
             }
             catch (Exception ex)
             {
-                var msg = $"Could not restore database '{request.Database}' from '{request.Backup}' on server '{request.Server}'.";
+                var msg = $"Could not restore database '{req.Database}' from '{req.Backup}' on server '{req.Server}'.";
                 var res = new Exception(msg, ex);
                 return Option.None<Res, Exception>(res);
             }

@@ -4,12 +4,12 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
+    using System.Linq;
     using Dapper;
     using NLog;
     using Optional;
     using SmartFormat;
-    using System.Security.Principal;
-
+   
     public class SqlRepository : IRepository<int, SqlRepositoryException>
     {
         private static string CreateRepositoryTemplate =
@@ -18,36 +18,34 @@
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
         private readonly ISession session;
         private readonly IIdentityProvider identity;
+        private readonly ISqlRepositoryConfig config;
 
         public SqlRepository(
             ISession session,
-            IIdentityProvider identity)
+            IIdentityProvider identity,
+            ISqlRepositoryConfig config)
         {
             Contract.Requires(session != null);
             Contract.Requires(session.Connection.State == ConnectionState.Open);
             Contract.Requires(identity != null);
-            Contract.Requires(identity != null);
+            Contract.Requires(config != null);
 
             this.session = session;
             this.identity = identity;
+            this.config = config;
         }
 
-        public Option<bool, SqlRepositoryException> Initialize(
-            string database,
-            string schema)
+        public Option<bool, SqlRepositoryException> Initialize()
         {
             try
             {
                 var asm = typeof(SqlRepository).Assembly;
                 var tmpl = asm.ReadEmbeddedString(CreateRepositoryTemplate);
-                var args = new
-                {
-                    Database = database,
-                    Schema = schema
-                };
+                var cmdText = Smart.Format(tmpl, this.config);
+                var stmts = StatementSplitter.Split(cmdText).ToList();
 
-                var cmdText = Smart.Format(tmpl, args);
-                var stmts = StatementSplitter.Split(cmdText);
+                this.log.Debug($"Got {stmts.Count} statement(s) to execute after splitting");
+               
                 foreach (var stmt in stmts)
                 {
                     this.session.ExecuteNonQuery(
@@ -60,7 +58,7 @@
             }
             catch (Exception ex)
             {
-                var msg = $"Could not initialize repository in '[{database}].[{schema}]'.";
+                var msg = $"Could not initialize repository in '[{this.config.Database}].[{this.config.Schema}]'.";
                 var error = new SqlRepositoryException(msg, ex);
                 return Option.None<bool, SqlRepositoryException>(error);
             }
@@ -69,8 +67,8 @@
         public Option<int, SqlRepositoryException> InsertVersion(
             VersionRecord record)
         {
-            
-            
+
+
             throw new NotImplementedException();
         }
 

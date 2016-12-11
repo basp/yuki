@@ -1,7 +1,10 @@
 ﻿namespace Yuki.Commands
 {
-    public enum DropDatabaseResponse
+    public class DropDatabaseResponse : DatabaseResponse
     {
-        Dropped
+        public DropDatabaseResponse(string server, string database)
+            : base(server, database)
+        {
+        }
     }
 }

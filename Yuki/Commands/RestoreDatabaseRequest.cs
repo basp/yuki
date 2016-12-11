@@ -3,7 +3,7 @@
     using System.Diagnostics.Contracts;
     using PowerArgs;
 
-    public class RestoreDatabaseRequest : DatabaseRequest, ISessionRequest
+    public class RestoreDatabaseRequest : DatabaseRequest
     {
         [ArgRequired]
         [ArgPosition(3)]

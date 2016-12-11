@@ -3,6 +3,7 @@
     using System;
     using System.Data.SqlClient;
     using Commands;
+    using Newtonsoft.Json;
     using NLog;
     using NLog.Config;
     using NLog.Targets;
@@ -32,7 +33,7 @@
                 session => new CreateDatabaseCommand(session),
                 request);
 
-            res.MatchSome(x => this.log.Info(x));
+            res.MatchSome(x => this.log.Info($"Created {x.Database} on {x.Server}"));
             res.MatchNone(x => this.log.Error(x));
         }
 
@@ -68,6 +69,28 @@
 
             res.MatchSome(x => this.log.Info(x));
             res.MatchNone(x => this.log.Error(x));
+        }
+
+        [ArgActionMethod]
+        public void QueryFirst(QueryFirstRequest request)
+        {
+            var sessionFactory = CreateSessionFactory(request.Server);
+            using (var session = sessionFactory.Create())
+            {
+                var cmd = new QueryFirstCommand(session);
+                var res = cmd.Execute(request);
+
+                res.MatchSome(x =>
+                {
+                    x.Result.MatchSome(
+                        y => this.log.Info(JsonConvert.SerializeObject(y)));
+
+                    x.Result.MatchNone(
+                        () => this.log.Info("No result"));
+                });
+
+                res.MatchNone(x => this.log.Error(x));
+            }
         }
 
         [ArgActionMethod]

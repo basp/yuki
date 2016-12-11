@@ -19,11 +19,11 @@
             this.hasher = hasher;
         }
 
-        public Option<Res, Exception> Execute(Req request)
+        public Option<Res, Exception> Execute(Req req)
         {
             try
             {
-                var value = File.ReadAllText(request.File);
+                var value = File.ReadAllText(req.File);
                 return this.hasher.Hash(value).Map(x => new Res(x));
             }
             catch (Exception ex)

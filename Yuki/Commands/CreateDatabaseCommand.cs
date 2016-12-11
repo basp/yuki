@@ -24,27 +24,33 @@
             this.session = session;
         }
 
-        public Option<Res, Exception> Execute(Req request)
+        public Option<Res, Exception> Execute(Req req)
         {
             try
             {
                 var asm = typeof(CreateDatabaseCommand).Assembly;
                 var tmpl = asm.ReadEmbeddedString(CreateDatabaseTemplate);
 
-                var cmdText = Smart.Format(tmpl, request);
+                var cmdText = Smart.Format(tmpl, req);
                 var res = this.session.ExecuteNonQuery(
                     cmdText,
                     new Dictionary<string, object>(),
                     CommandType.Text);
 
-                return Option.Some<Res, Exception>(Res.Created);
+                var response = CreateResponse(req.Database, req.Server);
+                return Option.Some<Res, Exception>(response);
             }
             catch (Exception ex)
             {
-                var msg = $"Could not create database '{request.Database}' on server '{request.Server}'.";
+                var msg = $"Could not create database '{req.Database}' on server '{req.Server}'.";
                 var error = new Exception(msg, ex);
                 return Option.None<Res, Exception>(error);
             }
+        }
+
+        private static Res CreateResponse(string database, string server)
+        {
+            return new Res(database, server);
         }
     }
 }
