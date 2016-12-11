@@ -2,18 +2,19 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Diagnostics.Contracts;
     using Dapper;
     using Optional;
 
-    using Req = QueryFirstRequest;
-    using Res = QueryFirstResponse;
- 
-    public class QueryFirstCommand : ICommand<Req, Res, Exception>
+    using Res = QueryResponse;
+    using Req = QueryRequest;
+
+    public class QueryCommand : ICommand<Req, Res, Exception>
     {
         private readonly ISession session;
 
-        public QueryFirstCommand(ISession session)
+        public QueryCommand(ISession session)
         {
             Contract.Requires(session != null);
 
@@ -26,8 +27,15 @@
             {
                 var @default = new Dictionary<string, object>();
                 var @params = request.Args.ValueOr(@default);
-                var result = this.session.Connection.QueryFirst(request.Sql);
-                var res = new Res(request.Server, Option.Some<dynamic>(result));
+
+                var result = this.session
+                    .Connection
+                    .Query(request.Sql, @params);
+
+                var res = new Res(
+                    request.Server,
+                    Option.Some<IEnumerable<dynamic>, Exception>(result));
+
                 return Option.Some<Res, Exception>(res);
             }
             catch (Exception ex)

@@ -112,6 +112,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentEvaluator.cs" />
     <Compile Include="Commands\CreateDatabaseCommand.cs" />
     <Compile Include="Commands\CreateDatabaseRequest.cs" />
     <Compile Include="Commands\CreateDatabaseResponse.cs" />
@@ -127,10 +128,15 @@
     <Compile Include="Commands\HashFileRequest.cs" />
     <Compile Include="Commands\HashFileResponse.cs" />
     <Compile Include="Commands\IDatabaseResponse.cs" />
+    <Compile Include="Commands\InsertVersionCommand.cs" />
+    <Compile Include="Commands\QueryCommand.cs" />
+    <Compile Include="Commands\QueryRequest.cs" />
+    <Compile Include="Commands\QueryResponse.cs" />
     <Compile Include="Commands\RepositoryRequest.cs" />
     <Compile Include="Commands\QueryFirstCommand.cs" />
     <Compile Include="Commands\QueryFirstRequest.cs" />
     <Compile Include="Commands\QueryFirstResponse.cs" />
+    <Compile Include="IArgumentEvaluator.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Commands\RestoreDatabaseCommand.cs" />
     <Compile Include="Commands\RestoreDatabaseRequest.cs" />

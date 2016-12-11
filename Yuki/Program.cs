@@ -10,6 +10,8 @@
     using Optional;
     using PowerArgs;
 
+    using static System.Console;
+
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
     internal class Program
     {
@@ -72,21 +74,45 @@
         }
 
         [ArgActionMethod]
-        public void QueryFirst(QueryFirstRequest request)
+        public void QueryFirst(QueryFirstRequest req)
         {
-            var sessionFactory = CreateSessionFactory(request.Server);
+            var sessionFactory = CreateSessionFactory(req.Server);
             using (var session = sessionFactory.Create())
             {
                 var cmd = new QueryFirstCommand(session);
-                var res = cmd.Execute(request);
+                var res = cmd.Execute(req);
+                var fmt = req.Format ? Formatting.Indented : Formatting.None;
 
                 res.MatchSome(x =>
                 {
                     x.Result.MatchSome(
-                        y => this.log.Info(JsonConvert.SerializeObject(y)));
+                        y => WriteLine(JsonConvert.SerializeObject(y, fmt)));
 
                     x.Result.MatchNone(
                         () => this.log.Info("No result"));
+                });
+
+                res.MatchNone(x => this.log.Error(x));
+            }
+        }
+
+        [ArgActionMethod]
+        public void Query(QueryRequest request)
+        {
+            var sessionFactory = CreateSessionFactory(request.Server);
+            using (var session = sessionFactory.Create())
+            {
+                var cmd = new QueryCommand(session);
+                var res = cmd.Execute(request);
+                var fmt = request.Format ? Formatting.Indented : Formatting.None;
+
+                res.MatchSome(x =>
+                {
+                    x.Result.MatchSome(
+                        y => WriteLine(JsonConvert.SerializeObject(y, fmt)));
+
+                    x.Result.MatchNone(
+                        y => this.log.Info("No result"));
                 });
 
                 res.MatchNone(x => this.log.Error(x));
@@ -100,7 +126,7 @@
             var cmd = new HashFileCommand(hasher);
             var res = cmd.Execute(request);
 
-            res.MatchSome(x => this.log.Info(x.Hash));
+            res.MatchSome(x => WriteLine(x.Hash));
             res.MatchNone(x => this.log.Error(x));
         }
 

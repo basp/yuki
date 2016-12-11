@@ -5,27 +5,22 @@ namespace Yuki
     using System.Collections.Generic;
     using Optional;
     using PowerArgs;
+    using Newtonsoft.Json;
 
     public static class Revivers
     {
         [ArgReviver]
-        public static Option<IDictionary<string, string>, Exception> StringPairReviver(
-          string name,
-          string value)
+        public static Option<IDictionary<string, object>, Exception> JsonReviver(string name, string value)
         {
-            var msg = $"Could not parse parameter '{name}' with argument '{value}'.";
-            var error = new Exception(msg);
-            return Option.None<IDictionary<string, string>, Exception>(error);
-        }
-
-        [ArgReviver]
-        public static Option<IDictionary<string, object>, Exception> KeyValuePairReviver(
-            string name,
-            string value)
-        {
-            var msg = $"Could not parse parameter '{name}' with argument '{value}'.";
-            var error = new Exception(msg);
-            return Option.None<IDictionary<string, object>, Exception>(error);
+            try
+            {
+                var obj = JsonConvert.DeserializeObject<IDictionary<string, object>>(value);
+                return Option.Some<IDictionary<string, object>, Exception>(obj);
+            }
+            catch (Exception ex)
+            {
+                return Option.None<IDictionary<string, object>, Exception>(ex);
+            }
         }
     }
 }

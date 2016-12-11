@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using Optional;
     using PowerArgs;
+    using Optional;
 
-    public class QueryFirstRequest : ISessionRequest
+    public class QueryRequest : ISessionRequest
     {
         [ArgRequired]
         [ArgPosition(1)]
