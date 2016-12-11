@@ -5,6 +5,6 @@
     public class WalkFoldersRequest
     {
         [ArgRequired]
-        public string Directory { get; set; }
+        public string Folder { get; set; }
     }
 }

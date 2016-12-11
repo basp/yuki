@@ -95,9 +95,19 @@
             try
             {
                 var sp = this.FullyQualified("InsertScriptRun");
+                var args = new
+                {
+                    record.VersionId,
+                    record.ScriptName,
+                    TextOfScript = record.Sql,
+                    TextHash = record.Hash,
+                    OneTimeScript = record.IsOneTimeScript,
+                    record.EnteredBy
+                };
+
                 var result = this.session
                     .Connection
-                    .ExecuteScalar<int>(sp, record, commandType: CommandType.StoredProcedure);
+                    .ExecuteScalar<int>(sp, args, commandType: CommandType.StoredProcedure);
 
                 return Some<int, Ex>(result);
             }
@@ -115,9 +125,20 @@
             try
             {
                 var sp = this.FullyQualified("InsertScriptRunError");
+                var args = new
+                {
+                    record.RepositoryPath,
+                    record.ScriptName,
+                    VersionName = record.RepositoryVersion,
+                    TextOfScript = record.Sql,
+                    ErroneousPart = record.SqlErrorPart,
+                    record.ErrorMessage,
+                    record.EnteredBy
+                };
+
                 var result = this.session
                     .Connection
-                    .ExecuteScalar<int>(sp, record, commandType: CommandType.StoredProcedure);
+                    .ExecuteScalar<int>(sp, args, commandType: CommandType.StoredProcedure);
 
                 return Some<int, Ex>(result);
             }

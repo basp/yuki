@@ -73,7 +73,10 @@
             IDictionary<string, object> args,
             CommandType commandType)
         {
-            throw new NotImplementedException();
+            using (var cmd = this.CreateCommand(cmdText, args, commandType))
+            {
+                return cmd.ExecuteScalar();
+            }
         }
 
         public void Dispose()

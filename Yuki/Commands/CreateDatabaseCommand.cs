@@ -6,6 +6,7 @@
     using System.Diagnostics.Contracts;
     using Optional;
     using SmartFormat;
+    using NLog;
 
     using Req = CreateDatabaseRequest;
     using Res = CreateDatabaseResponse;
@@ -14,6 +15,8 @@
     {
         private static readonly string CreateDatabaseTemplate =
             $"{nameof(Yuki)}.Resources.CreateDatabase.sql";
+
+        private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
         private readonly ISession session;
 
@@ -32,12 +35,12 @@
                 var tmpl = asm.ReadEmbeddedString(CreateDatabaseTemplate);
 
                 var cmdText = Smart.Format(tmpl, req);
-                var res = this.session.ExecuteNonQuery(
+                var res = (bool)this.session.ExecuteScalar(
                     cmdText,
                     new Dictionary<string, object>(),
                     CommandType.Text);
 
-                var response = CreateResponse(req.Database, req.Server);
+                var response = CreateResponse(res, req.Database, req.Server);
                 return Option.Some<Res, Exception>(response);
             }
             catch (Exception ex)
@@ -48,9 +51,12 @@
             }
         }
 
-        private static Res CreateResponse(string database, string server)
+        private static Res CreateResponse(bool created, string database, string server)
         {
-            return new Res(database, server);
+            return new Res(server, database)
+            {
+                Created = created
+            };
         }
     }
 }

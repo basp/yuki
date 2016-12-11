@@ -152,6 +152,9 @@
     <Compile Include="Commands\QueryFirstCommand.cs" />
     <Compile Include="Commands\QueryFirstRequest.cs" />
     <Compile Include="Commands\QueryFirstResponse.cs" />
+    <Compile Include="Commands\SetupDatabaseCommand.cs" />
+    <Compile Include="Commands\SetupDatabaseRequest.cs" />
+    <Compile Include="Commands\SetupDatabaseResponse.cs" />
     <Compile Include="Commands\WalkFoldersCommand.cs" />
     <Compile Include="Commands\WalkFoldersRequest.cs" />
     <Compile Include="Commands\WalkFoldersResponse.cs" />

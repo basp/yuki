@@ -27,7 +27,7 @@
         {
             try
             {
-                foreach (var dir in Directory.GetDirectories(request.Directory))
+                foreach (var dir in Directory.GetDirectories(request.Folder))
                 {
                     var res = this.walker(dir);
                     if (!res.HasValue)
