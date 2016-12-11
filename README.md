@@ -18,7 +18,7 @@ database on that server:
 
 	yuki createdatabase $server foo
 
-This will create a new database names `foo` on the `$server` instance.
+This will create a new database named `foo` on the `$server` instance.
 
 # Legacy
 ## Script types
