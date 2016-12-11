@@ -169,8 +169,8 @@
     <Compile Include="MD5Hasher.cs" />
     <Compile Include="ISqlRepositoryConfig.cs" />
     <Compile Include="StatementSplitter.cs" />
-    <Compile Include="ScriptRunErrorRecord.cs" />
-    <Compile Include="ScriptRunRecord.cs" />
+    <Compile Include="IScriptRunErrorRecord.cs" />
+    <Compile Include="IScriptRunRecord.cs" />
     <Compile Include="SqlRepository.cs" />
     <Compile Include="SqlRepositoryException.cs" />
     <Compile Include="SqlSession.cs" />
