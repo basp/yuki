@@ -54,6 +54,26 @@ If there are clear hierarchies it's usually fine to
 share some properties (Yuki does this as well on both the request and response
 classes) but do be careful about not tangling your classes too much.
 
+# Dealing with options
+Because Yuki is so adamant about using the `Option` type in a lot of its 
+interfaces it makes sense to divert a little bit about it.
+
+At first it might seem awkward to deal with the type in C# and it certainly 
+was for me but it *can* really help to make a lot of things more 
+straightforward. In turn, this will make it a lot easier to reason and think
+about the code and the paths it follows which is always a huge plus (at least
+in my book).
+
+Let's take a look at the `IHasher` interface for example. This `Hash` method
+returns an `Option<string, Exception>` thingy. Note that the `Option` type is 
+actually a value type but that's really that important right now. The important
+part is that it's either `Some<string>` or `None<Exception>` and it's our task
+to do the right thing according to what it is.
+
+Luckily, the `Option` type has a lot of built-in tools to help us out.
+
+TODO: Explain most important usage options. No pun intended.
+
 # Legacy notes
 ## Script types
 * `onetime` scripts are only executed one time and cause the migration to fail
