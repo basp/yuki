@@ -37,6 +37,10 @@ means that you can easily *hydrate* them from the command line. They are also
 pure in the sense that they don't have side-effects. They might have a few 
 utility members but these are always pure and safe to use in all cases.
 
+In other words, even though you *can* hydrate them directly you don't have to.
+It's valid and expected that commands are instantiated directly from code as 
+well to make up functionaly for bigger commands.
+
 # Responses
 Every command should have a custom response type even if they are similar to
 existing response types. Most of the built-in response types are or will be 
