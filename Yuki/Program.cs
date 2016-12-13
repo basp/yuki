@@ -164,7 +164,7 @@
 
                 var res = cmd.Execute(request);
 
-                res.MatchSome(x => this.log.Info(x));
+                res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
                 res.MatchNone(x => this.log.Error(x));
             }
         }

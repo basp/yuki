@@ -1,7 +1,15 @@
 ﻿namespace Yuki.Commands
 {
-    public enum SetupDatabaseResponse
+    using Optional;
+
+    public class SetupDatabaseResponse
     {
-        Done
+        public string Server { get; set; }
+
+        public string Database { get; set; }
+
+        public string Folder { get; set; }
+
+        public string Backup { get; set; }
     }
 }
