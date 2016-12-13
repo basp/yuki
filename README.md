@@ -22,7 +22,7 @@ By using the `Option<TRes, TEx>` type as a return value it becomes incredibly
 easy to compose commands. 
 
 Commands should be self sustained units. In fact, every command in Yuki 
-(even if they are not accissible directly anymore) started out as a command
+(even if they are not accessible directly anymore) started out as a command
 that could be directly invoked from the command-line. Even now that we have
 composite commands like `Setup` internally, they just make use of the 
 smaller `CreateDatabase` and `RestoreDatabase` commands. 
