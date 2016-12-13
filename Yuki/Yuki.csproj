@@ -165,7 +165,10 @@
     <Compile Include="Commands\WalkFoldersCommand.cs" />
     <Compile Include="Commands\WalkFoldersRequest.cs" />
     <Compile Include="Commands\WalkFoldersResponse.cs" />
+    <Compile Include="CommonShortcuts.cs" />
+    <Compile Include="DefaultBackupFileProvider.cs" />
     <Compile Include="IArgumentEvaluator.cs" />
+    <Compile Include="IBackupFileProvider.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Commands\RestoreDatabaseCommand.cs" />
     <Compile Include="Commands\RestoreDatabaseRequest.cs" />

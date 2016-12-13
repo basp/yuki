@@ -147,12 +147,20 @@
             {
                 session.Open();
 
+                var backupFileProvider = new DefaultBackupFileProvider(
+                    request.Folder);
+
                 var createDatabaseCommand = new CreateDatabaseCommand(
+                    session);
+
+                var restoreDatabaseCommand = new RestoreDatabaseCommand(
                     session);
 
                 var cmd = new SetupDatabaseCommand(
                     session,
-                    createDatabaseCommand);
+                    backupFileProvider,
+                    createDatabaseCommand,
+                    restoreDatabaseCommand);
 
                 var res = cmd.Execute(request);
 

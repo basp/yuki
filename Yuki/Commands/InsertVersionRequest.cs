@@ -5,11 +5,11 @@
     public class InsertVersionRequest : RepositoryRequest, IVersionRecord
     {
         [ArgRequired]
-        [ArgShortcut("rp")]
+        [ArgShortcut(CommonShortcuts.RepositoryPath)]
         public string RepositoryPath { get; set; }
 
         [ArgRequired]
-        [ArgShortcut("vn")]
+        [ArgShortcut(CommonShortcuts.VersionName)]
         public string VersionName { get; set; }
 
         [ArgIgnore]

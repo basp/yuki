@@ -14,16 +14,22 @@
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
         private readonly ISession session;
+        private readonly IBackupFileProvider backupFileProvider;
         private readonly ICommand<CreateDatabaseRequest, CreateDatabaseResponse, Exception> createDatabaseCommand;
+        private readonly ICommand<RestoreDatabaseRequest, RestoreDatabaseResponse, Exception> restoreDatabaseCommand;
 
         public SetupDatabaseCommand(
             ISession session,
-            ICommand<CreateDatabaseRequest, CreateDatabaseResponse, Exception> createDatabaseCommand)
+            IBackupFileProvider backupFileProvider,
+            ICommand<CreateDatabaseRequest, CreateDatabaseResponse, Exception> createDatabaseCommand,
+            ICommand<RestoreDatabaseRequest, RestoreDatabaseResponse, Exception> restoreDatabaseCommand)
         {
             Contract.Requires(session != null);
+            Contract.Requires(backupFileProvider != null);
             Contract.Requires(createDatabaseCommand != null);
 
             this.session = session;
+            this.backupFileProvider = backupFileProvider;
             this.createDatabaseCommand = createDatabaseCommand;
         }
 
@@ -34,7 +40,7 @@
             var createDatabaseResult = this.CreateDatabaseCommand(request);
             if (!createDatabaseResult.HasValue)
             {
-                return createDatabaseResult.Map(x => Res.Ok);
+                return createDatabaseResult.Map(x => Res.Done);
             }
 
             createDatabaseResult.MatchSome(x =>
@@ -46,7 +52,21 @@
                 this.log.Info(msg);
             });
 
-            return Some<Res, Exception>(Res.Ok);
+            if (!request.Restore)
+            {
+                this.log.Info($"Skipping restore [default]");
+                return Some<Res, Exception>(Res.Done);
+            }
+
+            var backup = this.backupFileProvider.GetFullPath();
+            if (!backup.HasValue)
+            {
+                return backup
+                    .Map(x => Res.Done)
+                    .MapException(x => new Exception($"No backup found in {request.Folder}", x));
+            }
+
+            return Some<Res, Exception>(Res.Done);
         }
 
         private Option<CreateDatabaseResponse, Exception> CreateDatabaseCommand(Req request)
@@ -58,6 +78,11 @@
             };
 
             return this.createDatabaseCommand.Execute(createDatabaseRequest);
+        }
+
+        private Option<RestoreDatabaseResponse, Exception> RestoreDatabase(string backupFile)
+        {
+            return None<RestoreDatabaseResponse, Exception>(new NotImplementedException());
         }
     }
 }

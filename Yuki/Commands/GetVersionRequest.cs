@@ -5,7 +5,7 @@
     public class GetVersionRequest : RepositoryRequest
     {
         [ArgRequired]
-        [ArgShortcut("rp")]
+        [ArgShortcut(CommonShortcuts.RepositoryPath)]
         public string RepositoryPath { get; set; }
     }
 }
