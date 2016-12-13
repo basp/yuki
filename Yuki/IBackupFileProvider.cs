@@ -5,6 +5,6 @@
 
     public interface IBackupFileProvider
     {
-        Option<string, Exception> GetFullPath();
+        Option<string, Exception> TryFindIn(string folder);
     }
 }

@@ -181,6 +181,7 @@
     <Compile Include="ISession.cs" />
     <Compile Include="MD5Hasher.cs" />
     <Compile Include="ISqlRepositoryConfig.cs" />
+    <Compile Include="SetupRequest.cs" />
     <Compile Include="StatementSplitter.cs" />
     <Compile Include="IScriptRunErrorRecord.cs" />
     <Compile Include="IScriptRunRecord.cs" />

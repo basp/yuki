@@ -1,7 +1,8 @@
 ﻿namespace Yuki.Commands
 {
-    public enum WalkFoldersResponse
+    using System.Collections.Generic;
+
+    public class WalkFoldersResponse
     {
-        Done
     }
 }

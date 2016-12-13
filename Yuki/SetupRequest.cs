@@ -1,19 +1,17 @@
-﻿namespace Yuki.Commands
+﻿namespace Yuki
 {
-    using System;
-    using System.IO;
     using PowerArgs;
 
-    public class SetupDatabaseRequest
+    public class SetupRequest
     {
         [ArgRequired]
-        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
         [ArgPosition(1)]
+        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
         public string Server { get; set; }
 
         [ArgRequired]
-        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
         [ArgPosition(2)]
+        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
         public string Folder { get; set; }
 
         [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
@@ -23,14 +21,5 @@
         [ArgDefaultValue(300)]
         [ArgShortcut(CommonShortcuts.RestoreTimeout)]
         public int RestoreTimeout { get; set; }
-
-        [ArgIgnore]
-        public string Database
-        {
-            get
-            {
-                return Path.GetFileName(this.Folder);
-            }
-        }
     }
 }

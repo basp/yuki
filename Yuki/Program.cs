@@ -10,6 +10,7 @@
     using Optional;
     using PowerArgs;
 
+    using static Optional.Option;
     using static System.Console;
 
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
@@ -129,10 +130,10 @@
             Func<string, Option<WalkFoldersResponse, Exception>> walker = dir =>
             {
                 this.log.Info(dir);
-                return Option.Some<WalkFoldersResponse, Exception>(WalkFoldersResponse.Done);
+                return Some<WalkFoldersResponse, Exception>(new WalkFoldersResponse());
             };
 
-            var cmd = new WalkFoldersCommand(walker);
+            var cmd = new WalkFoldersCommand<WalkFoldersResponse>(walker);
             var res = cmd.Execute(request);
 
             res.MatchSome(x => this.log.Info(x));
@@ -140,29 +141,48 @@
         }
 
         [ArgActionMethod]
-        public void SetupDatabase(SetupDatabaseRequest request)
+        public void Setup(SetupRequest request)
         {
             var sessionFactory = CreateSessionFactory(request.Server);
             using (var session = sessionFactory.Create())
             {
                 session.Open();
 
-                var backupFileProvider = new DefaultBackupFileProvider(
-                    request.Folder);
+                var backupFileProvider = new DefaultBackupFileProvider();
 
-                var createDatabaseCommand = new CreateDatabaseCommand(
+                var createDatabaseCmd = new CreateDatabaseCommand(
                     session);
 
-                var restoreDatabaseCommand = new RestoreDatabaseCommand(
+                var restoreDatabaseCmd = new RestoreDatabaseCommand(
                     session);
 
-                var cmd = new SetupDatabaseCommand(
+                var setupDatabaseCmd = new SetupDatabaseCommand(
                     session,
                     backupFileProvider,
-                    createDatabaseCommand,
-                    restoreDatabaseCommand);
+                    createDatabaseCmd,
+                    restoreDatabaseCmd);
 
-                var res = cmd.Execute(request);
+                var walkFoldersCmd = new WalkFoldersCommand<object>(
+                    new Func<string, Option<object, Exception>>(folder =>
+                    {
+                        var setupDatabaseRequest = new SetupDatabaseRequest()
+                        {
+                            Server = request.Server,
+                            Restore = request.Restore,
+                            RestoreTimeout = request.RestoreTimeout,
+                            Folder = folder,
+                        };
+
+                        var setupDatabaseResult = setupDatabaseCmd.Execute(setupDatabaseRequest);
+                        return setupDatabaseResult.Map(x => (object)x);
+                    }));
+
+                var walkFoldersRequest = new WalkFoldersRequest()
+                {
+                    Folder = request.Folder,
+                };
+
+                var res = walkFoldersCmd.Execute(walkFoldersRequest);
 
                 res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
                 res.MatchNone(x => this.log.Error(x));

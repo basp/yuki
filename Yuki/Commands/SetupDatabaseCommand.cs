@@ -36,8 +36,6 @@
             this.createDatabaseCommand = createDatabaseCommand;
         }
 
-
-
         public Option<Res, Exception> Execute(Req req)
         {
             this.log.Info($"Creating database [{req.Database}] on server {req.Server} if it does not exist");
@@ -67,7 +65,7 @@
                 return CreateResponse(req, None<string>());
             }
 
-            var maybeBackup = this.backupFileProvider.GetFullPath();
+            var maybeBackup = this.backupFileProvider.TryFindIn(req.Folder);
             if (!maybeBackup.HasValue)
             {
                 // For now, when a user requests a restore (which is currently an explicit

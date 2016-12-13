@@ -1,6 +1,8 @@
 ﻿namespace Yuki.Commands
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.IO;
 
@@ -9,38 +11,46 @@
     using static Optional.Option;
 
     using Req = WalkFoldersRequest;
-    using Res = WalkFoldersResponse;
 
-    public class WalkFoldersCommand : ICommand<Req, Res, Exception>
+    public class WalkFoldersCommand<TWalkRes> : ICommand<Req, IList<TWalkRes>, Exception>
     {
-        private readonly Func<string, Option<Res, Exception>> walker;
+        private readonly Func<string, Option<TWalkRes, Exception>> walker;
 
         public WalkFoldersCommand(
-            Func<string, Option<Res, Exception>> walker)
+            Func<string, Option<TWalkRes, Exception>> walker)
         {
             Contract.Requires(walker != null);
 
             this.walker = walker;
         }
 
-        public Option<Res, Exception> Execute(Req request)
+        public Option<IList<TWalkRes>, Exception> Execute(Req request)
         {
             try
             {
+                // We need to help the type inference out a little bit here.
+                IList<TWalkRes> results = new List<TWalkRes>();
                 foreach (var dir in Directory.GetDirectories(request.Folder))
                 {
                     var res = this.walker(dir);
                     if (!res.HasValue)
                     {
-                        return res;
+                        return res.Map(x => results);
                     }
+
+                    res.MatchSome(x => results.Add(x));
+                    res.MatchNone(x =>
+                    {
+                        // Should never happen.
+                        throw new Exception("TILT");
+                    });
                 }
 
-                return Some<Res, Exception>(Res.Done);
+                return Some<IList<TWalkRes>, Exception>(results);
             }
             catch (Exception ex)
             {
-                return None<Res, Exception>(ex);
+                return None<IList<TWalkRes>, Exception>(ex);
             }
         }
     }
