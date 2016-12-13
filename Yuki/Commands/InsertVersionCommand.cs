@@ -46,7 +46,7 @@
                 EnteredBy = req.EnteredBy,
                 Server = req.Server,
                 Database = req.Database,
-                Schema = req.Schema
+                Schema = req.Schema,
             };
         }
     }

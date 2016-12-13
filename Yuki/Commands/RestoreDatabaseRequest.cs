@@ -25,7 +25,7 @@
             return new RestoreDatabaseRequest()
             {
                 Database = database,
-                Backup = backup
+                Backup = backup,
             };
         }
     }

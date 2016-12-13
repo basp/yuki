@@ -4,9 +4,11 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
+    using NLog;
     using Optional;
     using SmartFormat;
-    using NLog;
+
+    using static Optional.Option;
 
     using Req = CreateDatabaseRequest;
     using Res = CreateDatabaseResponse;
@@ -41,13 +43,13 @@
                     CommandType.Text);
 
                 var response = CreateResponse(res, req.Database, req.Server);
-                return Option.Some<Res, Exception>(response);
+                return Some<Res, Exception>(response);
             }
             catch (Exception ex)
             {
                 var msg = $"Could not create database '{req.Database}' on server '{req.Server}'.";
                 var error = new Exception(msg, ex);
-                return Option.None<Res, Exception>(error);
+                return None<Res, Exception>(error);
             }
         }
 
@@ -55,7 +57,7 @@
         {
             return new Res(server, database)
             {
-                Created = created
+                Created = created,
             };
         }
     }

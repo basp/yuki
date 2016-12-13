@@ -34,7 +34,7 @@
                 var cmdText = Smart.Format(tmpl, req);
                 var args = new Dictionary<string, object>()
                 {
-                    ["Backup"] = req.Backup
+                    ["Backup"] = req.Backup,
                 };
 
                 var res = this.session.ExecuteNonQuery(

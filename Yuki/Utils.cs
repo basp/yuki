@@ -6,11 +6,12 @@
     using System.IO;
     using System.Reflection;
     using Optional;
+
     using static Optional.Option;
 
     public static class Utils
     {
-        public static KeyValuePair<TKey, TValue> CreateKeyValuePair<TKey, TValue>(TKey key, TValue value) => 
+        public static KeyValuePair<TKey, TValue> CreateKeyValuePair<TKey, TValue>(TKey key, TValue value) =>
             new KeyValuePair<TKey, TValue>(key, value);
 
         public static Option<object> MaybeInt(string value)

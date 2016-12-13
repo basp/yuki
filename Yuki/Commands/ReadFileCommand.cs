@@ -46,7 +46,7 @@
                 Contents = contents,
                 Path = request.Path,
                 FileName = Path.GetFileName(request.Path),
-                Hash = hash
+                Hash = hash,
             };
         }
     }

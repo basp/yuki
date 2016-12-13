@@ -6,6 +6,7 @@
             : base(server, database)
         {
         }
+
         public bool Created { get; set; }
     }
 }

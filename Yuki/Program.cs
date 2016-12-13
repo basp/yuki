@@ -102,52 +102,6 @@
         }
 
         [ArgActionMethod]
-        public void QueryFirst(QueryFirstRequest req)
-        {
-            var sessionFactory = CreateSessionFactory(req.Server);
-            using (var session = sessionFactory.Create())
-            {
-                var cmd = new QueryFirstCommand(session);
-                var res = cmd.Execute(req);
-                var fmt = req.Format ? Formatting.Indented : Formatting.None;
-
-                res.MatchSome(x =>
-                {
-                    x.Result.MatchSome(
-                        y => WriteLine(JsonConvert.SerializeObject(y, fmt)));
-
-                    x.Result.MatchNone(
-                        () => this.log.Info("No result"));
-                });
-
-                res.MatchNone(x => this.log.Error(x));
-            }
-        }
-
-        [ArgActionMethod]
-        public void Query(QueryRequest request)
-        {
-            var sessionFactory = CreateSessionFactory(request.Server);
-            using (var session = sessionFactory.Create())
-            {
-                var cmd = new QueryCommand(session);
-                var res = cmd.Execute(request);
-                var fmt = request.Format ? Formatting.Indented : Formatting.None;
-
-                res.MatchSome(x =>
-                {
-                    x.Result.MatchSome(
-                        y => WriteLine(JsonConvert.SerializeObject(y, fmt)));
-
-                    x.Result.MatchNone(
-                        y => this.log.Info("No result"));
-                });
-
-                res.MatchNone(x => this.log.Error(x));
-            }
-        }
-
-        [ArgActionMethod]
         public void HashFile(HashFileRequest request)
         {
             var hasher = new MD5Hasher();
@@ -185,6 +139,28 @@
             res.MatchNone(x => this.log.Error(x));
         }
 
+        [ArgActionMethod]
+        public void SetupDatabase(SetupDatabaseRequest request)
+        {
+            var sessionFactory = CreateSessionFactory(request.Server);
+            using (var session = sessionFactory.Create())
+            {
+                session.Open();
+
+                var createDatabaseCommand = new CreateDatabaseCommand(
+                    session);
+
+                var cmd = new SetupDatabaseCommand(
+                    session,
+                    createDatabaseCommand);
+
+                var res = cmd.Execute(request);
+
+                res.MatchSome(x => this.log.Info(x));
+                res.MatchNone(x => this.log.Error(x));
+            }
+        }
+
         private static Option<TResponse, TException> ExecuteDatabaseRequest<TRequest, TResponse, TException>(
             Func<ISession, ICommand<TRequest, TResponse, TException>> commandFactory,
             TRequest request)
@@ -206,7 +182,7 @@
             var target = new ColoredConsoleTarget()
             {
                 Name = "console",
-                Layout = DefaultLoggingLayout
+                Layout = DefaultLoggingLayout,
             };
 
             var rule = new LoggingRule("*", LogLevel.Debug, target);
@@ -221,7 +197,7 @@
              new SqlConnectionStringBuilder()
              {
                  ["Server"] = server,
-                 ["Integrated Security"] = "SSPI"
+                 ["Integrated Security"] = "SSPI",
              };
 
         private static ISessionFactory CreateSessionFactory(string server) =>

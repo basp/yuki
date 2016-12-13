@@ -1,6 +1,7 @@
 ﻿namespace Yuki.Commands
 {
-    public class SetupDatabaseResponse
+    public enum SetupDatabaseResponse
     {
+        Ok
     }
 }

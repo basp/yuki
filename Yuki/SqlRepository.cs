@@ -5,11 +5,12 @@
     using System.Data;
     using System.Diagnostics.Contracts;
     using System.Linq;
-    using Dapper;
     using NLog;
     using Optional;
     using SmartFormat;
+
     using static Optional.Option;
+
     using Ex = SqlRepositoryException;
 
     public class SqlRepository : IRepository<int, Ex>
@@ -42,8 +43,6 @@
                 var cmdText = Smart.Format(tmpl, this.config);
                 var stmts = StatementSplitter.Split(cmdText).ToList();
 
-                this.log.Debug($"Got {stmts.Count} statement(s) to execute after splitting");
-
                 foreach (var stmt in stmts)
                 {
                     this.session.ExecuteNonQuery(
@@ -68,17 +67,14 @@
             try
             {
                 var sp = this.FullyQualified("InsertVersion");
-                var args = new
+                var args = new Dictionary<string, object>()
                 {
-                    record.VersionName,
-                    record.RepositoryPath,
-                    record.EnteredBy
+                    ["VersionName"] = record.VersionName,
+                    ["RepositoryPath"] = record.RepositoryPath,
+                    ["EnteredBy"] = record.EnteredBy,
                 };
 
-                var result = this.session
-                    .Connection
-                    .ExecuteScalar<int>(sp, args, commandType: CommandType.StoredProcedure);
-
+                var result = (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
                 return Some<int, Ex>(result);
             }
             catch (Exception ex)
@@ -95,20 +91,17 @@
             try
             {
                 var sp = this.FullyQualified("InsertScriptRun");
-                var args = new
+                var args = new Dictionary<string, object>()
                 {
-                    record.VersionId,
-                    record.ScriptName,
-                    TextOfScript = record.Sql,
-                    TextHash = record.Hash,
-                    OneTimeScript = record.IsOneTimeScript,
-                    record.EnteredBy
+                    ["VersionId"] = record.VersionId,
+                    ["ScriptName"] = record.ScriptName,
+                    ["TextOfScript"] = record.Sql,
+                    ["TextHash"] = record.Hash,
+                    ["OneTimeScript"] = record.IsOneTimeScript,
+                    ["EnteredBy"] = record.EnteredBy,
                 };
 
-                var result = this.session
-                    .Connection
-                    .ExecuteScalar<int>(sp, args, commandType: CommandType.StoredProcedure);
-
+                var result = (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
                 return Some<int, Ex>(result);
             }
             catch (Exception ex)
@@ -125,21 +118,18 @@
             try
             {
                 var sp = this.FullyQualified("InsertScriptRunError");
-                var args = new
+                var args = new Dictionary<string, object>()
                 {
-                    record.RepositoryPath,
-                    record.ScriptName,
-                    VersionName = record.RepositoryVersion,
-                    TextOfScript = record.Sql,
-                    ErroneousPart = record.SqlErrorPart,
-                    record.ErrorMessage,
-                    record.EnteredBy
+                    ["RepositoryPath"] = record.RepositoryPath,
+                    ["ScriptName"] = record.ScriptName,
+                    ["VersionName"] = record.RepositoryVersion,
+                    ["TextOfScript"] = record.Sql,
+                    ["ErroneousPart"] = record.SqlErrorPart,
+                    ["ErrorMessage"] = record.ErrorMessage,
+                    ["EnteredBy"] = record.EnteredBy,
                 };
 
-                var result = this.session
-                    .Connection
-                    .ExecuteScalar<int>(sp, args, commandType: CommandType.StoredProcedure);
-
+                var result = (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
                 return Some<int, Ex>(result);
             }
             catch (Exception ex)
@@ -156,11 +146,12 @@
             try
             {
                 var sp = this.FullyQualified("GetHash");
-                var args = new { ScriptName = scriptName };
-                var result = this.session
-                    .Connection
-                    .ExecuteScalar<string>(sp, args, commandType: CommandType.StoredProcedure);
+                var args = new Dictionary<string, object>()
+                {
+                    ["ScriptName"] = scriptName,
+                };
 
+                var result = (string)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
                 return Some<string, Ex>(result);
             }
             catch (Exception ex)
@@ -177,11 +168,12 @@
             try
             {
                 var sp = this.FullyQualified("GetVersion");
-                var args = new { RepositoryPath = repositoryPath };
-                var result = this.session
-                    .Connection
-                    .ExecuteScalar<string>(sp, args, commandType: CommandType.StoredProcedure);
+                var args = new Dictionary<string, object>()
+                {
+                    ["RepositoryPath"] = repositoryPath,
+                };
 
+                var result = (string)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
                 return Some<string, Ex>(result)
                     .Map(x => string.IsNullOrWhiteSpace(x) ? "0" : x);
             }
@@ -199,13 +191,13 @@
             try
             {
                 var sp = this.FullyQualified("HasScriptRunAlready");
-                var args = new { ScriptName = scriptName };
-                var result = this.session
-                    .Connection
-                    .ExecuteScalar<int>(sp, args, commandType: CommandType.StoredProcedure);
+                var args = new Dictionary<string, object>()
+                {
+                    ["ScriptName"] = scriptName,
+                };
 
-                return Some<int, Ex>(result)
-                    .Map(x => x > 0);
+                var result = (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
+                return Some<int, Ex>(result).Map(x => x > 0);
             }
             catch (Exception ex)
             {

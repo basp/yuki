@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using Optional;
+
     using static Optional.Option;
     using static Utils;
 

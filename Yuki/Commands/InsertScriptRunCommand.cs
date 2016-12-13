@@ -54,7 +54,7 @@
                 Hash = request.Hash,
                 IsOneTimeScript = request.IsOneTimeScript,
                 ScriptName = request.ScriptName,
-                VersionId = request.VersionId
+                VersionId = request.VersionId,
             };
         }
     }

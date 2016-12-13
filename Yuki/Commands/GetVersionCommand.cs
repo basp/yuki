@@ -3,7 +3,7 @@
     using System;
     using System.Diagnostics.Contracts;
     using Optional;
-   
+
     using Req = GetVersionRequest;
     using Res = GetVersionResponse;
 
@@ -35,7 +35,7 @@
                 Database = request.Database,
                 Schema = request.Schema,
                 RepositoryPath = request.RepositoryPath,
-                VersionName = versionName
+                VersionName = versionName,
             };
         }
     }

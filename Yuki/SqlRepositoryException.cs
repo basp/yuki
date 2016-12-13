@@ -6,7 +6,8 @@
     [Serializable]
     public class SqlRepositoryException : Exception
     {
-        public SqlRepositoryException() : base()
+        public SqlRepositoryException()
+            : base()
         {
         }
 
