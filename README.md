@@ -12,6 +12,33 @@ using these patterns together it's easy to extend as well as to compose new
 functionality by using the smaller commands that are allready baked in in a
 very preditable and reasonable fashion.
 
+# Commands
+The core unit of work in Yuki is the humble `ICommand<TReq,TRes,TEx>` type.
+It has a single method:
+
+	Option<TRes, TEx> Execute(TReq request);
+
+By using the `Option<TRes, TEx>` type as a return value it becomes incredibly
+easy to compose commands. 
+
+# Requests
+Every built-in `TReq` in Yuki is decorated with `PowerArgs` attributes. This
+means that you can easily *hydrate* them from the command line. They are also
+pure in the sense that they don't have side-effects. They might have a few 
+utility members but these are always pure and safe to use in all cases.
+
+# Responses
+Every command should have a custom response type even if they are similar to
+existing response types. Most of the built-in response types are or will be 
+JSON serializable so that it is easy to interoperate with other tools.
+
+For example, it's very easy to convert a lot of Yuki output to real objects
+in PowerShell using the `ConvertFrom-Json` cmdlet. 
+
+# Note
+If there are clear hierarchies it's usually fine to
+share some properties (Yuki does this as well on both the request and response
+classes) but do be careful about not tangling your classes too much.
 
 # Legacy notes
 ## Script types
