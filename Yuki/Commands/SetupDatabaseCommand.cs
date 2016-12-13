@@ -40,6 +40,7 @@
             var createDatabaseResult = this.CreateDatabaseCommand(request);
             if (!createDatabaseResult.HasValue)
             {
+                // We have an error right here but just need to map the result type.
                 return createDatabaseResult.Map(x => Res.Done);
             }
 
