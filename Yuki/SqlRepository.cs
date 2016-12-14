@@ -55,7 +55,7 @@
             }
             catch (Exception ex)
             {
-                var msg = $"Could not initialize repository in '[{this.config.Database}].[{this.config.Schema}]'.";
+                var msg = $"Could not initialize repository in '[{this.config.RepositoryDatabase}].[{this.config.RepositorySchema}]'.";
                 var error = new Ex(msg, ex);
                 return None<bool, Ex>(error);
             }
@@ -208,6 +208,6 @@
         }
 
         private string FullyQualified(string name) =>
-            $"[{this.config.Database}].[{this.config.Schema}].{name}";
+            $"[{this.config.RepositoryDatabase}].[{this.config.RepositorySchema}].{name}";
     }
 }

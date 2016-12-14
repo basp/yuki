@@ -38,7 +38,6 @@
                     .Select(x => new FileInfo(x))
                     .ToArray();
 
-                Array.ForEach(files, x => this.log.Debug($"> {x.FullName}"));
                 var backup = files
                    .OrderByDescending(this.ordering)
                    .Select(x => x.FullName)

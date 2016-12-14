@@ -167,6 +167,9 @@
     <Compile Include="Commands\SetupDatabaseRequest.cs" />
     <Compile Include="Commands\SetupDatabaseResponse.cs" />
     <Compile Include="Commands\SetupResponse.cs" />
+    <Compile Include="Commands\VersionCommand.cs" />
+    <Compile Include="Commands\VersionRequest.cs" />
+    <Compile Include="Commands\VersionResponse.cs" />
     <Compile Include="Commands\WalkFoldersCommand.cs" />
     <Compile Include="Commands\WalkFoldersRequest.cs" />
     <Compile Include="Commands\WalkFoldersResponse.cs" />
@@ -189,6 +192,7 @@
     <Compile Include="IRepository.cs" />
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="ISession.cs" />
+    <Compile Include="IVersionProvider.cs" />
     <Compile Include="MD5Hasher.cs" />
     <Compile Include="ISqlRepositoryConfig.cs" />
     <Compile Include="Commands\SetupRequest.cs" />
@@ -199,6 +203,7 @@
     <Compile Include="SqlRepositoryException.cs" />
     <Compile Include="SqlSession.cs" />
     <Compile Include="SqlSessionFactory.cs" />
+    <Compile Include="TextFileVersionResolver.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

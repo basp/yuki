@@ -32,8 +32,8 @@
             return new Res()
             {
                 Server = request.Server,
-                Database = request.Database,
-                Schema = request.Schema,
+                Database = request.RepositoryDatabase,
+                Schema = request.RepositorySchema,
                 RepositoryPath = request.RepositoryPath,
                 VersionName = versionName,
             };

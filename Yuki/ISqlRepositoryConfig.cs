@@ -2,12 +2,12 @@
 {
     public interface ISqlRepositoryConfig
     {
-        string Database
+        string RepositoryDatabase
         {
             get;
         }
 
-        string Schema
+        string RepositorySchema
         {
             get;
         }

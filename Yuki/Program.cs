@@ -161,7 +161,40 @@
         }
 
         [ArgActionMethod]
-        public void SetupDatabases(SetupRequest request)
+        public void Version(VersionRequest request)
+        {
+            var identityProvider = new WindowsIdentityProvider();
+            var versionProvider = new TextFileVersionResolver(request.VersionFile);
+            var sessionFactory = CreateSessionFactory(request.Server);
+
+            using (var session = sessionFactory.Create())
+            {
+                session.Open();
+                session.BeginTransaction();
+
+                var cmd = new VersionCommand(
+                    session,
+                    versionProvider,
+                    identityProvider);
+
+                var res = cmd.Execute(request);
+
+                res.MatchSome(x =>
+                {
+                    session.CommitTransaction();
+                    WriteLine(JsonConvert.SerializeObject(x));
+                });
+
+                res.MatchNone(x =>
+                {
+                    session.RollbackTransaction();
+                    this.log.Error(x);
+                });
+            }
+        }
+
+        [ArgActionMethod]
+        public void Setup(SetupRequest request)
         {
             var sessionFactory = CreateSessionFactory(request.Server);
             using (var session = sessionFactory.Create())
@@ -209,6 +242,12 @@
                 res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
                 res.MatchNone(x => this.log.Error(x));
             }
+        }
+
+        [ArgActionMethod]
+        public void Run()
+        {
+            throw new NotImplementedException();
         }
 
         private static Option<TResponse, TException> ExecuteDatabaseRequest<TRequest, TResponse, TException>(

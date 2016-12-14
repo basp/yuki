@@ -1,22 +1,29 @@
 ﻿namespace Yuki.Commands
 {
+    using System;
     using PowerArgs;
 
-    public class RepositoryRequest : DatabaseRequest, ISqlRepositoryConfig
+    public class RepositoryRequest : ISessionRequest, ISqlRepositoryConfig
     {
-        [ArgPosition(2)]
-        [ArgDefaultValue("yuki")]
-        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public override string Database
+        [ArgRequired]
+        [ArgPosition(1)]
+        public string Server
         {
             get;
             set;
         }
 
-        [ArgPosition(3)]
+        [ArgDefaultValue("yuki")]
+        [ArgShortcut(CommonShortcuts.RepositoryDatabase)]
+        public string RepositoryDatabase
+        {
+            get;
+            set;
+        }
+
         [ArgDefaultValue("dbo")]
-        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public string Schema
+        [ArgShortcut(CommonShortcuts.RepositorySchema)]
+        public string RepositorySchema
         {
             get;
             set;

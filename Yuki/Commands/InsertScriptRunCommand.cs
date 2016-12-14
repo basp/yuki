@@ -47,8 +47,8 @@
             return new Res()
             {
                 Server = request.Server,
-                Database = request.Database,
-                Schema = request.Schema,
+                Database = request.RepositoryDatabase,
+                Schema = request.RepositorySchema,
                 ScriptRunId = scriptRunId,
                 EnteredBy = request.EnteredBy,
                 Hash = request.Hash,

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
+    using System.IO;
     using NLog;
     using Optional;
 
@@ -54,8 +55,8 @@
                 var initRepoResult = this.createRepositoryCmd.Execute(new CreateRepositoryRequest()
                 {
                     Server = request.Server,
-                    Database = request.RepositoryDatabase,
-                    Schema = request.RepositorySchema,
+                    RepositoryDatabase = request.RepositoryDatabase,
+                    RepositorySchema = request.RepositorySchema,
                 });
 
                 if (!initRepoResult.HasValue)
@@ -66,7 +67,7 @@
                 return Some<Res, Exception>(new Res()
                 {
                     Server = request.Server,
-                    DatabaseFolder = request.DatabasesFolder,
+                    DatabaseFolder = Path.GetFullPath(request.DatabasesFolder),
                     RepositoryDatabase = request.RepositoryDatabase,
                     RepositorySchema = request.RepositorySchema,
                 });

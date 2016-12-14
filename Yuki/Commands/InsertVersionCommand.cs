@@ -45,8 +45,8 @@
                 RepositoryPath = req.RepositoryPath,
                 EnteredBy = req.EnteredBy,
                 Server = req.Server,
-                Database = req.Database,
-                Schema = req.Schema,
+                Database = req.RepositoryDatabase,
+                Schema = req.RepositorySchema,
             };
         }
     }

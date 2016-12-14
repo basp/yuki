@@ -14,7 +14,6 @@
         public string RepositoryDatabase { get; set; }
 
         [JsonProperty(PropertyName = "repositorySchema")]
-
         public string RepositorySchema { get; set; }
     }
 }

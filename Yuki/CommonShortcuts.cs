@@ -10,6 +10,7 @@
         public const string RepositoryDatabase = "rd";
         public const string RepositorySchema = "rs";
         public const string VersionName = "vn";
+        public const string VersionFile = "vf";
         public const string Backup = "bak";
         public const string RestoreTimeout = "rto";
     }
