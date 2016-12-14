@@ -16,7 +16,7 @@
     public class CreateDatabaseCommand : ICommand<Req, Res, Exception>
     {
         private static readonly string CreateDatabaseTemplate =
-            $"{nameof(Yuki)}.Resources.CreateDatabase.sql";
+            $"{nameof(Yuki)}.Resources.{nameof(CreateDatabaseTemplate)}.sql";
 
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 

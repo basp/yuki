@@ -12,8 +12,8 @@
 
     public class DropDatabaseCommand : ICommand<Req, Res, Exception>
     {
-        private static readonly string ResourceName =
-            $"{nameof(Yuki)}.Resources.DropDatabase.sql";
+        private static readonly string DropDatabaseTemplate =
+            $"{nameof(Yuki)}.Resources.{nameof(DropDatabaseTemplate)}.sql";
 
         private readonly ISession session;
 
@@ -29,7 +29,7 @@
             try
             {
                 var asm = typeof(DropDatabaseCommand).Assembly;
-                var tmpl = asm.ReadEmbeddedString(ResourceName);
+                var tmpl = asm.ReadEmbeddedString(DropDatabaseTemplate);
                 var cmdText = Smart.Format(tmpl, req);
 
                 this.session.ExecuteNonQuery(

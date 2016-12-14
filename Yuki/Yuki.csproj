@@ -155,24 +155,34 @@
     <Compile Include="Commands\InsertVersionResponse.cs" />
     <Compile Include="Commands\InsertScriptRunCommand.cs" />
     <Compile Include="Commands\IRepositoryResponse.cs" />
+    <Compile Include="Commands\ReadConfigCommand.cs" />
+    <Compile Include="Commands\ReadConfigRequest.cs" />
+    <Compile Include="Commands\ReadConfigResponse.cs" />
     <Compile Include="Commands\ReadFileCommand.cs" />
     <Compile Include="Commands\ReadFileRequest.cs" />
     <Compile Include="Commands\ReadFileResponse.cs" />
     <Compile Include="Commands\RepositoryRequest.cs" />
+    <Compile Include="Commands\SetupCommand.cs" />
     <Compile Include="Commands\SetupDatabaseCommand.cs" />
     <Compile Include="Commands\SetupDatabaseRequest.cs" />
     <Compile Include="Commands\SetupDatabaseResponse.cs" />
+    <Compile Include="Commands\SetupResponse.cs" />
     <Compile Include="Commands\WalkFoldersCommand.cs" />
     <Compile Include="Commands\WalkFoldersRequest.cs" />
     <Compile Include="Commands\WalkFoldersResponse.cs" />
+    <Compile Include="Commands\WriteConfigCommand.cs" />
+    <Compile Include="Commands\WriteConfigRequest.cs" />
+    <Compile Include="Commands\WriteConfigResponse.cs" />
     <Compile Include="CommonShortcuts.cs" />
     <Compile Include="DefaultBackupFileProvider.cs" />
+    <Compile Include="DefaultConfig.cs" />
     <Compile Include="IArgumentEvaluator.cs" />
     <Compile Include="IBackupFileProvider.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Commands\RestoreDatabaseCommand.cs" />
     <Compile Include="Commands\RestoreDatabaseRequest.cs" />
     <Compile Include="Commands\RestoreDatabaseResponse.cs" />
+    <Compile Include="IProjectConfig.cs" />
     <Compile Include="IHasher.cs" />
     <Compile Include="IIdentityProvider.cs" />
     <Compile Include="ISessionRequest.cs" />
@@ -181,7 +191,7 @@
     <Compile Include="ISession.cs" />
     <Compile Include="MD5Hasher.cs" />
     <Compile Include="ISqlRepositoryConfig.cs" />
-    <Compile Include="SetupRequest.cs" />
+    <Compile Include="Commands\SetupRequest.cs" />
     <Compile Include="StatementSplitter.cs" />
     <Compile Include="IScriptRunErrorRecord.cs" />
     <Compile Include="IScriptRunRecord.cs" />
@@ -198,19 +208,20 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\ConfigurationTemplate.json" />
     <None Include="Yuki.ruleset" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\CreateDatabase.sql" />
+    <EmbeddedResource Include="Resources\CreateDatabaseTemplate.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\RestoreDatabase.sql" />
+    <EmbeddedResource Include="Resources\RestoreDatabaseTemplate.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\DropDatabase.sql" />
+    <EmbeddedResource Include="Resources\DropDatabaseTemplate.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\CreateRepository.sql" />
+    <EmbeddedResource Include="Resources\CreateRepositoryTemplate.sql" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta001\analyzers\dotnet\cs\Newtonsoft.Json.dll" />

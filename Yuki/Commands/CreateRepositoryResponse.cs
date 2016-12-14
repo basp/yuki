@@ -1,6 +1,7 @@
 ﻿namespace Yuki.Commands
 {
     using System.Diagnostics.Contracts;
+    using Newtonsoft.Json;
 
     public class CreateRepositoryResponse
     {
@@ -15,12 +16,14 @@
             this.Schema = schema;
         }
 
+        [JsonProperty(PropertyName = "database")]
         public string Database
         {
             get;
             private set;
         }
 
+        [JsonProperty(PropertyName = "schema")]
         public string Schema
         {
             get;

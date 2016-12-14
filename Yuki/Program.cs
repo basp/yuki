@@ -141,7 +141,27 @@
         }
 
         [ArgActionMethod]
-        public void Setup(SetupRequest request)
+        public void ReadConfig(ReadConfigRequest request)
+        {
+            var cmd = new ReadConfigCommand();
+            var res = cmd.Execute(request);
+
+            res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x.Config)));
+            res.MatchNone(x => this.log.Error(x));
+        }
+
+        [ArgActionMethod]
+        public void WriteConfig(WriteConfigRequest request)
+        {
+            var cmd = new WriteConfigCommand();
+            var res = cmd.Execute(request);
+
+            res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
+            res.MatchNone(x => this.log.Error(x));
+        }
+
+        [ArgActionMethod]
+        public void SetupDatabases(SetupRequest request)
         {
             var sessionFactory = CreateSessionFactory(request.Server);
             using (var session = sessionFactory.Create())
@@ -177,12 +197,14 @@
                         return setupDatabaseResult.Map(x => (object)x);
                     }));
 
-                var walkFoldersRequest = new WalkFoldersRequest()
-                {
-                    Folder = request.Folder,
-                };
+                var createRepositoryCmd = new CreateRepositoryCommand(session);
+                var setupCommand = new SetupCommand<object>(
+                    session,
+                    backupFileProvider,
+                    walkFoldersCmd,
+                    createRepositoryCmd);
 
-                var res = walkFoldersCmd.Execute(walkFoldersRequest);
+                var res = setupCommand.Execute(request);
 
                 res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
                 res.MatchNone(x => this.log.Error(x));

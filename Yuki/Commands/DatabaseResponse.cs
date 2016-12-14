@@ -1,6 +1,7 @@
 ﻿namespace Yuki.Commands
 {
     using System.Diagnostics.Contracts;
+    using Newtonsoft.Json;
 
     public class DatabaseResponse : IDatabaseResponse
     {
@@ -10,12 +11,14 @@
             this.Database = database;
         }
 
+        [JsonProperty(PropertyName = "server")]
         public string Server
         {
             get;
             private set;
         }
 
+        [JsonProperty(PropertyName = "database")]
         public string Database
         {
             get;

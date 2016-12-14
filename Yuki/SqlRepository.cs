@@ -15,8 +15,8 @@
 
     public class SqlRepository : IRepository<int, Ex>
     {
-        private static string createRepositoryTemplate =
-            $"{nameof(Yuki)}.Resources.CreateRepository.sql";
+        private static readonly string CreateRepositoryTemplate =
+            $"{nameof(Yuki)}.Resources.{nameof(CreateRepositoryTemplate)}.sql";
 
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
         private readonly ISession session;
@@ -39,7 +39,7 @@
             try
             {
                 var asm = typeof(SqlRepository).Assembly;
-                var tmpl = asm.ReadEmbeddedString(createRepositoryTemplate);
+                var tmpl = asm.ReadEmbeddedString(CreateRepositoryTemplate);
                 var cmdText = Smart.Format(tmpl, this.config);
                 var stmts = StatementSplitter.Split(cmdText).ToList();
 

@@ -214,7 +214,7 @@ SELECT CAST(SCOPE_IDENTITY() AS INT)
 GO
 
 DECLARE @schemaId INT
-SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = 'RepositorySchema')
+SET @schemaId = (SELECT TOP 1 [schema_id] FROM sys.schemas WHERE [name] = '{Schema}')
 IF NOT EXISTS(SELECT * FROM sys.procedures WHERE [name] = 'HasScriptRunAlready' AND [schema_id] = @schemaId)
 BEGIN
     DECLARE @sql VARCHAR(1000)

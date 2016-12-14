@@ -1,6 +1,7 @@
 ﻿namespace Yuki.Commands
 {
     using System.Diagnostics.Contracts;
+    using Newtonsoft.Json;
 
     public class HashFileResponse
     {
@@ -11,6 +12,7 @@
             this.Hash = hash;
         }
 
+        [JsonProperty(PropertyName = "hash")]
         public string Hash
         {
             get;

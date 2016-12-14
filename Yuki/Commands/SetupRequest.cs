@@ -1,4 +1,4 @@
-﻿namespace Yuki
+﻿namespace Yuki.Commands
 {
     using PowerArgs;
 
@@ -12,7 +12,15 @@
         [ArgRequired]
         [ArgPosition(2)]
         [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public string Folder { get; set; }
+        public string DatabasesFolder { get; set; }
+
+        [ArgDefaultValue("yuki")]
+        [ArgShortcut(CommonShortcuts.RepositoryDatabase)]
+        public string RepositoryDatabase { get; set; }
+
+        [ArgDefaultValue("dbo")]
+        [ArgShortcut(CommonShortcuts.RepositorySchema)]
+        public string RepositorySchema { get; set; }
 
         [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
         [ArgDefaultValue(false)]

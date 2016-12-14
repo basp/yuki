@@ -13,7 +13,7 @@
     public class RestoreDatabaseCommand : ICommand<Req, Res, Exception>
     {
         private static readonly string RestoreDatabaseTemplate =
-            $"{nameof(Yuki)}.Resources.RestoreDatabase.sql";
+            $"{nameof(Yuki)}.Resources.{nameof(RestoreDatabaseTemplate)}.sql";
 
         private readonly ISession session;
 
