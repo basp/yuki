@@ -43,7 +43,7 @@
         private static bool ScriptHasTextToRun(string sql)
         {
             sql = Regex.Replace(sql, RegexSplitString, string.Empty, RegexOpts);
-            return !(string.IsNullOrEmpty(sql) || string.IsNullOrWhiteSpace(sql));
+            return !string.IsNullOrWhiteSpace(sql);
         }
     }
 }

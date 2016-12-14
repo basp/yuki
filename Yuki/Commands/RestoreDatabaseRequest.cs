@@ -19,8 +19,8 @@
             string database,
             string backup)
         {
-            Contract.Requires(!string.IsNullOrEmpty(database));
-            Contract.Requires(!string.IsNullOrEmpty(backup));
+            Contract.Requires(!string.IsNullOrWhiteSpace(database));
+            Contract.Requires(!string.IsNullOrWhiteSpace(backup));
 
             return new RestoreDatabaseRequest()
             {

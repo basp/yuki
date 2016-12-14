@@ -30,7 +30,7 @@
             }
             catch (Exception ex)
             {
-                var msg = $"Could not read file ${request.Path}.";
+                var msg = $"Could not read file {request.Path}.";
                 var error = new Exception(msg, ex);
                 return None<Res, Exception>(error);
             }
