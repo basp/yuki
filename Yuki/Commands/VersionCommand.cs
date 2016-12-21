@@ -34,54 +34,45 @@
 
         public Option<Res, Exception> Execute(Req request)
         {
-            var repo = new SqlRepository(this.session, request);
-            var currentVersion = repo.GetVersion(request.RepositoryPath);
-            var newVersion = this.versionProvider.Resolve();
-            if (!newVersion.HasValue)
-            {
-                return newVersion.Map(x => new Res());
-            }
-
             var insertVersionRequest = new InsertVersionRequest()
             {
                 Server = request.Server,
                 RepositoryDatabase = request.RepositoryDatabase,
                 RepositorySchema = request.RepositorySchema,
                 RepositoryPath = request.RepositoryPath,
-                VersionName = newVersion.ValueOr("TILT"),
             };
 
             var insertVersionCmd = new InsertVersionCommand(
-                this.session,
-                this.identity);
-
-            var insertVersionResponse = insertVersionCmd
-                .Execute(insertVersionRequest);
-
-            if (!insertVersionResponse.HasValue)
-            {
-                return insertVersionResponse.Map(x => new Res());
-            }
-
-            // Running into 0x1DEDBABE here is a bug.
-            // Eiter in Yuki or in your migration process.
-            var versionId = insertVersionResponse.Match(
-                some => some.VersionId,
-                none => 0x1DEDBABE);
+               this.session,
+               this.identity);
 
             var res = new Res()
             {
                 Server = request.Server,
                 RepositoryDatabase = request.RepositoryDatabase,
                 RepositorySchema = request.RepositorySchema,
-                CurrentVersion = newVersion.ValueOr("TILT"),
-                PreviousVersion = currentVersion.ValueOr("TILT"),
                 RepositoryPath = request.RepositoryPath,
                 VersionFile = request.VersionFile,
-                VersionId = versionId,
             };
 
-            return Some<Res, Exception>(res);
+            var repo = new SqlRepository(this.session, request);
+            return repo.GetVersion(request.RepositoryPath)
+                .FlatMap(x =>
+                {
+                    res.PreviousVersion = x;
+                    return this.versionProvider.Resolve();
+                })
+                .FlatMap(x =>
+                {
+                    res.CurrentVersion = x;
+                    insertVersionRequest.VersionName = x;
+                    return insertVersionCmd.Execute(insertVersionRequest);
+                })
+                .Map(x =>
+                {
+                    res.VersionId = x.VersionId;
+                    return res;
+                });
         }
     }
 }

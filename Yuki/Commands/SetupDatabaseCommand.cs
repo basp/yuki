@@ -44,12 +44,6 @@
                 req.Server,
                 req.Database);
 
-            if (!createDatabaseResult.HasValue)
-            {
-                // We have an error right here but just need to map the result type.
-                return createDatabaseResult.Map(x => new Res());
-            }
-
             createDatabaseResult.MatchSome(x =>
             {
                 var msg = x.Created
@@ -62,46 +56,33 @@
             if (!req.Restore)
             {
                 this.log.Info($"Skipping restore [default]");
-                return CreateResponse(req, None<string>());
+                return Some<Res, Exception>(CreateResponse(req, string.Empty));
             }
 
-            var maybeBackup = this.backupFileProvider.TryFindIn(req.Folder);
-            if (!maybeBackup.HasValue)
+            var result = createDatabaseResult
+                .FlatMap(x => this.backupFileProvider.TryFindIn(req.Folder))
+                .MapException(x => new Exception($"No backup found in {req.Folder}", x))
+                .FlatMap(x => this.RestoreDatabase(req.Server, req.Database, x))
+                .Map(x => CreateResponse(req, x.Backup));
+
+            result.MatchSome(x =>
             {
-                // For now, when a user requests a restore (which is currently an explicit
-                // flag) we will bail when we can't find any backup file.
-                return maybeBackup
-                    .Map(x => new Res())
-                    .MapException(x => new Exception($"No backup found in {req.Folder}", x));
-            }
+                var msg = $"Restored database [{req.Database}] on server [{req.Server}] using backup {x.Backup}";
+                this.log.Info(msg);
+            });
 
-            // We should *never* get the TILT value, it's just there to satisfy the option.
-            var backup = maybeBackup.ValueOr("TILT");
-
-            var restoreDatabaseResult = this.RestoreDatabase(
-                req.Server,
-                req.Database,
-                backup);
-
-            if (!restoreDatabaseResult.HasValue)
-            {
-                // Same as before, satisfy the compiler as we do have an error value.
-                return restoreDatabaseResult.Map(x => new Res());
-            }
-
-            this.log.Info($"Restored database [{req.Database}] on server [{req.Server}] using backup {backup}");
-            return CreateResponse(req, Some(backup));
+            return result;
         }
 
-        private static Option<Res, Exception> CreateResponse(Req req, Option<string> backup)
+        private static Res CreateResponse(Req req, string backup)
         {
-            return Some<Res, Exception>(new Res()
+            return new Res()
             {
                 Server = req.Server,
                 Database = req.Database,
                 Folder = req.Folder,
-                Backup = backup.ValueOr(string.Empty),
-            });
+                Backup = backup,
+            };
         }
 
         private Option<CreateDatabaseResponse, Exception> CreateDatabaseCommand(

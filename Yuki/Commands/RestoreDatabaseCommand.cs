@@ -43,7 +43,7 @@
                     CommandType.Text);
 
                 return Option.Some<Res, Exception>(
-                    new Res(req.Server, req.Database));
+                    new Res(req.Server, req.Database, req.Backup));
             }
             catch (Exception ex)
             {

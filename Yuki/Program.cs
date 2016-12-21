@@ -245,7 +245,7 @@
         }
 
         [ArgActionMethod]
-        public void Run()
+        public void Run(RunRequest request)
         {
             throw new NotImplementedException();
         }

@@ -162,6 +162,9 @@
     <Compile Include="Commands\ReadFileRequest.cs" />
     <Compile Include="Commands\ReadFileResponse.cs" />
     <Compile Include="Commands\RepositoryRequest.cs" />
+    <Compile Include="Commands\RunCommand.cs" />
+    <Compile Include="Commands\RunRequest.cs" />
+    <Compile Include="Commands\RunResponse.cs" />
     <Compile Include="Commands\SetupCommand.cs" />
     <Compile Include="Commands\SetupDatabaseCommand.cs" />
     <Compile Include="Commands\SetupDatabaseRequest.cs" />
@@ -200,7 +203,6 @@
     <Compile Include="IScriptRunErrorRecord.cs" />
     <Compile Include="IScriptRunRecord.cs" />
     <Compile Include="SqlRepository.cs" />
-    <Compile Include="SqlRepositoryException.cs" />
     <Compile Include="SqlSession.cs" />
     <Compile Include="SqlSessionFactory.cs" />
     <Compile Include="TextFileVersionResolver.cs" />

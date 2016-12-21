@@ -11,9 +11,7 @@
 
     using static Optional.Option;
 
-    using Ex = SqlRepositoryException;
-
-    public class SqlRepository : IRepository<int, Ex>
+    public class SqlRepository : IRepository<int, Exception>
     {
         private static readonly string CreateRepositoryTemplate =
             $"{nameof(Yuki)}.Resources.{nameof(CreateRepositoryTemplate)}.sql";
@@ -34,7 +32,7 @@
             this.config = config;
         }
 
-        public Option<bool, Ex> Initialize()
+        public Option<bool, Exception> Initialize()
         {
             try
             {
@@ -51,17 +49,17 @@
                         CommandType.Text);
                 }
 
-                return Some<bool, Ex>(true);
+                return Some<bool, Exception>(true);
             }
             catch (Exception ex)
             {
                 var msg = $"Could not initialize repository in '[{this.config.RepositoryDatabase}].[{this.config.RepositorySchema}]'.";
-                var error = new Ex(msg, ex);
-                return None<bool, Ex>(error);
+                var error = new Exception(msg, ex);
+                return None<bool, Exception>(error);
             }
         }
 
-        public Option<int, Ex> InsertVersion(
+        public Option<int, Exception> InsertVersion(
             IVersionRecord record)
         {
             try
@@ -75,17 +73,17 @@
                 };
 
                 var result = (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
-                return Some<int, Ex>(result);
+                return Some<int, Exception>(result);
             }
             catch (Exception ex)
             {
                 var msg = $"Could not insert version.";
-                var error = new Ex(msg, ex);
-                return None<int, Ex>(error);
+                var error = new Exception(msg, ex);
+                return None<int, Exception>(error);
             }
         }
 
-        public Option<int, Ex> InsertScriptRun(
+        public Option<int, Exception> InsertScriptRun(
             IScriptRunRecord<int> record)
         {
             try
@@ -102,17 +100,17 @@
                 };
 
                 var result = (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
-                return Some<int, Ex>(result);
+                return Some<int, Exception>(result);
             }
             catch (Exception ex)
             {
                 var msg = $"Could not insert script run.";
-                var error = new Ex(msg, ex);
-                return None<int, Ex>(error);
+                var error = new Exception(msg, ex);
+                return None<int, Exception>(error);
             }
         }
 
-        public Option<int, Ex> InsertScriptRunError(
+        public Option<int, Exception> InsertScriptRunError(
             IScriptRunErrorRecord record)
         {
             try
@@ -130,17 +128,17 @@
                 };
 
                 var result = (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
-                return Some<int, Ex>(result);
+                return Some<int, Exception>(result);
             }
             catch (Exception ex)
             {
                 var msg = $"Could not insert script run error.";
-                var error = new Ex(msg, ex);
-                return None<int, Ex>(error);
+                var error = new Exception(msg, ex);
+                return None<int, Exception>(error);
             }
         }
 
-        public Option<string, Ex> GetHash(
+        public Option<string, Exception> GetHash(
             string scriptName)
         {
             try
@@ -152,17 +150,17 @@
                 };
 
                 var result = (string)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
-                return Some<string, Ex>(result);
+                return Some<string, Exception>(result);
             }
             catch (Exception ex)
             {
                 var msg = $"Could not get script hash.";
-                var error = new Ex(msg, ex);
-                return None<string, Ex>(error);
+                var error = new Exception(msg, ex);
+                return None<string, Exception>(error);
             }
         }
 
-        public Option<string, Ex> GetVersion(
+        public Option<string, Exception> GetVersion(
             string repositoryPath)
         {
             try
@@ -174,18 +172,18 @@
                 };
 
                 var result = (string)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
-                return Some<string, Ex>(result)
+                return Some<string, Exception>(result)
                     .Map(x => string.IsNullOrWhiteSpace(x) ? "0" : x);
             }
             catch (Exception ex)
             {
                 var msg = $"Could not get version.";
-                var error = new Ex(msg, ex);
-                return None<string, Ex>(error);
+                var error = new Exception(msg, ex);
+                return None<string, Exception>(error);
             }
         }
 
-        public Option<bool, Ex> HasScriptRunAlready(
+        public Option<bool, Exception> HasScriptRunAlready(
             string scriptName)
         {
             try
@@ -197,13 +195,13 @@
                 };
 
                 var result = (int)this.session.ExecuteScalar(sp, args, CommandType.StoredProcedure);
-                return Some<int, Ex>(result).Map(x => x > 0);
+                return Some<int, Exception>(result).Map(x => x > 0);
             }
             catch (Exception ex)
             {
                 var msg = $"Could not get script run status.";
-                var error = new Ex(msg, ex);
-                return None<bool, Ex>(error);
+                var error = new Exception(msg, ex);
+                return None<bool, Exception>(error);
             }
         }
 

@@ -38,44 +38,42 @@
             this.createRepositoryCmd = createRepositoryCmd;
         }
 
-        public Option<Res, Exception> Execute(Req request)
+        public Option<Res, Exception> Execute(Req req)
         {
             try
             {
-                var setupResult = this.setupDatabasesCmd.Execute(new WalkFoldersRequest()
+                var walkFoldersRequest = new WalkFoldersRequest()
                 {
-                    Folder = request.DatabasesFolder,
-                });
+                    Folder = req.DatabasesFolder,
+                };
 
-                if (!setupResult.HasValue)
+                var initRepoRequest = new CreateRepositoryRequest()
                 {
-                    return setupResult.Map(x => new Res());
-                }
+                    Server = req.Server,
+                    RepositoryDatabase = req.RepositoryDatabase,
+                    RepositorySchema = req.RepositorySchema,
+                };
 
-                var initRepoResult = this.createRepositoryCmd.Execute(new CreateRepositoryRequest()
-                {
-                    Server = request.Server,
-                    RepositoryDatabase = request.RepositoryDatabase,
-                    RepositorySchema = request.RepositorySchema,
-                });
-
-                if (!initRepoResult.HasValue)
-                {
-                    return initRepoResult.Map(x => new Res());
-                }
-
-                return Some<Res, Exception>(new Res()
-                {
-                    Server = request.Server,
-                    DatabaseFolder = Path.GetFullPath(request.DatabasesFolder),
-                    RepositoryDatabase = request.RepositoryDatabase,
-                    RepositorySchema = request.RepositorySchema,
-                });
+                return this.setupDatabasesCmd
+                    .Execute(walkFoldersRequest)
+                    .FlatMap(x => this.createRepositoryCmd.Execute(initRepoRequest))
+                    .Map(x => CreateResponse(req));
             }
             catch (Exception ex)
             {
                 return None<Res, Exception>(ex);
             }
+        }
+
+        private static Res CreateResponse(Req req)
+        {
+            return new Res()
+            {
+                Server = req.Server,
+                DatabaseFolder = Path.GetFullPath(req.DatabasesFolder),
+                RepositoryDatabase = req.RepositoryDatabase,
+                RepositorySchema = req.RepositorySchema,
+            };
         }
     }
 }

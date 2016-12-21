@@ -30,5 +30,8 @@
 
         [JsonProperty(PropertyName = "isOneTimeScript")]
         public bool IsOneTimeScript { get; set; }
+
+        [JsonIgnore]
+        public string Sql { get; set; }
     }
 }
