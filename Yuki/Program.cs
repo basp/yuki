@@ -85,7 +85,7 @@
                       from migrateRes in migrateCommand.Execute(migrateRequest)
                       select new { Setup = setupRes, Migrate = migrateRes };
 
-            res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
+            res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x, Formatting.Indented)));
             res.MatchNone(x => WriteLine(x.ToString()));
         }
     }

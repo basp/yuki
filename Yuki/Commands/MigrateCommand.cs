@@ -32,28 +32,17 @@
         {
             using (var session = this.sessionFactory.Create())
             {
-                var getVersionCmd = this.getVersionCommandFactory(session);
-                var resolveVersionCmd = this.resolveVersionCommandFactory();
-
                 session.Open();
                 session.BeginTransaction();
 
-                var currentVersion = getVersionCmd.Execute(new GetVersionRequest
-                {
-                    Server = req.Server,
-                    RepositoryDatabase = req.RepositoryDatabase,
-                    RepositorySchema = req.RepositorySchema,
-                    RepositoryPath = req.RepositoryPath,
-                });
+                var res = from cv in this.GetCurrentVersion(session, req)
+                          from nv in this.ResolveNextVersion(req)
+                          select CreateResponse(req, cv.VersionName, nv.VersionName);
 
-                var nextVersion = resolveVersionCmd.Execute(new ResolveVersionRequest
-                {
-                    VersionFile = req.VersionFile,
-                });
+                res.MatchSome(x => session.CommitTransaction());
+                res.MatchNone(x => session.RollbackTransaction());
 
-                return from cv in currentVersion
-                       from nv in nextVersion
-                       select CreateResponse(req, cv.VersionName, nv.VersionName);
+                return res;
             }
         }
 
@@ -69,6 +58,30 @@
                 OldVersion = currentVersion,
                 NewVersion = newVersion,
             };
+        }
+
+        private Option<GetVersionResponse, Exception> GetCurrentVersion(
+            ISession session,
+            Req req)
+        {
+            var getVersionCmd = this.getVersionCommandFactory(session);
+            return getVersionCmd.Execute(new GetVersionRequest
+            {
+                Server = req.Server,
+                RepositoryDatabase = req.RepositoryDatabase,
+                RepositorySchema = req.RepositorySchema,
+                RepositoryPath = req.RepositoryPath,
+            });
+        }
+
+        private Option<ResolveVersionResponse, Exception> ResolveNextVersion(
+            Req req)
+        {
+            var resolveVersionCmd = this.resolveVersionCommandFactory();
+            return resolveVersionCmd.Execute(new ResolveVersionRequest
+            {
+                VersionFile = req.VersionFile,
+            });
         }
     }
 }

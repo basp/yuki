@@ -23,7 +23,7 @@
         {
             try
             {
-                var v = File.ReadAllText(this.path);
+                var v = File.ReadAllText(this.path).Trim();
                 return Some<string, Exception>(v);
             }
             catch (Exception ex)
