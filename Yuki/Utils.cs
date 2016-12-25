@@ -10,10 +10,7 @@
 
     public static class Utils
     {
-        public static string FullyQualifiedObjectName(
-            string database,
-            string schema,
-            string obj) => $"[{database}].[{schema}].{obj}";
+        public static string FullyQualifiedObjectName(string database, string schema, string obj) => $"[{database}].[{schema}].{obj}";
 
         public static Option<string, Exception> ReadEmbeddedString(this Assembly asm, string resourceName)
         {
