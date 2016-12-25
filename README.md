@@ -1,5 +1,8 @@
 ﻿# yuki
-Database migration tool.
+Database migration tool. 
+
+Apart from (hopefully) a useful tool this is also a sandbox for playing
+around with C# 6 features and functional programming in C# in general.
 
 # design
 The design of Yuki revolves heavily around **commands** and the use of the
