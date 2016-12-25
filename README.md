@@ -179,3 +179,36 @@ In other words, it's expected that the `Format` method is idempotent, it will
 return the same results every time. And even though no part of Yuki really
 depends on this *gentlemens agreement* nor is it enforced you should take
 care to follow it anyway.
+
+To implement a template you can just implement the `ITextTemplate` interface
+which is pretty easy:
+
+	using System;
+	using Optional;
+
+	using static Optional.Option;
+
+	public class FooTemplate
+		: ITextTemplate
+	{
+		public FooTemplate(string key, string value)
+		{
+			this.Key = key;
+			this.Value = value;
+		}
+
+		public string Key { get; }
+
+		public string Value { get; }
+
+		public Option<string, Exception> Format()
+		{
+			var str = $"{this.Key}={this.Value}";
+			return Some<string,Exception>(str);
+		}
+	}
+
+Note that all the values for the template are passed in via the only
+constructor and that all the properties are read only. A neat feature of
+C# 6 is that those properties are accessible from the constructor even
+if they don't have a `set` or `private set` specified. 
