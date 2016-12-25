@@ -50,6 +50,7 @@
                 Folder = @"D:\temp\foo",
                 RepositoryDatabase = "yuki",
                 RepositorySchema = "dbo",
+                Restore = true,
             };
 
             var setupResult = setupCommand.Execute(setupRequest);

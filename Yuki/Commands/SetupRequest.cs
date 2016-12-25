@@ -9,5 +9,7 @@
         public string RepositoryDatabase { get; set; }
 
         public string RepositorySchema { get; set; }
+
+        public bool Restore { get; set; }
     }
 }

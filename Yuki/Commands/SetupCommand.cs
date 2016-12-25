@@ -50,7 +50,8 @@
                        from setupDatabaseResponses in this.SetupDatabases(
                            session,
                            req.Server,
-                           databasesFolder)
+                           databasesFolder,
+                           req.Restore)
                        from initializeRepositoryResponse in this.InitializeRepository(
                            session,
                            req.Server,
@@ -110,7 +111,8 @@
         private Option<SetupDatabaseResponse[], Exception> SetupDatabases(
             ISession session,
             string server,
-            string databasesFolder)
+            string databasesFolder,
+            bool restore = false)
         {
             var folders = Directory.GetDirectories(databasesFolder);
             var results = new List<SetupDatabaseResponse>();
@@ -120,7 +122,7 @@
                 {
                     Server = server,
                     Folder = f,
-                    Restore = false,
+                    Restore = restore,
                 };
 
                 var cmd = this.setupDatabaseCommandFactory(session);
