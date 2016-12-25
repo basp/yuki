@@ -215,3 +215,51 @@ Note that all the values for the template are passed in via the only
 constructor and that all the properties are read only. A neat feature of
 C# 6 is that those properties are accessible from the constructor even
 if they don't have a `set` or `private set` specified. 
+
+# dealing with options
+At first it might be weird to wrap your head around all these option values
+that are returned. Again, an example might help. Usually, when doing things the
+*imperative* way we write stuff like this:
+
+	public T Execute<T>(ICommand<T> command)
+	{
+		try
+		{
+			return command.Execute(); 
+		}
+		catch(Exception ex)
+		{
+			this.log.Error(ex);
+			throw;
+		}
+	}
+
+And then we'd (hopefully) let that bubble up to a final handler that just
+responds a general message back to the user that *something* went wrong.
+
+Now with the `Option<T,TEx>` type we can do this instead:
+
+	public Option<T, Exception> Execute<T>(ICommand<T> command)
+	{
+		try
+		{
+			var res = command.Execute();
+			return Some<T, Exception>(res);
+		}
+		catch(Exception ex)
+		{
+			return None<T, Exception>(ex);
+		}
+	}
+
+The main gain we got is that we started to *homogenize* our code. There's
+no exceptional paths, nothing special. There's only one conceptual path 
+through our code.
+
+# options are viral
+When you start to use the `Option` type you find that it's quite viral due to
+its functional nature. Of course, there's lots of ways in which you can *force*
+a value out of it (and I will show a few of them later) but when you use it In
+the **right way** things *should* flow naturally. This is in a lot of ways
+similar to how you would deal with exceptions but (as you'll see soon) you 
+end up with a much more functional flow in the end.
