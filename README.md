@@ -76,7 +76,7 @@ statically alias the `Optional.Option` type as well so we can say `Some` and
 			Req req)
 		{
 			var err = new NotImplementedException();
-			return None<Res, Exception>>(err);
+			return None<Res, Exception>(err);
 		}
 	}
 
