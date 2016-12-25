@@ -19,7 +19,7 @@ You *do* get a lot of composability and (at least) for me it *does* become a
 lot easier to think about the code when there's just a single flow of control
 in the form of an expression instead of a series of statements.
 
-# Tutorial
+# tutorial
 The easiest way to understand the design is to dive in and implement a command.
 We'll start with a command that reads the current Yuki version from the 
 assembly file. We'll start with a `YukiVersionCommand.cs` file:
