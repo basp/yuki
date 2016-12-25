@@ -1,7 +1,7 @@
-﻿# Yuki
+﻿# yuki
 Database migration tool.
 
-# Design
+# design
 The design of Yuki revolves heavily around **commands** and the use of the
 **option** type. Commands implement the `ICommand<TReq,TRes,TEx>` interface
 which has a single method `Option<TRes,TEx> Execute(TReq req)`.
@@ -82,7 +82,7 @@ statically alias the `Optional.Option` type as well so we can say `Some` and
 
 And Now it all looks a lot tighter.
 
-## aside: nested Commands
+## nested commands
 You often end up in the situation where you want to use one or more commands in
 a new command (i.e. compose them together). This is natural and desired and
 one of the whole points of having such a command structure in the first place. 
