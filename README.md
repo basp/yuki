@@ -1,85 +1,30 @@
 ﻿# Yuki
-Yuki is mostly a place where I can hack and code on (hopefully useful) command
-line utilities and control them all from a single client. And although it was 
-primarely designed as a tool to service databases, it's also generally
-useful when you want to hack in a "real" environment before moving your 
-experiments elsewhere, like to a server for example.
+Database migration tool.
 
-Yuki fanatically uses the command pattern and it's extremely robust and simple
-to extend the client this way. On top of that, it encourages heavy use of the
-`option` type (in the form of `Optional.Option`) throughout all its API. By 
-using these patterns together it's easy to extend as well as to compose new 
-functionality by using the smaller commands already baked in, in a
-very predictable and reasonable fashion.
+# Design
+The design of Yuki revolves heavily around **commands** and the use of the
+**option** type. Commands implement the `ICommand<TReq,TRes,TEx>` interface
+which has a single method `Option<TRes,TEx> Execute(TReq req)`.
 
-# Commands
-The core unit of work in Yuki is the humble `ICommand<TReq,TRes,TEx>` type.
-It has a single method:
+> Because these signatures tend to become very verbose in C# very quickly
+> you will often see the types of `TRes` and `TReq` aliased to `Req` and `Res`
+> in the Yuki source code.
 
-	Option<TRes, TEx> Execute(TReq request);
+To be completely honest, Yuki is probably more functional than it should be. 
+The things it needs to do are mostly imperative in nature and in that regard
+it is very much still a big experiment in order to see how useful it actually
+is to wrap it up in such a functionally flavored command structure.
 
-By using the `Option<TRes, TEx>` type as a return value it becomes incredibly
-easy to compose commands. 
+You *do* get a lot of composability and (at least) for me it *does* become a
+lot easier to think about the code when there's just a single flow of control
+in the form of a giant expression. 
 
-Commands should be self sustained units. In fact, every command in Yuki 
-(even if they are not accessible directly anymore) started out as a command
-that could be directly invoked from the command-line. Even now that we have
-composite commands like `Setup` internally, they just make use of the 
-smaller `CreateDatabase` and `RestoreDatabase` commands. 
+On the other hand you have to be careful though, especially when you start to 
+use the funky LINQ syntax:
 
-It's good practice to implement your commands in the form of smaller commands
-instead of just some method somewhere. This will make sure they are composable
-as well as easily tested/tried out.
+	return from x in firstCommand.Execute()
+		   from y in secondCommand.Execute()
+		   let temp = new { x, y }
+		   from z in thirdCommand.Execute(temp)
+		   select new { x, y, z }
 
-# Requests
-Every built-in `TReq` in Yuki is decorated with `PowerArgs` attributes. This
-means that you can easily *hydrate* them from the command line. They are also
-pure in the sense that they don't have side-effects. They might have a few 
-utility members but these are always pure and safe to use in all cases.
-
-In other words, even though you *can* hydrate them directly you don't have to.
-It's valid and expected that requests are instantiated directly in order to
-drive `ICommand<TReq, TRes, TEx>` instances via the `Execute` method.
-
-# Responses
-Every command should have a custom response type even if they are similar to
-existing response types. Most of the built-in response types are or will be 
-JSON serializable so that it is easy to interoperate with other tools.
-
-For example, it's very easy to convert a lot of Yuki output to real objects
-in PowerShell using the `ConvertFrom-Json` cmdlet. 
-
-# Note
-If there are clear hierarchies it's usually fine to
-share some properties (Yuki does this as well on both the request and response
-classes) but do be careful about not tangling your classes too much.
-
-# Dealing with options
-Because Yuki is so adamant about using the `Option` type in a lot of its 
-interfaces it makes sense to divert a little bit about it.
-
-At first it might seem awkward to deal with the type in C# and it certainly 
-was for me but it *can* really help to make a lot of things more 
-straightforward. In turn, this will make it a lot easier to reason and think
-about the code and the paths it follows which is always a huge plus (at least
-in my book).
-
-Let's take a look at the `IHasher` interface for example. This `Hash` method
-returns an `Option<string, Exception>` thingy. Note that the `Option` type is 
-actually a value type but that's really that important right now. The important
-part is that it's either `Some<string>` or `None<Exception>` and it's our task
-to do the right thing according to what it is.
-
-Luckily, the `Option` type has a lot of built-in tools to help us out.
-
-TODO: Explain most important usage options. No pun intended.
-
-# Legacy notes
-## Script types
-* `onetime` scripts are only executed one time and cause the migration to fail
-when the system detects any changes after already running them.
-* `anytime` scripts are run any time they have changes.
-* `everytime` scripts are run every migration run.
-
-Sometimes a script might be classified as `unknown` in which case it will be 
-ignored.

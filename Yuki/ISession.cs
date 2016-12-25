@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using Optional;
 
     public interface ISession : IDisposable
     {
@@ -18,12 +19,22 @@
 
         void RollbackTransaction();
 
-        object ExecuteScalar(
+        T ExecuteScalar<T>(
             string cmdText,
             IDictionary<string, object> args,
             CommandType commandType);
 
         int ExecuteNonQuery(
+            string cmdText,
+            IDictionary<string, object> args,
+            CommandType commandType);
+
+        Option<T, Exception> TryExecuteScalar<T>(
+            string cmdText,
+            IDictionary<string, object> args,
+            CommandType commandType);
+
+        Option<int, Exception> TryExecuteNonQuery(
             string cmdText,
             IDictionary<string, object> args,
             CommandType commandType);

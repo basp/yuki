@@ -4,22 +4,14 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
-    using NLog;
     using Optional;
-    using SmartFormat;
-
-    using static Optional.Option;
+    using Templates;
 
     using Req = CreateDatabaseRequest;
     using Res = CreateDatabaseResponse;
 
-    public class CreateDatabaseCommand : ICommand<Req, Res, Exception>
+    public class CreateDatabaseCommand : ICreateDatabaseCommand
     {
-        private static readonly string CreateDatabaseTemplate =
-            $"{nameof(Yuki)}.Resources.{nameof(CreateDatabaseTemplate)}.sql";
-
-        private readonly ILogger log = LogManager.GetCurrentClassLogger();
-
         private readonly ISession session;
 
         public CreateDatabaseCommand(ISession session)
@@ -31,34 +23,29 @@
 
         public Option<Res, Exception> Execute(Req req)
         {
-            try
-            {
-                var asm = typeof(CreateDatabaseCommand).Assembly;
-                var tmpl = asm.ReadEmbeddedString(CreateDatabaseTemplate);
-
-                var cmdText = Smart.Format(tmpl, req);
-                var res = (bool)this.session.ExecuteScalar(
-                    cmdText,
-                    new Dictionary<string, object>(),
-                    CommandType.Text);
-
-                var response = CreateResponse(res, req.Database, req.Server);
-                return Some<Res, Exception>(response);
-            }
-            catch (Exception ex)
-            {
-                var msg = $"Could not create database '{req.Database}' on server '{req.Server}'.";
-                var error = new Exception(msg, ex);
-                return None<Res, Exception>(error);
-            }
+            return this.CreateDatabase(req)
+                .Map(x => CreateResponse(req, x));
         }
 
-        private static Res CreateResponse(bool created, string database, string server)
+        private static Res CreateResponse(Req req, bool created)
         {
-            return new Res(server, database)
+            return new Res
             {
+                Server = req.Server,
+                Database = req.Database,
                 Created = created,
             };
+        }
+
+        private Option<bool, Exception> CreateDatabase(Req req)
+        {
+            var tmpl = new CreateDatabaseTemplate(req.Database);
+            var args = new Dictionary<string, object>();
+            return tmpl.Format()
+                .FlatMap(cmdText => this.session.TryExecuteScalar<bool>(
+                    cmdText,
+                    args,
+                    CommandType.Text));
         }
     }
 }

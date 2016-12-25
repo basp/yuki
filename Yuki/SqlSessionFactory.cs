@@ -1,5 +1,6 @@
 ﻿namespace Yuki
 {
+    using System;
     using System.Data.Common;
     using System.Data.SqlClient;
     using System.Diagnostics.Contracts;
@@ -11,7 +12,6 @@
         public SqlSessionFactory(DbConnectionStringBuilder connectionStringBuilder)
         {
             Contract.Requires(connectionStringBuilder != null);
-
             this.connectionStringBuilder = connectionStringBuilder;
         }
 

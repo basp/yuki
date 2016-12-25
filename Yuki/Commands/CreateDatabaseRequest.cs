@@ -1,6 +1,9 @@
 ﻿namespace Yuki.Commands
 {
-    public class CreateDatabaseRequest : DatabaseRequest
+    public class CreateDatabaseRequest
     {
+        public string Server { get; set; }
+
+        public string Database { get; set; }
     }
 }

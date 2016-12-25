@@ -4,16 +4,16 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
+    using NLog;
     using Optional;
-    using SmartFormat;
+    using Templates;
 
     using Req = RestoreDatabaseRequest;
     using Res = RestoreDatabaseResponse;
 
-    public class RestoreDatabaseCommand : ICommand<Req, Res, Exception>
+    public class RestoreDatabaseCommand : IRestoreDatabaseCommand
     {
-        private static readonly string RestoreDatabaseTemplate =
-            $"{nameof(Yuki)}.Resources.{nameof(RestoreDatabaseTemplate)}.sql";
+        private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
         private readonly ISession session;
 
@@ -26,31 +26,39 @@
 
         public Option<Res, Exception> Execute(Req req)
         {
-            try
+            return this.RestoreDatabase(req)
+                .Map(x => CreateResponse(req));
+        }
+
+        private static Res CreateResponse(Req req)
+        {
+            return new Res
             {
-                var asm = typeof(RestoreDatabaseCommand).Assembly;
-                var tmpl = asm.ReadEmbeddedString(RestoreDatabaseTemplate);
+                Restored = true,
+                Backup = req.Backup,
+            };
+        }
 
-                var cmdText = Smart.Format(tmpl, req);
-                var args = new Dictionary<string, object>()
-                {
-                    ["Backup"] = req.Backup,
-                };
+        private Option<bool, Exception> RestoreDatabase(Req req)
+        {
+            var tmpl = new RestoreDatabaseTemplate(req.Database);
+            var args = new Dictionary<string, object>
+            {
+                ["Backup"] = req.Backup,
+            };
 
-                var res = this.session.ExecuteNonQuery(
+            this.log.Info(
+                "Restoring [{0}] on {1} using backup {2}",
+                req.Database,
+                this.session,
+                req.Backup);
+
+            return tmpl.Format()
+                .FlatMap(cmdText => this.session.TryExecuteNonQuery(
                     cmdText,
                     args,
-                    CommandType.Text);
-
-                return Option.Some<Res, Exception>(
-                    new Res(req.Server, req.Database, req.Backup));
-            }
-            catch (Exception ex)
-            {
-                var msg = $"Could not restore database '{req.Database}' from '{req.Backup}' on server '{req.Server}'.";
-                var res = new Exception(msg, ex);
-                return Option.None<Res, Exception>(res);
-            }
+                    CommandType.Text))
+                .Map(x => true);
         }
     }
 }

@@ -1,17 +1,9 @@
 ﻿namespace Yuki.Commands
 {
-    public class RestoreDatabaseResponse : DatabaseResponse
+    public class RestoreDatabaseResponse
     {
-        public RestoreDatabaseResponse(string server, string database, string backup)
-            : base(server, database)
-        {
-            this.Backup = backup;
-        }
+        public bool Restored { get; set; }
 
-        public string Backup
-        {
-            get;
-            set;
-        }
+        public string Backup { get; set; }
     }
 }

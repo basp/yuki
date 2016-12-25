@@ -4,76 +4,137 @@
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.IO;
+    using System.Linq;
     using NLog;
     using Optional;
+    using Optional.Linq;
 
     using static Optional.Option;
 
     using Req = SetupRequest;
     using Res = SetupResponse;
 
-    public class SetupCommand<TWalkRes> : ICommand<Req, Res, Exception>
+    public class SetupCommand : ICommand<Req, Res, Exception>
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
-        private readonly ISession session;
-        private readonly IBackupFileProvider backupFileProvider;
-        private readonly ICommand<WalkFoldersRequest, IList<TWalkRes>, Exception> setupDatabasesCmd;
-        private readonly ICommand<CreateRepositoryRequest, CreateRepositoryResponse, Exception> createRepositoryCmd;
+        private readonly ISessionFactory sessionFactory;
+        private readonly Func<Option<string, Exception>> databasesFolderProvider;
+        private readonly Func<ISession, ISetupDatabaseCommand> setupDatabaseCommandFactory;
+        private readonly Func<ISession, IInitializeRepositoryCommand> initializeRepositoryCommandFactory;
 
         public SetupCommand(
-            ISession session,
-            IBackupFileProvider backupFileProvider,
-            ICommand<WalkFoldersRequest, IList<TWalkRes>, Exception> setupDatabasesCmd,
-            ICommand<CreateRepositoryRequest, CreateRepositoryResponse, Exception> createRepositoryCmd)
+            ISessionFactory sessionFactory,
+            Func<Option<string, Exception>> databasesFolderProvider,
+            Func<ISession, ISetupDatabaseCommand> setupDatabaseCommandFactory,
+            Func<ISession, IInitializeRepositoryCommand> initializeRepositoryCommandFactory)
         {
-            Contract.Requires(session != null);
-            Contract.Requires(backupFileProvider != null);
-            Contract.Requires(setupDatabasesCmd != null);
-            Contract.Requires(createRepositoryCmd != null);
+            Contract.Requires(sessionFactory != null);
+            Contract.Requires(databasesFolderProvider != null);
+            Contract.Requires(setupDatabaseCommandFactory != null);
+            Contract.Requires(initializeRepositoryCommandFactory != null);
 
-            this.session = session;
-            this.backupFileProvider = backupFileProvider;
-            this.setupDatabasesCmd = setupDatabasesCmd;
-            this.createRepositoryCmd = createRepositoryCmd;
+            this.sessionFactory = sessionFactory;
+            this.databasesFolderProvider = databasesFolderProvider;
+            this.setupDatabaseCommandFactory = setupDatabaseCommandFactory;
+            this.initializeRepositoryCommandFactory = initializeRepositoryCommandFactory;
         }
 
         public Option<Res, Exception> Execute(Req req)
         {
-            try
+            using (var session = this.sessionFactory.Create())
             {
-                var walkFoldersRequest = new WalkFoldersRequest()
-                {
-                    Folder = req.DatabasesFolder,
-                };
+                session.Open();
 
-                var initRepoRequest = new CreateRepositoryRequest()
-                {
-                    Server = req.Server,
-                    RepositoryDatabase = req.RepositoryDatabase,
-                    RepositorySchema = req.RepositorySchema,
-                };
-
-                return this.setupDatabasesCmd
-                    .Execute(walkFoldersRequest)
-                    .FlatMap(x => this.createRepositoryCmd.Execute(initRepoRequest))
-                    .Map(x => CreateResponse(req));
-            }
-            catch (Exception ex)
-            {
-                return None<Res, Exception>(ex);
+                return from databasesFolder in this.databasesFolderProvider()
+                       from setupDatabaseResponses in this.SetupDatabases(
+                           session,
+                           req.Server,
+                           databasesFolder)
+                       from initializeRepositoryResponse in this.InitializeRepository(
+                           session,
+                           req.Server,
+                           req.RepositoryDatabase,
+                           req.RepositorySchema)
+                       select CreateResponse(
+                           req,
+                           setupDatabaseResponses,
+                           initializeRepositoryResponse);
             }
         }
 
-        private static Res CreateResponse(Req req)
+        private static Res CreateResponse(
+            Req req,
+            SetupDatabaseResponse[] setupDatabaseResponses,
+            InitializeRepositoryResponse initializeRepositoryResponse)
         {
-            return new Res()
+            var repository = new
             {
-                Server = req.Server,
-                DatabaseFolder = Path.GetFullPath(req.DatabasesFolder),
-                RepositoryDatabase = req.RepositoryDatabase,
-                RepositorySchema = req.RepositorySchema,
+                initializeRepositoryResponse.RepositoryDatabase,
+                initializeRepositoryResponse.RepositorySchema,
             };
+
+            var databases = setupDatabaseResponses.Select(x => new
+            {
+                x.Database,
+                x.Created,
+                x.Folder,
+                x.Backup,
+                x.Restored,
+            });
+
+            return new Res
+            {
+                Databases = databases.ToArray(),
+                Repository = repository,
+            };
+        }
+
+        private Option<InitializeRepositoryResponse, Exception> InitializeRepository(
+            ISession session,
+            string server,
+            string repositoryDatabase,
+            string repositorySchema)
+        {
+            var req = new InitializeRepositoryRequest
+            {
+                Server = server,
+                RepositoryDatabase = repositoryDatabase,
+                RepositorySchema = repositorySchema,
+            };
+
+            var cmd = this.initializeRepositoryCommandFactory(session);
+            return cmd.Execute(req);
+        }
+
+        private Option<SetupDatabaseResponse[], Exception> SetupDatabases(
+            ISession session,
+            string server,
+            string databasesFolder)
+        {
+            var folders = Directory.GetDirectories(databasesFolder);
+            var results = new List<SetupDatabaseResponse>();
+            foreach (var f in folders)
+            {
+                var req = new SetupDatabaseRequest
+                {
+                    Server = server,
+                    Folder = f,
+                    Restore = false,
+                };
+
+                var cmd = this.setupDatabaseCommandFactory(session);
+                var res = cmd.Execute(req);
+
+                if (!res.HasValue)
+                {
+                    return res.Map(x => new SetupDatabaseResponse[0]);
+                }
+
+                res.MatchSome(x => results.Add(x));
+            }
+
+            return Some<SetupDatabaseResponse[], Exception>(results.ToArray());
         }
     }
 }

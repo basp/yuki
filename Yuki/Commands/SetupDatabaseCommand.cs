@@ -2,115 +2,116 @@
 {
     using System;
     using System.Diagnostics.Contracts;
+    using System.IO;
+    using System.Linq;
     using NLog;
     using Optional;
+    using Optional.Linq;
 
     using static Optional.Option;
 
     using Req = SetupDatabaseRequest;
     using Res = SetupDatabaseResponse;
 
-    public class SetupDatabaseCommand : ICommand<Req, Res, Exception>
+    public class SetupDatabaseCommand : ISetupDatabaseCommand
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
-        private readonly ISession session;
-        private readonly IBackupFileProvider backupFileProvider;
-        private readonly ICommand<CreateDatabaseRequest, CreateDatabaseResponse, Exception> createDatabaseCommand;
-        private readonly ICommand<RestoreDatabaseRequest, RestoreDatabaseResponse, Exception> restoreDatabaseCommand;
+        private readonly ICreateDatabaseCommand createDatabaseCmd;
+        private readonly IRestoreDatabaseCommand restoreDatabaseCmd;
 
         public SetupDatabaseCommand(
-            ISession session,
-            IBackupFileProvider backupFileProvider,
-            ICommand<CreateDatabaseRequest, CreateDatabaseResponse, Exception> createDatabaseCommand,
-            ICommand<RestoreDatabaseRequest, RestoreDatabaseResponse, Exception> restoreDatabaseCommand)
+            ICreateDatabaseCommand createDatabaseCmd,
+            IRestoreDatabaseCommand restoreDatabaseCmd)
         {
-            Contract.Requires(session != null);
-            Contract.Requires(backupFileProvider != null);
-            Contract.Requires(createDatabaseCommand != null);
-            Contract.Requires(restoreDatabaseCommand != null);
+            Contract.Requires(createDatabaseCmd != null);
+            Contract.Requires(restoreDatabaseCmd != null);
 
-            this.session = session;
-            this.backupFileProvider = backupFileProvider;
-            this.restoreDatabaseCommand = restoreDatabaseCommand;
-            this.createDatabaseCommand = createDatabaseCommand;
+            this.createDatabaseCmd = createDatabaseCmd;
+            this.restoreDatabaseCmd = restoreDatabaseCmd;
         }
 
         public Option<Res, Exception> Execute(Req req)
         {
-            this.log.Info($"Creating database [{req.Database}] on server {req.Server} if it does not exist");
-
-            var createDatabaseResult = this.CreateDatabaseCommand(
-                req.Server,
-                req.Database);
-
-            createDatabaseResult.MatchSome(x =>
+            var database = Path.GetFileName(req.Folder);
+            var createDatabaseRes = this.CreateDatabase(req, database);
+            createDatabaseRes.MatchSome(x =>
             {
                 var msg = x.Created
-                    ? $"Created database [{req.Database}]"
-                    : $"Database [{req.Database}] already exists";
+                    ? "Created database [{0}] on server {1}"
+                    : "Database [{0}] already exists on server {1}";
 
-                this.log.Info(msg);
+                this.log.Info(msg, database, req.Server);
             });
 
             if (!req.Restore)
             {
-                this.log.Info($"Skipping restore [default]");
-                return Some<Res, Exception>(CreateResponse(req, string.Empty));
+                this.log.Info("Skipping restore");
+                return createDatabaseRes.Map(x => CreateResponse(req, x));
             }
 
-            var result = createDatabaseResult
-                .FlatMap(x => this.backupFileProvider.TryFindIn(req.Folder))
-                .MapException(x => new Exception($"No backup found in {req.Folder}", x))
-                .FlatMap(x => this.RestoreDatabase(req.Server, req.Database, x))
-                .Map(x => CreateResponse(req, x.Backup));
-
-            result.MatchSome(x =>
-            {
-                var msg = $"Restored database [{req.Database}] on server [{req.Server}] using backup {x.Backup}";
-                this.log.Info(msg);
-            });
-
-            return result;
+            return from fi in TryFindBackup(req.Folder)
+                   from x in createDatabaseRes
+                   from y in this.RestoreDatabase(req.Server, fi.FullName, database)
+                   select CreateResponse(req, x, y.Restored, y.Backup);
         }
 
-        private static Res CreateResponse(Req req, string backup)
+        private static Res CreateResponse(
+            Req req,
+            CreateDatabaseResponse createDatabaseRes,
+            bool restored = false,
+            string backup = "")
         {
-            return new Res()
+            return new Res
             {
                 Server = req.Server,
-                Database = req.Database,
                 Folder = req.Folder,
+                Database = createDatabaseRes.Database,
+                Created = createDatabaseRes.Created,
+                Restored = restored,
                 Backup = backup,
             };
         }
 
-        private Option<CreateDatabaseResponse, Exception> CreateDatabaseCommand(
-            string server,
+        private static Option<FileInfo, Exception> TryFindBackup(string folder)
+        {
+            try
+            {
+                var errorMsg = $"No backup found in {folder}";
+                return Directory.GetFiles(folder, "*.bak", SearchOption.TopDirectoryOnly)
+                    .FirstOrDefault()
+                    .SomeNotNull()
+                    .Map(x => new FileInfo(x))
+                    .WithException(() => new Exception(errorMsg));
+            }
+            catch (Exception ex)
+            {
+                return None<FileInfo, Exception>(ex);
+            }
+        }
+
+        private Option<CreateDatabaseResponse, Exception> CreateDatabase(
+            Req req,
             string database)
         {
-            var req = new CreateDatabaseRequest()
+            return this.createDatabaseCmd.Execute(new CreateDatabaseRequest
             {
-                Server = server,
+                Server = req.Server,
                 Database = database,
-            };
-
-            return this.createDatabaseCommand.Execute(req);
+            });
         }
 
         private Option<RestoreDatabaseResponse, Exception> RestoreDatabase(
             string server,
-            string database,
-            string backup)
+            string backup,
+            string database)
         {
-            var req = new RestoreDatabaseRequest()
+            return this.restoreDatabaseCmd.Execute(new RestoreDatabaseRequest
             {
                 Server = server,
                 Database = database,
                 Backup = backup,
-            };
-
-            return this.restoreDatabaseCommand.Execute(req);
+            });
         }
     }
 }

@@ -2,8 +2,8 @@
 {
     using Optional;
 
-    public interface ICommand<TRequest, TResponse, TException>
+    public interface ICommand<TReq, TRes, TEx>
     {
-        Option<TResponse, TException> Execute(TRequest request);
+        Option<TRes, TEx> Execute(TReq req);
     }
 }

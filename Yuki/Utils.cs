@@ -11,43 +11,11 @@
 
     public static class Utils
     {
-        public static KeyValuePair<TKey, TValue> CreateKeyValuePair<TKey, TValue>(TKey key, TValue value) =>
-            new KeyValuePair<TKey, TValue>(key, value);
+        public static KeyValuePair<TKey, TValue> CreateKeyValuePair<TKey, TValue>(
+            TKey key,
+            TValue value) => new KeyValuePair<TKey, TValue>(key, value);
 
-        public static Option<object> MaybeInt(string value)
-        {
-            int i;
-            if (int.TryParse(value, out i))
-            {
-                return Some<object>(i);
-            }
-
-            return None<object>();
-        }
-
-        public static Option<object> MaybeDecimal(string value)
-        {
-            decimal d;
-            if (decimal.TryParse(value, out d))
-            {
-                return Some<object>(d);
-            }
-
-            return None<object>();
-        }
-
-        public static Option<object> MaybeDateTime(string value)
-        {
-            DateTime dt;
-            if (DateTime.TryParse(value, out dt))
-            {
-                return Some<object>(dt);
-            }
-
-            return None<object>();
-        }
-
-        public static string ReadEmbeddedString(this Assembly asm, string resourceName)
+        public static Option<string, Exception> ReadEmbeddedString(this Assembly asm, string resourceName)
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(resourceName));
 
@@ -56,11 +24,13 @@
                 if (stream == null)
                 {
                     var msg = $"Could not find resource {resourceName} in assembly {asm.FullName}";
-                    throw new ArgumentException(msg, nameof(resourceName));
+                    var ex = new ArgumentException(msg, "resourceName");
+                    return None<string, Exception>(ex);
                 }
 
                 var reader = new StreamReader(stream);
-                return reader.ReadToEnd();
+                var str = reader.ReadToEnd();
+                return Some<string, Exception>(str);
             }
         }
     }

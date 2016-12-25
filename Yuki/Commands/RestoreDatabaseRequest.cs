@@ -1,32 +1,11 @@
 ﻿namespace Yuki.Commands
 {
-    using System.Diagnostics.Contracts;
-    using PowerArgs;
-
-    public class RestoreDatabaseRequest : DatabaseRequest
+    public class RestoreDatabaseRequest
     {
-        [ArgRequired]
-        [ArgPosition(3)]
-        [ArgExistingFile]
-        [ArgShortcut(ArgShortcutPolicy.NoShortcut)]
-        public string Backup
-        {
-            get;
-            set;
-        }
+        public string Server { get; set; }
 
-        public static RestoreDatabaseRequest Create(
-            string database,
-            string backup)
-        {
-            Contract.Requires(!string.IsNullOrWhiteSpace(database));
-            Contract.Requires(!string.IsNullOrWhiteSpace(backup));
+        public string Database { get; set; }
 
-            return new RestoreDatabaseRequest()
-            {
-                Database = database,
-                Backup = backup,
-            };
-        }
+        public string Backup { get; set; }
     }
 }

@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki.Tests", "Yuki.Tests\Yuki.Tests.csproj", "{62EF651D-5A78-4B7F-828E-BCA0BAA9130E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62EF651D-5A78-4B7F-828E-BCA0BAA9130E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62EF651D-5A78-4B7F-828E-BCA0BAA9130E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62EF651D-5A78-4B7F-828E-BCA0BAA9130E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62EF651D-5A78-4B7F-828E-BCA0BAA9130E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

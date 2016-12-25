@@ -1,19 +1,17 @@
 ﻿namespace Yuki.Commands
 {
-    using Newtonsoft.Json;
-
     public class SetupDatabaseResponse
     {
-        [JsonProperty(PropertyName = "server")]
         public string Server { get; set; }
 
-        [JsonProperty(PropertyName = "database")]
-        public string Database { get; set; }
-
-        [JsonProperty(PropertyName = "folder")]
         public string Folder { get; set; }
 
-        [JsonProperty(PropertyName = "backup")]
+        public string Database { get; set; }
+
+        public bool Created { get; set; }
+
+        public bool Restored { get; set; }
+
         public string Backup { get; set; }
     }
 }

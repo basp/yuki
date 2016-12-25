@@ -5,6 +5,9 @@
     using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
+    using Optional;
+
+    using static Optional.Option;
 
     public class SqlSession : ISession
     {
@@ -15,7 +18,6 @@
         {
             Contract.Requires(connection != null);
             Contract.Requires(connection.State == ConnectionState.Closed);
-
             this.Connection = connection;
         }
 
@@ -57,6 +59,38 @@
             this.transaction = null;
         }
 
+        public Option<int, Exception> TryExecuteNonQuery(
+            string cmdText,
+            IDictionary<string, object> args,
+            CommandType commandType)
+        {
+            try
+            {
+                var res = this.ExecuteNonQuery(cmdText, args, commandType);
+                return Some<int, Exception>(res);
+            }
+            catch (Exception ex)
+            {
+                return None<int, Exception>(ex);
+            }
+        }
+
+        public Option<T, Exception> TryExecuteScalar<T>(
+            string cmdText,
+            IDictionary<string, object> args,
+            CommandType commandType)
+        {
+            try
+            {
+                var res = this.ExecuteScalar<T>(cmdText, args, commandType);
+                return Some<T, Exception>(res);
+            }
+            catch (Exception ex)
+            {
+                return None<T, Exception>(ex);
+            }
+        }
+
         public int ExecuteNonQuery(
             string cmdText,
             IDictionary<string, object> args,
@@ -68,14 +102,14 @@
             }
         }
 
-        public object ExecuteScalar(
+        public T ExecuteScalar<T>(
             string cmdText,
             IDictionary<string, object> args,
             CommandType commandType)
         {
             using (var cmd = this.CreateCommand(cmdText, args, commandType))
             {
-                return cmd.ExecuteScalar();
+                return (T)cmd.ExecuteScalar();
             }
         }
 
