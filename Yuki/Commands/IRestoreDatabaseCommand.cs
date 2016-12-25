@@ -5,7 +5,8 @@
     using Req = RestoreDatabaseRequest;
     using Res = RestoreDatabaseResponse;
 
-    public interface IRestoreDatabaseCommand : ICommand<Req, Res, Exception>
+    public interface IRestoreDatabaseCommand 
+        : ICommand<Req, Res, Exception>
     {
     }
 }

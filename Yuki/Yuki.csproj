@@ -134,6 +134,7 @@
     <Compile Include="Commands\InitializeRepositoryRequest.cs" />
     <Compile Include="Commands\InitializeRepositoryResponse.cs" />
     <Compile Include="Commands\IRestoreDatabaseCommand.cs" />
+    <Compile Include="Commands\ISetupCommand.cs" />
     <Compile Include="Commands\ISetupDatabaseCommand.cs" />
     <Compile Include="Commands\RestoreDatabaseCommand.cs" />
     <Compile Include="Commands\RestoreDatabaseRequest.cs" />

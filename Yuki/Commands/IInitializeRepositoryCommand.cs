@@ -5,7 +5,8 @@
     using Req = InitializeRepositoryRequest;
     using Res = InitializeRepositoryResponse;
 
-    public interface IInitializeRepositoryCommand : ICommand<Req, Res, Exception>
+    public interface IInitializeRepositoryCommand 
+        : ICommand<Req, Res, Exception>
     {
     }
 }

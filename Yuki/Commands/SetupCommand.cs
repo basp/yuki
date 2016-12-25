@@ -14,7 +14,7 @@
     using Req = SetupRequest;
     using Res = SetupResponse;
 
-    public class SetupCommand : ICommand<Req, Res, Exception>
+    public class SetupCommand : ISetupCommand
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 

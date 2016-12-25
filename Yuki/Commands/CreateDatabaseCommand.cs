@@ -5,6 +5,7 @@
     using System.Data;
     using System.Diagnostics.Contracts;
     using Optional;
+    using Optional.Linq;
     using Templates;
 
     using Req = CreateDatabaseRequest;
@@ -40,12 +41,13 @@
         private Option<bool, Exception> CreateDatabase(Req req)
         {
             var tmpl = new CreateDatabaseTemplate(req.Database);
-            var args = new Dictionary<string, object>();
-            return tmpl.Format()
-                .FlatMap(cmdText => this.session.TryExecuteScalar<bool>(
-                    cmdText,
-                    args,
-                    CommandType.Text));
+            return from cmdText in tmpl.Format()
+                   let args = new Dictionary<string, object>()
+                   from res in this.session.TryExecuteScalar<bool>(
+                       cmdText,
+                       args,
+                       CommandType.Text)
+                   select res;
         }
     }
 }
