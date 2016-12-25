@@ -6,7 +6,7 @@
     using Optional.Linq;
     using SmartFormat;
 
-    public class CreateDatabaseTemplate
+    public class CreateDatabaseTemplate : ITextTemplate
     {
         private static readonly string ResourceName =
             $"{nameof(Yuki)}.Resources.{nameof(CreateDatabaseTemplate)}.sql";
@@ -20,7 +20,6 @@
         public string Database
         {
             get;
-            private set;
         }
 
         public Option<string, Exception> Format()

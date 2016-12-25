@@ -5,7 +5,7 @@
     using Req = SetupDatabaseRequest;
     using Res = SetupDatabaseResponse;
 
-    public interface ISetupDatabaseCommand 
+    public interface ISetupDatabaseCommand
         : ICommand<Req, Res, Exception>
     {
     }

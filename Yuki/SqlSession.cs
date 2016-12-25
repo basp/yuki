@@ -24,7 +24,6 @@
         public IDbConnection Connection
         {
             get;
-            private set;
         }
 
         public int CommandTimeout

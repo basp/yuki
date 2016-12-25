@@ -6,7 +6,7 @@
     using Optional.Linq;
     using SmartFormat;
 
-    public class CreateRepositoryTemplate
+    public class CreateRepositoryTemplate : ITextTemplate
     {
         private static string resourceName =
             $"{nameof(Yuki)}.Resources.{nameof(CreateRepositoryTemplate)}.sql";
@@ -25,13 +25,11 @@
         public string RepositoryDatabase
         {
             get;
-            private set;
         }
 
         public string RepositorySchema
         {
             get;
-            private set;
         }
 
         public Option<string, Exception> Format()

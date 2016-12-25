@@ -162,3 +162,20 @@ And now we can use that in our `FooCommand` constructor:
 
 Which should help with the enormous type verbosity that can sometimes crop when
 dealing with C# in a functional way.
+
+# finishing up
+TODO: finish up the version command
+
+# templates
+This section will explain how Yuki deals with text templates which are an
+important part of the core design.
+
+Text templates implement the `ITextTemplate` interface which has a single
+method `Option<string,Exception> Format()`. One thing to notice is that The
+`Format` method takes no arguments. That means that templates are lightweight
+and cannot (or should) be mutated after instantiation. 
+
+In other words, it's expected that the `Format` method is idempotent, it will
+return the same results every time. And even though no part of Yuki really
+depends on this *gentlemens agreement* nor is it enforced you should take
+care to follow it anyway.

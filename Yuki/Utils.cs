@@ -11,10 +11,6 @@
 
     public static class Utils
     {
-        public static KeyValuePair<TKey, TValue> CreateKeyValuePair<TKey, TValue>(
-            TKey key,
-            TValue value) => new KeyValuePair<TKey, TValue>(key, value);
-
         public static Option<string, Exception> ReadEmbeddedString(this Assembly asm, string resourceName)
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(resourceName));

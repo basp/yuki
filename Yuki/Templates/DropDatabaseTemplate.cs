@@ -6,7 +6,7 @@
     using Optional.Linq;
     using SmartFormat;
 
-    public class DropDatabaseTemplate
+    public class DropDatabaseTemplate : ITextTemplate
     {
         private static readonly string ResourceName =
             $"{nameof(Yuki)}.Resources.{nameof(DropDatabaseTemplate)}.sql";
@@ -21,7 +21,6 @@
         public string Database
         {
             get;
-            private set;
         }
 
         public Option<string, Exception> Format()

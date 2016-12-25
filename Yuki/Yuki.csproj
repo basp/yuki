@@ -148,6 +148,7 @@
     <Compile Include="ICommand.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
+    <Compile Include="ITextTemplate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlSession.cs" />
