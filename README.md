@@ -48,11 +48,12 @@ These classes can remain empty for now. At this point we can implement the
 		public Option<YukiVersionResponse, Exception> Execute(
 			YukiVersionRequest req)
 		{
-			throw new NotImplementedException();
+			var err = new NotImplementedException();
+			return Option.None<YukiVersionResponse, Exception>(err);
 		}
 	}
 
-But you can already see that is getting *pretty* verbose. And this is still
+But you can already see that is getting *pretty* verbose. And this is still a
 simple command. Things will get pretty horrible when dealing with nested 
 generic types. Luckily we can do a bit better by *aliasing* the **request** And
 **response** types. And while we're at it, we'll make use of a C# 6 feature and
@@ -74,7 +75,8 @@ statically alias the `Optional.Option` type as well so we can say `Some` and
 		public Option<Res, Exception> Execute(
 			Req req)
 		{
-			throw new NotImplementedException();
+			var err = new NotImplementedException();
+			return None<Res, Exception>>(err);
 		}
 	}
 
@@ -82,10 +84,11 @@ And Now it all looks a lot tighter.
 
 ## aside: nested Commands
 You often end up in the situation where you want to use one or more commands in
-a new commands (i.e. compose them together). This is natural and desired and
+a new command (i.e. compose them together). This is natural and desired and
 one of the whole points of having such a command structure in the first place. 
+
 However, in C# things might get a bit messy. Consider a `FooCommand` that makes
-use of our (still in development) `YukiVersionCommand`:
+use of our (still in development) `YukiVersionCommand` for instance:
 
 	using System;
 	using Optional;
@@ -98,22 +101,30 @@ use of our (still in development) `YukiVersionCommand`:
 	public class FooCommand
 		: ICommand<Req, Res, Exception>
 	{
+		private readonly ICommand<YukiVersionRequest,YukiVersionResponse,Exception> yukiVersionCommand;
+
 		public FooCommand(
 			ICommand<YukiVersionRequest,YukiVersionResponse,Exception> yukiVersionCommand)
 		{
+			this.yukiVersionCommand = yukiVersionCommand;
 		}
 
 		public Option<Res, Exception> Execute(
 			Req req)
 		{
-			throw new NotImplementedException();
+			var err = new NotImplementedException();
+			return None<Res, Exception>>(err);
 		}
 	} 
 
-Ugh... Yuck! In my opinion we can't reasonably alias them without making Things
-too unreadable or ugly. We don't want to pass in a `YukiVersionCommand` type
-because that would defeat the whole purpose of having interfaces in the first 
-place. So the most sensible thing to do is to create a new interface for that:
+Ugh... Yuck! Holy carp, now those long types are back with a vengeance! 
+
+In my opinion we can't reasonably alias them without making things too unreadable 
+or ugly. We don't want to pass in a `YukiVersionCommand` type either because that 
+would defeat the whole purpose of having interfaces in the first place. 
+
+However, there's a nice and clean way out that just utilizes old school language
+features. We'll just define a new interface:
 
 	public interface IYukiVersionCommand
 		: ICommand<YukiVersionRequest, YukiVersionResponse, Exception>
@@ -122,9 +133,32 @@ place. So the most sensible thing to do is to create a new interface for that:
 
 And now we can use that in our `FooCommand` constructor:
 
-	public FooCommand(IYukiVersionCommand yukiVersionCommand)
+	using System;
+	using Optional;
+
+	using static Optional.Option;
+
+	using Req = FooRequest;
+	using Res = FooResponse;
+
+	public class FooCommand
+		: ICommand<Req, Res, Exception>
 	{
-	}
+		private readonly IYukiVersionCommand yukiVersionCommand;
+
+		public FooCommand(
+			IYukiVersionCommand yukiVersionCommand)
+		{
+			this.YukiVersionCommand = yukiVersionCommand;
+		}
+
+		public Option<Res, Exception> Execute(
+			Req req)
+		{
+			var err = new NotImplementedException();
+			return None<Res, Exception>>(err);
+		}
+	} 
 
 Which should help with the enormous type verbosity that can sometimes crop when
 dealing with C# in a functional way.
