@@ -128,14 +128,26 @@
     <Compile Include="Commands\CreateDatabaseCommand.cs" />
     <Compile Include="Commands\CreateDatabaseRequest.cs" />
     <Compile Include="Commands\CreateDatabaseResponse.cs" />
+    <Compile Include="Commands\GetVersionCommand.cs" />
+    <Compile Include="Commands\GetVersionRequest.cs" />
+    <Compile Include="Commands\GetVersionResponse.cs" />
     <Compile Include="Commands\ICreateDatabaseCommand.cs" />
+    <Compile Include="Commands\IGetVersionCommand.cs" />
     <Compile Include="Commands\IInitializeRepositoryCommand.cs" />
+    <Compile Include="Commands\IMigrateCommand.cs" />
     <Compile Include="Commands\InitializeRepositoryCommand.cs" />
     <Compile Include="Commands\InitializeRepositoryRequest.cs" />
     <Compile Include="Commands\InitializeRepositoryResponse.cs" />
+    <Compile Include="Commands\IResolveVersionCommand.cs" />
     <Compile Include="Commands\IRestoreDatabaseCommand.cs" />
     <Compile Include="Commands\ISetupCommand.cs" />
     <Compile Include="Commands\ISetupDatabaseCommand.cs" />
+    <Compile Include="Commands\MigrateCommand.cs" />
+    <Compile Include="Commands\MigrateRequest.cs" />
+    <Compile Include="Commands\MigrateResponse.cs" />
+    <Compile Include="Commands\ResolveVersionCommand.cs" />
+    <Compile Include="Commands\ResolveVersionRequest.cs" />
+    <Compile Include="Commands\ResolveVersionResponse.cs" />
     <Compile Include="Commands\RestoreDatabaseCommand.cs" />
     <Compile Include="Commands\RestoreDatabaseRequest.cs" />
     <Compile Include="Commands\RestoreDatabaseResponse.cs" />
@@ -145,10 +157,12 @@
     <Compile Include="Commands\SetupDatabaseResponse.cs" />
     <Compile Include="Commands\SetupRequest.cs" />
     <Compile Include="Commands\SetupResponse.cs" />
+    <Compile Include="Default.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ISessionFactory.cs" />
     <Compile Include="ITextTemplate.cs" />
+    <Compile Include="IVersionResolver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlSession.cs" />
@@ -158,6 +172,7 @@
     <Compile Include="Templates\CreateRepositoryTemplate.cs" />
     <Compile Include="Templates\DropDatabaseTemplate.cs" />
     <Compile Include="Templates\RestoreDatabaseTemplate.cs" />
+    <Compile Include="TextFileVersionResolver.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>

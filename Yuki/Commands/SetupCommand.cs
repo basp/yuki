@@ -114,29 +114,36 @@
             string databasesFolder,
             bool restore = false)
         {
-            var folders = Directory.GetDirectories(databasesFolder);
-            var results = new List<SetupDatabaseResponse>();
-            foreach (var f in folders)
+            try
             {
-                var req = new SetupDatabaseRequest
+                var folders = Directory.GetDirectories(databasesFolder);
+                var results = new List<SetupDatabaseResponse>();
+                foreach (var f in folders)
                 {
-                    Server = server,
-                    Folder = f,
-                    Restore = restore,
-                };
+                    var req = new SetupDatabaseRequest
+                    {
+                        Server = server,
+                        Folder = f,
+                        Restore = restore,
+                    };
 
-                var cmd = this.setupDatabaseCommandFactory(session);
-                var res = cmd.Execute(req);
+                    var cmd = this.setupDatabaseCommandFactory(session);
+                    var res = cmd.Execute(req);
 
-                if (!res.HasValue)
-                {
-                    return res.Map(x => new SetupDatabaseResponse[0]);
+                    if (!res.HasValue)
+                    {
+                        return res.Map(x => new SetupDatabaseResponse[0]);
+                    }
+
+                    res.MatchSome(x => results.Add(x));
                 }
 
-                res.MatchSome(x => results.Add(x));
+                return Some<SetupDatabaseResponse[], Exception>(results.ToArray());
             }
-
-            return Some<SetupDatabaseResponse[], Exception>(results.ToArray());
+            catch (Exception ex)
+            {
+                return None<SetupDatabaseResponse[], Exception>(ex);
+            }
         }
     }
 }

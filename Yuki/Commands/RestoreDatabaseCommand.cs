@@ -6,6 +6,7 @@
     using System.Diagnostics.Contracts;
     using NLog;
     using Optional;
+    using Optional.Linq;
     using Templates;
 
     using Req = RestoreDatabaseRequest;
@@ -42,10 +43,6 @@
         private Option<bool, Exception> RestoreDatabase(Req req)
         {
             var tmpl = new RestoreDatabaseTemplate(req.Database);
-            var args = new Dictionary<string, object>
-            {
-                ["Backup"] = req.Backup,
-            };
 
             this.log.Info(
                 "Restoring [{0}] on {1} using backup {2}",
@@ -53,12 +50,16 @@
                 this.session,
                 req.Backup);
 
-            return tmpl.Format()
-                .FlatMap(cmdText => this.session.TryExecuteNonQuery(
-                    cmdText,
-                    args,
-                    CommandType.Text))
-                .Map(x => true);
+            return from cmdText in tmpl.Format()
+                   let args = new Dictionary<string, object>
+                   {
+                       ["Backup"] = req.Backup,
+                   }
+                   from res in this.session.TryExecuteNonQuery(
+                       cmdText,
+                       args,
+                       CommandType.Text)
+                   select true;
         }
     }
 }
