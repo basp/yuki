@@ -7,6 +7,7 @@
     using Newtonsoft.Json;
     using NLog;
     using Optional;
+    using Optional.Linq;
 
     using static Optional.Option;
     using static System.Console;
@@ -74,11 +75,18 @@
             var migrateRequest = new MigrateRequest
             {
                 Server = server,
-                VersionFile = Default.VersionFile,
+                VersionFile = Path.Combine(folder, Default.VersionFile),
                 RepositoryDatabase = Default.RepositoryDatabase,
                 RepositorySchema = Default.RepositoryScheme,
                 RepositoryPath = "$/foo/bar/quux",
             };
+
+            var res = from setupRes in setupCommand.Execute(setupRequest)
+                      from migrateRes in migrateCommand.Execute(migrateRequest)
+                      select new { Setup = setupRes, Migrate = migrateRes };
+
+            res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x)));
+            res.MatchNone(x => WriteLine(x.ToString()));
         }
     }
 }
