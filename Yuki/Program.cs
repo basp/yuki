@@ -41,6 +41,9 @@
             Func<string, IVersionResolver> resolverFactory) =>
                 new ResolveVersionCommand(resolverFactory);
 
+        private static IInsertVersionCommand CreateInsertVersionCommand(ISession session) =>
+            new InsertVersionCommand(session, new WindowsIdentityProvider());
+
         private static Option<string, Exception> DatabasesFolderProvider(string cwd) =>
             Some<string, Exception>(Path.Combine(cwd, Default.DatabasesFolder));
 
@@ -60,8 +63,8 @@
             var migrateCommand = new MigrateCommand(
                 CreateSessionFactory(server),
                 CreateGetVersionCommand,
-                () => CreateResolveVersionCommand(
-                    x => new TextFileVersionResolver(x)));
+                () => CreateResolveVersionCommand(x => new TextFileVersionResolver(x)),
+                CreateInsertVersionCommand);
 
             var setupRequest = new SetupRequest
             {

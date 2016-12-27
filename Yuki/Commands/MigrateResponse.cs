@@ -9,5 +9,7 @@
         public string OldVersion { get; set; }
 
         public string NewVersion { get; set; }
+
+        public int VersionId { get; set; }
     }
 }
