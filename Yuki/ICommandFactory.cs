@@ -24,7 +24,8 @@
             ISession session);
 
         IRunScriptsCommand CreateRunScriptsCommand(
-            ISession session);
+            ISession session,
+            IMigrator migrator);
 
         IInsertScriptRunCommand CreateInsertScriptRunCommand(
             ISession session);

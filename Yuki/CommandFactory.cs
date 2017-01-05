@@ -48,12 +48,8 @@
         public IResolveVersionCommand CreateResolveVersionCommand() =>
             new ResolveVersionCommand(this.resolverFactory);
 
-        public IRunScriptsCommand CreateRunScriptsCommand(ISession session) =>
-            new RunScriptsCommand(
-                session,
-                this.CreateReadFileCommand(),
-                this.CreateHasScriptRunCommand(session),
-                this.CreateGetCurrentHashCommand(session));
+        public IRunScriptsCommand CreateRunScriptsCommand(ISession session, IMigrator migrator) =>
+            new RunScriptsCommand(session, this, migrator);
 
         public IRestoreDatabaseCommand CreateRestoreDatabaseCommand(ISession session) =>
             new RestoreDatabaseCommand(session);

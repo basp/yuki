@@ -19,25 +19,21 @@
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 
         private readonly ISession session;
-        private readonly IReadFileCommand readFileCommand;
-        private readonly IHasScriptRunCommand hasScriptRunCommand;
-        private readonly IGetCurrentHashCommand getCurrentHashCommand;
+        private readonly ICommandFactory commandFactory;
+        private readonly IMigrator migrator;
 
         public RunScriptsCommand(
             ISession session,
-            IReadFileCommand readFileCommand,
-            IHasScriptRunCommand hasScriptRunCommand,
-            IGetCurrentHashCommand getCurrentHashCommand)
+            ICommandFactory commandFactory,
+            IMigrator migrator)
         {
             Contract.Requires(session != null);
-            Contract.Requires(readFileCommand != null);
-            Contract.Requires(hasScriptRunCommand != null);
-            Contract.Requires(getCurrentHashCommand != null);
+            Contract.Requires(commandFactory != null);
+            Contract.Requires(migrator != null);
 
             this.session = session;
-            this.readFileCommand = readFileCommand;
-            this.hasScriptRunCommand = hasScriptRunCommand;
-            this.getCurrentHashCommand = getCurrentHashCommand;
+            this.commandFactory = commandFactory;
+            this.migrator = migrator;
         }
 
         public Option<Res, Exception> Execute(Req req)
@@ -92,15 +88,18 @@
                     Path = script,
                 };
 
-                var readFileRes = this.readFileCommand.Execute(readFileReq);
+                var readFileCmd = this.commandFactory.CreateReadFileCommand();
+                var readFileRes = readFileCmd.Execute(readFileReq);
                 var relativePath = Utils.RelativePath(req.ProjectFolder, script);
 
                 var res = from rf in readFileRes
                           from rs in this.RunScript(req, relativePath, rf.Text, rf.Hash)
                           select rs;
 
-                res.MatchNone(
-                    err => this.log.Error($"Error executing file {script} ({err.Message})"));
+                res.MatchNone(err =>
+                {
+                    this.log.Error($"Error executing file {script} ({err.Message})");
+                });
 
                 if (!res.HasValue)
                 {
@@ -222,8 +221,8 @@
                 ScriptName = scriptName,
             };
 
-            return this.hasScriptRunCommand
-                .Execute(hasScriptRunReq)
+            var cmd = this.commandFactory.CreateHasScriptRunCommand(this.session);
+            return cmd.Execute(hasScriptRunReq)
                 .Map(x => x.HasRunAlready);
         }
 
@@ -231,7 +230,8 @@
             Req req,
             string scriptName)
         {
-            return this.getCurrentHashCommand.Execute(new GetCurrentHashRequest
+            var cmd = this.commandFactory.CreateGetCurrentHashCommand(this.session);
+            return cmd.Execute(new GetCurrentHashRequest
             {
                 RepositoryDatabase = req.RepositoryDatabase,
                 RepositorySchema = req.RepositorySchema,
@@ -241,7 +241,8 @@
 
         private Option<ReadFileResponse, Exception> ReadFile(string path)
         {
-            var res = this.readFileCommand.Execute(new ReadFileRequest
+            var cmd = this.commandFactory.CreateReadFileCommand();
+            var res = cmd.Execute(new ReadFileRequest
             {
                 Path = path,
             });
