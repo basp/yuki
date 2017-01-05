@@ -2,7 +2,13 @@
 {
     public class RunScriptsRequest
     {
-        public string Folder { get; set; }
+        public string RepositoryDatabase { get; set; }
+
+        public string RepositorySchema { get; set; }
+
+        public string ProjectFolder { get; set; }
+
+        public string ScriptFolder { get; set; }
 
         public int VersionId { get; set; }
 

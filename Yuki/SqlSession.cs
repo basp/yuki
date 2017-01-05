@@ -21,15 +21,15 @@
             this.Connection = connection;
         }
 
-        public IDbConnection Connection
-        {
-            get;
-        }
-
         public int CommandTimeout
         {
             get;
             set;
+        }
+
+        private IDbConnection Connection
+        {
+            get;
         }
 
         public void Open()

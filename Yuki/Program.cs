@@ -14,7 +14,7 @@
 
     internal class Program
     {
-        private static ILogger log = LogManager.GetCurrentClassLogger();
+        private ILogger log = LogManager.GetCurrentClassLogger();
 
         private static SqlConnectionStringBuilder CreateConnectionStringBuilder(string server) =>
              new SqlConnectionStringBuilder()
@@ -22,6 +22,9 @@
                  ["Server"] = server,
                  ["Integrated Security"] = "SSPI",
              };
+
+        private static IReadFileCommand CreateReadFileCommand() =>
+            new ReadFileCommand(new MD5Hasher());
 
         private static ISessionFactory CreateSessionFactory(string server) =>
             new SqlSessionFactory(CreateConnectionStringBuilder(server));
@@ -44,6 +47,19 @@
         private static IInsertVersionCommand CreateInsertVersionCommand(ISession session) =>
             new InsertVersionCommand(session, new WindowsIdentityProvider());
 
+        private static IRunScriptsCommand CreateRunScriptsCommand(ISession session) =>
+            new RunScriptsCommand(
+                session,
+                CreateReadFileCommand(),
+                CreateHasScriptRunCommand(session),
+                CreateGetCurrentHashcommand(session));
+
+        private static IGetCurrentHashCommand CreateGetCurrentHashcommand(ISession session) =>
+            new GetCurrentHashCommand(session);
+
+        private static IHasScriptRunCommand CreateHasScriptRunCommand(ISession session) =>
+            new HasScriptRunCommand(session);
+
         private static Option<string, Exception> DatabasesFolderProvider(string cwd) =>
             Some<string, Exception>(Path.Combine(cwd, Default.DatabasesFolder));
 
@@ -64,7 +80,8 @@
                 CreateSessionFactory(server),
                 CreateGetVersionCommand,
                 () => CreateResolveVersionCommand(x => new TextFileVersionResolver(x)),
-                CreateInsertVersionCommand);
+                CreateInsertVersionCommand,
+                CreateRunScriptsCommand);
 
             var setupRequest = new SetupRequest
             {
@@ -82,6 +99,7 @@
                 RepositoryDatabase = Default.RepositoryDatabase,
                 RepositorySchema = Default.RepositoryScheme,
                 RepositoryPath = "$/foo/bar/quux",
+                ProjectFolder = folder,
             };
 
             var res = from setupRes in setupCommand.Execute(setupRequest)

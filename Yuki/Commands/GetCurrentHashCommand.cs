@@ -13,7 +13,7 @@
     using Req = GetCurrentHashRequest;
     using Res = GetCurrentHashResponse;
 
-    public class GetCurrentHashCommand : IGetHashCommand
+    public class GetCurrentHashCommand : IGetCurrentHashCommand
     {
         private readonly ILogger log = LogManager.GetCurrentClassLogger();
 

@@ -138,7 +138,7 @@
     <Compile Include="Commands\HasScriptRunRequest.cs" />
     <Compile Include="Commands\HasScriptRunResponse.cs" />
     <Compile Include="Commands\ICreateDatabaseCommand.cs" />
-    <Compile Include="Commands\IGetHashCommand.cs" />
+    <Compile Include="Commands\IGetCurrentHashCommand.cs" />
     <Compile Include="Commands\IGetVersionCommand.cs" />
     <Compile Include="Commands\IHasScriptRunCommand.cs" />
     <Compile Include="Commands\IInitializeRepositoryCommand.cs" />
@@ -176,6 +176,9 @@
     <Compile Include="Commands\RestoreDatabaseCommand.cs" />
     <Compile Include="Commands\RestoreDatabaseRequest.cs" />
     <Compile Include="Commands\RestoreDatabaseResponse.cs" />
+    <Compile Include="Commands\RunScriptCommand.cs" />
+    <Compile Include="Commands\RunScriptRequest.cs" />
+    <Compile Include="Commands\RunScriptResponse.cs" />
     <Compile Include="Commands\RunScriptsCommand.cs" />
     <Compile Include="Commands\RunScriptsRequest.cs" />
     <Compile Include="Commands\RunScriptsResponse.cs" />

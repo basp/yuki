@@ -5,7 +5,7 @@
     using Req = GetCurrentHashRequest;
     using Res = GetCurrentHashResponse;
 
-    public interface IGetHashCommand
+    public interface IGetCurrentHashCommand
         : ICommand<Req, Res, Exception>
     {
     }

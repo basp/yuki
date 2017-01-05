@@ -10,7 +10,20 @@
 
     public static class Utils
     {
-        public static string FullyQualifiedObjectName(string database, string schema, string obj) => $"[{database}].[{schema}].{obj}";
+        public static string FullyQualifiedObjectName(
+            string database,
+            string schema,
+            string obj) => $"[{database}].[{schema}].{obj}";
+
+        public static string RelativePath(string basePath, string fullPath)
+        {
+            // Don't cut off the directory seperator in case basePath already ends with it.
+            var baseLen = Path.GetFullPath(basePath).EndsWith(Path.DirectorySeparatorChar.ToString())
+                ? basePath.Length - 1
+                : basePath.Length;
+
+            return Path.GetFullPath(fullPath).Remove(0, baseLen);
+        }
 
         public static Option<string, Exception> ReadEmbeddedString(this Assembly asm, string resourceName)
         {

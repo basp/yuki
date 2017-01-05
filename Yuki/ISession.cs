@@ -9,8 +9,6 @@
     {
         int CommandTimeout { get; set; }
 
-        IDbConnection Connection { get; }
-
         void Open();
 
         void BeginTransaction();

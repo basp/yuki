@@ -34,7 +34,7 @@
 
             res.MatchSome(x =>
             {
-                this.log.Info("Found version {0} from {1}", x, req.VersionFile);
+                this.log.Info("Found version {0} from {1}", x.VersionName, x.VersionFile);
             });
 
             return res;
