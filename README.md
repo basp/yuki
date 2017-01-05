@@ -1,5 +1,5 @@
 ﻿# yuki
-Database migration tool. 
+How to avoid `if` statements.
 
 Apart from (hopefully) a useful tool this is also a sandbox for playing
 around with C# 6 features and functional programming in C# in general.
