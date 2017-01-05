@@ -14,6 +14,11 @@
 
     internal class Program
     {
+        private static readonly ICommandFactory CommandFactory = new CommandFactory(
+            new WindowsIdentityProvider(),
+            new MD5Hasher(),
+            path => new TextFileVersionResolver(path));
+
         private ILogger log = LogManager.GetCurrentClassLogger();
 
         private static SqlConnectionStringBuilder CreateConnectionStringBuilder(string server) =>
@@ -23,42 +28,8 @@
                  ["Integrated Security"] = "SSPI",
              };
 
-        private static IReadFileCommand CreateReadFileCommand() =>
-            new ReadFileCommand(new MD5Hasher());
-
         private static ISessionFactory CreateSessionFactory(string server) =>
             new SqlSessionFactory(CreateConnectionStringBuilder(server));
-
-        private static ISetupDatabaseCommand CreateSetupDatabaseCommand(ISession session) =>
-            new SetupDatabaseCommand(
-                new CreateDatabaseCommand(session),
-                new RestoreDatabaseCommand(session));
-
-        private static IInitializeRepositoryCommand CreateInitializeRepositoryCommand(ISession session) =>
-                new InitializeRepositoryCommand(session);
-
-        private static IGetVersionCommand CreateGetVersionCommand(ISession session) =>
-            new GetVersionCommand(session);
-
-        private static IResolveVersionCommand CreateResolveVersionCommand(
-            Func<string, IVersionResolver> resolverFactory) =>
-                new ResolveVersionCommand(resolverFactory);
-
-        private static IInsertVersionCommand CreateInsertVersionCommand(ISession session) =>
-            new InsertVersionCommand(session, new WindowsIdentityProvider());
-
-        private static IRunScriptsCommand CreateRunScriptsCommand(ISession session) =>
-            new RunScriptsCommand(
-                session,
-                CreateReadFileCommand(),
-                CreateHasScriptRunCommand(session),
-                CreateGetCurrentHashcommand(session));
-
-        private static IGetCurrentHashCommand CreateGetCurrentHashcommand(ISession session) =>
-            new GetCurrentHashCommand(session);
-
-        private static IHasScriptRunCommand CreateHasScriptRunCommand(ISession session) =>
-            new HasScriptRunCommand(session);
 
         private static Option<string, Exception> DatabasesFolderProvider(string cwd) =>
             Some<string, Exception>(Path.Combine(cwd, Default.DatabasesFolder));
@@ -73,15 +44,20 @@
             var setupCommand = new SetupCommand(
                  CreateSessionFactory(server),
                  () => DatabasesFolderProvider(folder),
-                 CreateSetupDatabaseCommand,
-                 CreateInitializeRepositoryCommand);
+                 CommandFactory.CreateSetupDatabaseCommand,
+                 CommandFactory.CreateInitializeRepositoryCommand);
+
+            var commandFactory = new CommandFactory(
+                new WindowsIdentityProvider(),
+                new MD5Hasher(),
+                x => new TextFileVersionResolver(x));
 
             var migrateCommand = new MigrateCommand(
                 CreateSessionFactory(server),
-                CreateGetVersionCommand,
-                () => CreateResolveVersionCommand(x => new TextFileVersionResolver(x)),
-                CreateInsertVersionCommand,
-                CreateRunScriptsCommand);
+                (session, req) => new Migrator(
+                    session,
+                    CommandFactory,
+                    req));
 
             var setupRequest = new SetupRequest
             {

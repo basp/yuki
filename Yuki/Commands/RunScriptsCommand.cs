@@ -85,6 +85,8 @@
         {
             foreach (var script in scriptFiles)
             {
+                this.log.Info($"Running {script} on {req.Server}");
+
                 var readFileReq = new ReadFileRequest
                 {
                     Path = script,
@@ -96,6 +98,9 @@
                 var res = from rf in readFileRes
                           from rs in this.RunScript(req, relativePath, rf.Text, rf.Hash)
                           select rs;
+
+                res.MatchNone(
+                    err => this.log.Error($"Error executing file {script} ({err.Message})"));
 
                 if (!res.HasValue)
                 {
@@ -113,10 +118,7 @@
             string hash)
         {
             var scriptChangedRes = this
-                .ScriptChangedSinceLastExecution(
-                    req,
-                    scriptName,
-                    hash)
+                .ScriptChangedSinceLastExecution(req, scriptName, hash)
                 .Filter(changed => (req.IsOneTimeFolder && !changed) || !req.IsOneTimeFolder, () =>
                 {
                     var msg = $"{scriptName} has changed since the last time it was run. By default, this is not allowed - scripts that run once should never change. To change this behavior to a warning set WarnOnOneTimeScriptChanges to true and run again.";
@@ -132,8 +134,9 @@
 
             return from changed in scriptChangedRes
                    let stmts = StatementSplitter.Split(sql)
+                   from shouldRun in scriptShouldRun
                    from res in this.ExecuteStatements(stmts)
-                   select res;
+                   select shouldRun ? res : false;
         }
 
         private Option<bool, Exception> ExecuteStatements(
