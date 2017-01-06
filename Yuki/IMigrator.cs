@@ -20,18 +20,5 @@
         Option<GetVersionResponse, Exception> GetCurrentVersion();
 
         Option<ResolveVersionResponse, Exception> ResolveNextVersion();
-
-        Option<InsertScriptRunResponse, Exception> InsertScriptRun(
-            int versionId,
-            string scriptName,
-            string sql,
-            string hash,
-            bool isOneTimeScript = false);
-
-        Option<InsertScriptRunErrorResponse, Exception> InsertScriptRunError(
-            string scriptName,
-            string sql,
-            string sqlErrorPart,
-            string errorMessage);
     }
 }

@@ -1,11 +1,8 @@
 ﻿namespace Yuki
 {
-    using System;
     using Commands;
 
-    public interface
-
-        ICommandFactory
+    public interface ICommandFactory
     {
         IReadFileCommand CreateReadFileCommand();
 
@@ -22,10 +19,6 @@
 
         IInsertVersionCommand CreateInsertVersionCommand(
             ISession session);
-
-        IRunScriptsCommand CreateRunScriptsCommand(
-            ISession session,
-            IMigrator migrator);
 
         IInsertScriptRunCommand CreateInsertScriptRunCommand(
             ISession session);
