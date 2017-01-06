@@ -4,13 +4,11 @@
     using System.Data.SqlClient;
     using System.IO;
     using Commands;
-    using Newtonsoft.Json;
-    using NLog;
     using Optional;
     using Optional.Linq;
+    using Serilog;
 
     using static Optional.Option;
-    using static System.Console;
 
     internal class Program
     {
@@ -18,8 +16,6 @@
             new WindowsIdentityProvider(),
             new MD5Hasher(),
             path => new TextFileVersionResolver(path));
-
-        private ILogger log = LogManager.GetCurrentClassLogger();
 
         private static SqlConnectionStringBuilder CreateConnectionStringBuilder(string server) =>
              new SqlConnectionStringBuilder()
@@ -36,10 +32,17 @@
 
         private static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.LiterateConsole()
+                .CreateLogger();
+
             const string server = @"ROSPC0297\SQLEXPRESS";
             const string folder = @"D:\temp\foo";
 
-            var cwd = Directory.GetCurrentDirectory();
+            Log.Information(
+                "Project folder is {ProjectFolder} and target server is {Server}",
+                folder,
+                server);
 
             var setupCommand = new SetupCommand(
                  CreateSessionFactory(server),
@@ -54,10 +57,7 @@
 
             var migrateCommand = new MigrateCommand(
                 CreateSessionFactory(server),
-                (session, req) => new Migrator(
-                    session,
-                    CommandFactory,
-                    req));
+                (session, req) => new Migrator(session, CommandFactory, req));
 
             var setupRequest = new SetupRequest
             {
@@ -82,8 +82,7 @@
                       from migrateRes in migrateCommand.Execute(migrateRequest)
                       select new { Setup = setupRes, Migrate = migrateRes };
 
-            res.MatchSome(x => WriteLine(JsonConvert.SerializeObject(x, Formatting.Indented)));
-            res.MatchNone(x => WriteLine(x.ToString()));
+            Log.Information("Done!");
         }
     }
 }

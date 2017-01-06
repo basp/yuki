@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
-    using NLog;
     using Optional;
     using Optional.Linq;
     using Templates;
@@ -16,8 +15,6 @@
 
     public class InitializeRepositoryCommand : IInitializeRepositoryCommand
     {
-        private readonly ILogger log = LogManager.GetCurrentClassLogger();
-
         private readonly ISession session;
 
         public InitializeRepositoryCommand(ISession session)

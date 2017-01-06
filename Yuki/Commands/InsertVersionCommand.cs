@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
-    using NLog;
     using Optional;
     using Optional.Linq;
 
@@ -15,8 +14,6 @@
 
     public class InsertVersionCommand : IInsertVersionCommand
     {
-        private readonly ILogger log = LogManager.GetCurrentClassLogger();
-
         private readonly ISession session;
         private readonly IIdentityProvider identityProvider;
 

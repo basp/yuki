@@ -5,7 +5,6 @@
     using System.Diagnostics.Contracts;
     using System.IO;
     using System.Linq;
-    using NLog;
     using Optional;
     using Optional.Linq;
 
@@ -16,8 +15,6 @@
 
     public class SetupCommand : ISetupCommand
     {
-        private readonly ILogger log = LogManager.GetCurrentClassLogger();
-
         private readonly ISessionFactory sessionFactory;
         private readonly Func<Option<string, Exception>> databasesFolderProvider;
         private readonly Func<ISession, ISetupDatabaseCommand> setupDatabaseCommandFactory;

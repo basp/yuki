@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
-    using NLog;
     using Optional;
     using Optional.Linq;
+    using Serilog;
     using Templates;
 
     using Req = RestoreDatabaseRequest;
@@ -14,8 +14,6 @@
 
     public class RestoreDatabaseCommand : IRestoreDatabaseCommand
     {
-        private readonly ILogger log = LogManager.GetCurrentClassLogger();
-
         private readonly ISession session;
 
         public RestoreDatabaseCommand(ISession session)
@@ -44,8 +42,8 @@
         {
             var tmpl = new RestoreDatabaseTemplate(req.Database);
 
-            this.log.Info(
-                "Restoring [{0}] on {1} using backup {2}",
+            Log.Information(
+                "Restoring {Database} on {Server} using backup {BackupFile}",
                 req.Database,
                 this.session,
                 req.Backup);

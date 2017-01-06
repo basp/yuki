@@ -6,16 +6,14 @@
     using System.Diagnostics.Contracts;
     using System.IO;
     using Commands;
-    using NLog;
     using Optional;
     using Optional.Linq;
+    using Serilog;
 
     using static Optional.Option;
 
     public class Migrator : IMigrator
     {
-        private readonly ILogger log = LogManager.GetCurrentClassLogger();
-
         private readonly ISession session;
         private readonly ICommandFactory commandFactory;
         private readonly MigrateRequest request;
@@ -43,15 +41,19 @@
         {
             if (!Directory.Exists(scriptFolder))
             {
-                this.log.Warn($"Script folder {scriptFolder} does not exist");
+                Log.Warning("Script folder {ScriptFolder} doesn't exist", scriptFolder);
                 return Some<bool, Exception>(true);
             }
 
             var scriptFiles = Directory.GetFiles(scriptFolder);
-            return from res in this.RunScripts(versionId, scriptFiles, isOneTimeFolder, isEveryTimeFolder)
-                   select true;
+            var runScriptsRes = this.RunScripts(
+                versionId,
+                scriptFiles,
+                isOneTimeFolder,
+                isEveryTimeFolder);
 
-            // return res.Map(x => true);
+            return from res in runScriptsRes
+                   select true;
         }
 
         public Option<GetVersionResponse, Exception> GetCurrentVersion()
@@ -72,7 +74,12 @@
             string currentVersion,
             string nextVersion)
         {
-            this.log.Info($"Migrating {this.request.Server} from version {currentVersion} to {nextVersion}");
+            Log.Information(
+                "Migrating {Server} from version {CurrentVersion} to {NextVersion}",
+                this.request.Server,
+                currentVersion,
+                nextVersion);
+
             var cmd = this.commandFactory.CreateInsertVersionCommand(this.session);
             var res = cmd.Execute(new InsertVersionRequest
             {
@@ -83,7 +90,12 @@
                 RepositoryVersion = nextVersion,
             });
 
-            this.log.Info($"Versioning {this.request.Server} with version {nextVersion} based on {this.request.RepositoryPath}");
+            Log.Information(
+                "Versioning {Server} with version {NextVersion} based on {RepositoryPath}",
+                this.request.Server,
+                nextVersion,
+                this.request.RepositoryPath);
+
             return res;
         }
 
@@ -125,7 +137,10 @@
         {
             foreach (var script in scriptFiles)
             {
-                this.log.Info($"Running {script} on {this.request.Server}");
+                Log.Information(
+                    "Running {ScriptFile} on {Server}",
+                    script,
+                    this.request.Server);
 
                 var readFileReq = new ReadFileRequest
                 {
@@ -217,7 +232,13 @@
                 }
                 catch (Exception ex)
                 {
-                    this.log.Error($"Error executing file '{scriptFile}': statement running was '{s}' ({ex.Message})");
+                    Log.Error(
+                        ex,
+                        "Error executing file {ScriptFile}: statement running was {SqlErrorPart} ({Message})",
+                        scriptFile,
+                        s,
+                        ex.Message);
+
                     this.session.RollbackTransaction();
                     this.InsertScriptRunError(scriptFile, sql, s, ex.Message);
                     return None<bool, Exception>(ex);

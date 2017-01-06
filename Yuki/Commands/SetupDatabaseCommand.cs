@@ -4,9 +4,9 @@
     using System.Diagnostics.Contracts;
     using System.IO;
     using System.Linq;
-    using NLog;
     using Optional;
     using Optional.Linq;
+    using Serilog;
 
     using static Optional.Option;
 
@@ -15,8 +15,6 @@
 
     public class SetupDatabaseCommand : ISetupDatabaseCommand
     {
-        private readonly ILogger log = LogManager.GetCurrentClassLogger();
-
         private readonly ICreateDatabaseCommand createDatabaseCmd;
         private readonly IRestoreDatabaseCommand restoreDatabaseCmd;
 
@@ -38,15 +36,15 @@
             createDatabaseRes.MatchSome(x =>
             {
                 var msg = x.Created
-                    ? "Created database [{0}] on server {1}"
-                    : "Database [{0}] already exists on server {1}";
+                    ? "Created database {Database} on server {Server}"
+                    : "Database {Database} already exists on server {Server}";
 
-                this.log.Info(msg, database, req.Server);
+                Log.Information(msg, database, req.Server);
             });
 
             if (!req.Restore)
             {
-                this.log.Info("Skipping restore");
+                Log.Information("Skipping restore");
                 return createDatabaseRes.Map(x => CreateResponse(req, x));
             }
 

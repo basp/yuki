@@ -3,19 +3,14 @@
     using System;
     using System.Diagnostics.Contracts;
     using System.IO;
-    using NLog;
     using Optional;
     using Optional.Linq;
-
-    using static Optional.Option;
 
     using Req = MigrateRequest;
     using Res = MigrateResponse;
 
     public class MigrateCommand : IMigrateCommand
     {
-        private readonly ILogger log = LogManager.GetCurrentClassLogger();
-
         private readonly ISessionFactory sessionFactory;
         private readonly Func<ISession, Req, IMigrator> migratorFactory;
 
