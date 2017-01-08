@@ -11,5 +11,7 @@
         public string NewVersion { get; set; }
 
         public int VersionId { get; set; }
+
+        public ScriptFolder[] Folders { get; set; }
     }
 }

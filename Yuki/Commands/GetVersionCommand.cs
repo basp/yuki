@@ -1,13 +1,10 @@
 ﻿namespace Yuki.Commands
 {
     using System;
-    using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
     using Optional;
     using Optional.Linq;
-
-    using static Utils;
 
     using Req = GetVersionRequest;
     using Res = GetVersionResponse;
@@ -15,33 +12,22 @@
     public class GetVersionCommand
         : IGetVersionCommand
     {
-        private readonly ISession session;
+        private readonly IRepositoryFactory repositoryFactory;
 
-        public GetVersionCommand(ISession session)
+        public GetVersionCommand(
+            IRepositoryFactory repositoryFactory)
         {
-            Contract.Requires(session != null);
-
-            this.session = session;
+            Contract.Requires(repositoryFactory != null);
+            this.repositoryFactory = repositoryFactory;
         }
 
         public Option<Res, Exception> Execute(Req req)
         {
-            var sp = FullyQualifiedObjectName(
+            var repo = this.repositoryFactory.Create(
                 req.RepositoryDatabase,
-                req.RepositorySchema,
-                "GetVersion");
+                req.RepositorySchema);
 
-            var args = new Dictionary<string, object>
-            {
-                ["RepositoryPath"] = req.RepositoryPath,
-            };
-
-            var versionResponse = this.session.TryExecuteScalar<string>(
-                sp,
-                args,
-                CommandType.StoredProcedure);
-
-            return from v in versionResponse
+            return from v in repo.GetVersion(req.RepositoryPath)
                    select CreateResponse(req, v);
         }
 

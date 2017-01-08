@@ -34,11 +34,21 @@
 
         public void Open()
         {
+            if (this.Connection.State != ConnectionState.Closed)
+            {
+                return;
+            }
+
             this.Connection.Open();
         }
 
         public void BeginTransaction()
         {
+            if (this.transaction != null)
+            {
+                return;
+            }
+
             this.transaction = this.Connection.BeginTransaction();
         }
 

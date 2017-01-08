@@ -44,12 +44,16 @@
 
             if (!req.Restore)
             {
-                Log.Information("Skipping restore");
+                Log.Debug(
+                    "Skipping restore of {Database} on {Server}",
+                    database,
+                    req.Server);
+
                 return createDatabaseRes.Map(x => CreateResponse(req, x));
             }
 
             // For now we fail when the restore flag is set and we can't
-            // find a backup file to restore from. Whe might want to
+            // find a backup file to restore from. We might want to
             // reconsider this behavior.
             return from fi in TryFindBackup(req.Folder)
                    from x in createDatabaseRes

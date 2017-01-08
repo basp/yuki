@@ -14,13 +14,14 @@
 
     public class RestoreDatabaseCommand : IRestoreDatabaseCommand
     {
-        private readonly ISession session;
+        private readonly IDatabaseFactory databaseFactory;
 
-        public RestoreDatabaseCommand(ISession session)
+        public RestoreDatabaseCommand(
+            IDatabaseFactory databaseFactory)
         {
-            Contract.Requires(session != null);
+            Contract.Requires(databaseFactory != null);
 
-            this.session = session;
+            this.databaseFactory = databaseFactory;
         }
 
         public Option<Res, Exception> Execute(Req req)
@@ -40,24 +41,14 @@
 
         private Option<bool, Exception> RestoreDatabase(Req req)
         {
-            var tmpl = new RestoreDatabaseTemplate(req.Database);
-
             Log.Information(
                 "Restoring {Database} on {Server} using backup {BackupFile}",
                 req.Database,
-                this.session,
+                req.Server,
                 req.Backup);
 
-            return from cmdText in tmpl.Format()
-                   let args = new Dictionary<string, object>
-                   {
-                       ["Backup"] = req.Backup,
-                   }
-                   from res in this.session.TryExecuteNonQuery(
-                       cmdText,
-                       args,
-                       CommandType.Text)
-                   select true;
+            var database = this.databaseFactory.Create(req.Database);
+            return database.Restore(req.Backup);
         }
     }
 }

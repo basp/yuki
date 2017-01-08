@@ -34,7 +34,7 @@
 
         public Option<bool, Exception> RunMigrationScripts(
             string scriptFolder,
-            string newVersion,
+            string nextVersion,
             int versionId,
             bool isOneTimeFolder = false,
             bool isEveryTimeFolder = false)
@@ -48,6 +48,7 @@
             var scriptFiles = Directory.GetFiles(scriptFolder);
             var runScriptsRes = this.RunScripts(
                 versionId,
+                nextVersion,
                 scriptFiles,
                 isOneTimeFolder,
                 isEveryTimeFolder);
@@ -131,17 +132,13 @@
 
         private Option<bool, Exception> RunScripts(
             int versionId,
+            string nextVersion,
             string[] scriptFiles,
             bool isOneTimeFolder = false,
             bool isEveryTimeFolder = false)
         {
             foreach (var script in scriptFiles)
             {
-                Log.Information(
-                    "Running {ScriptFile} on {Server}",
-                    script,
-                    this.request.Server);
-
                 var readFileReq = new ReadFileRequest
                 {
                     Path = script,
@@ -149,7 +146,9 @@
 
                 var readFileCmd = this.commandFactory.CreateReadFileCommand();
                 var readFileRes = readFileCmd.Execute(readFileReq);
-                var relativePath = Utils.RelativePath(this.request.ProjectFolder, script);
+                var relativePath = Utils.RelativePath(
+                    this.request.ProjectFolder,
+                    script);
 
                 var runScriptRequest = new RunScriptRequest()
                 {
@@ -161,18 +160,28 @@
                 var res = from rf in readFileRes
                           from rs in this.RunScript(
                               versionId,
+                              nextVersion,
                               relativePath,
                               rf.Text,
                               rf.Hash,
                               isOneTimeFolder,
                               isEveryTimeFolder)
-                          select new { ReadFileResult = rf, RunScriptResult = rs };
+                          select new
+                          {
+                              ReadFileResult = rf,
+                              RunScriptResult = rs,
+                          };
 
                 res.MatchSome(x =>
                 {
+                    if (!x.RunScriptResult)
+                    {
+                        return;
+                    }
+
                     this.InsertScriptRun(
                         versionId,
-                        script,
+                        relativePath,
                         x.ReadFileResult.Text,
                         x.ReadFileResult.Hash,
                         isOneTimeFolder);
@@ -189,58 +198,83 @@
 
         private Option<bool, Exception> RunScript(
             int versionId,
-            string scriptName,
+            string nextVersion,
+            string scriptFile,
             string sql,
             string hash,
             bool isOneTimeFolder = false,
             bool isEveryTimeFolder = false)
         {
             var scriptChangedRes = this
-                .ScriptChangedSinceLastExecution(scriptName, hash)
+                .ScriptChangedSinceLastExecution(scriptFile, hash)
                 .Filter(changed => (isOneTimeFolder && !changed) || !isOneTimeFolder, () =>
                 {
-                    var msg = $"{scriptName} has changed since the last time it was run. By default, this is not allowed - scripts that run once should never change. To change this behavior to a warning set WarnOnOneTimeScriptChanges to true and run again.";
+                    var msg = $"{scriptFile} has changed since the last time it was run. By default, this is not allowed - scripts that run once should never change. To change this behavior to a warning set WarnOnOneTimeScriptChanges to true and run again.";
                     return new Exception(msg);
                 });
 
             var scriptShouldRun = this.ScriptShouldRun(
-                scriptName,
+                scriptFile,
                 sql,
                 hash,
                 isEveryTimeFolder);
 
-            return from changed in scriptChangedRes
-                   let stmts = StatementSplitter.Split(sql)
-                   from shouldRun in scriptShouldRun
-                   from res in this.ExecuteStatements(versionId, scriptName, sql, stmts)
-                   select shouldRun ? res : false;
+            return scriptShouldRun.Match(
+                shouldRun =>
+                {
+                    if (!shouldRun)
+                    {
+                        return Some<bool, Exception>(false);
+                    }
+
+                    Log.Information(
+                        "Running {ScriptFile} on {Server}",
+                        scriptFile,
+                        this.request.Server);
+
+                    var stmts = StatementSplitter.Split(sql);
+                    return this.ExecuteStatements(
+                        versionId,
+                        nextVersion,
+                        scriptFile,
+                        sql,
+                        stmts);
+                },
+                none => Some<bool, Exception>(false));
         }
 
         private Option<bool, Exception> ExecuteStatements(
             int versionId,
+            string versionName,
             string scriptFile,
             string sql,
             IEnumerable<string> stmts)
         {
-            foreach (var s in stmts)
+            foreach (var stmt in stmts)
             {
                 try
                 {
                     var args = new Dictionary<string, object>();
                     var ct = CommandType.Text;
-                    this.session.ExecuteNonQuery(s, args, ct);
+                    this.session.ExecuteNonQuery(stmt, args, ct);
                 }
                 catch (Exception ex)
                 {
                     Log.Error(
                         ex,
-                        "Error executing file {ScriptFile}: statement running was {SqlErrorPart} ({Message})",
+                        "Error executing file {ScriptFile}: statement running was {Statement} ({Message})",
                         scriptFile,
-                        s,
+                        stmt,
                         ex.Message);
 
                     this.session.RollbackTransaction();
-                    this.InsertScriptRunError(scriptFile, sql, s, ex.Message);
+                    this.InsertScriptRunError(
+                        versionName,
+                        scriptFile,
+                        sql,
+                        stmt,
+                        ex.Message);
+
                     return None<bool, Exception>(ex);
                 }
             }
@@ -342,6 +376,7 @@
         }
 
         private Option<InsertScriptRunErrorResponse, Exception> InsertScriptRunError(
+            string versionName,
             string scriptName,
             string sql,
             string sqlErrorPart,
@@ -354,6 +389,10 @@
                 Sql = sql,
                 SqlErrorPart = sqlErrorPart,
                 ErrorMessage = errorMessage,
+                VersionName = versionName,
+                RepositoryDatabase = this.request.RepositoryDatabase,
+                RepositorySchema = this.request.RepositorySchema,
+                RepositoryPath = this.request.RepositoryPath,
             });
 
             return res;

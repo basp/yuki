@@ -6,25 +6,25 @@
     using System.Diagnostics.Contracts;
     using Optional;
     using Optional.Linq;
-    using Templates;
 
     using Req = CreateDatabaseRequest;
     using Res = CreateDatabaseResponse;
 
     public class CreateDatabaseCommand : ICreateDatabaseCommand
     {
-        private readonly ISession session;
+        private readonly IDatabaseFactory databaseFactory;
 
-        public CreateDatabaseCommand(ISession session)
+        public CreateDatabaseCommand(
+            IDatabaseFactory databaseFactory)
         {
-            Contract.Requires(session != null);
-
-            this.session = session;
+            Contract.Requires(databaseFactory != null);
+            this.databaseFactory = databaseFactory;
         }
 
         public Option<Res, Exception> Execute(Req req)
         {
-            return this.CreateDatabase(req)
+            var database = this.databaseFactory.Create(req.Database);
+            return database.Create()
                 .Map(x => CreateResponse(req, x));
         }
 
@@ -36,18 +36,6 @@
                 Database = req.Database,
                 Created = created,
             };
-        }
-
-        private Option<bool, Exception> CreateDatabase(Req req)
-        {
-            var tmpl = new CreateDatabaseTemplate(req.Database);
-            return from cmdText in tmpl.Format()
-                   let args = new Dictionary<string, object>()
-                   from res in this.session.TryExecuteScalar<bool>(
-                       cmdText,
-                       args,
-                       CommandType.Text)
-                   select res;
         }
     }
 }

@@ -12,9 +12,15 @@
 
     internal class Program
     {
+        private static readonly ITextTemplateFactory TextTemplateFactory =
+            new TextTemplateFactory();
+
         private static readonly ICommandFactory CommandFactory = new CommandFactory(
             new WindowsIdentityProvider(),
             new MD5Hasher(),
+            TextTemplateFactory,
+            session => new RepositoryFactory(session, TextTemplateFactory),
+            session => new DatabaseFactory(session, TextTemplateFactory),
             path => new TextFileVersionResolver(path));
 
         private static SqlConnectionStringBuilder CreateConnectionStringBuilder(string server) =>
@@ -37,32 +43,35 @@
                 .CreateLogger();
 
             const string server = @"ROSPC0297\SQLEXPRESS";
-            const string folder = @"D:\temp\foo";
+            const string projectFolder = @"D:\temp\foo";
 
             Log.Information(
                 "Project folder is {ProjectFolder} and target server is {Server}",
-                folder,
+                projectFolder,
                 server);
+
+            var scriptFolders = new[]
+            {
+                new ScriptFolder(Path.Combine(projectFolder, "runBeforeUp"), false, false),
+                new ScriptFolder(Path.Combine(projectFolder, "up"), true, false),
+                new ScriptFolder(Path.Combine(projectFolder, "asdfaf"), false, false),
+            };
 
             var setupCommand = new SetupCommand(
                  CreateSessionFactory(server),
-                 () => DatabasesFolderProvider(folder),
+                 () => DatabasesFolderProvider(projectFolder),
                  CommandFactory.CreateSetupDatabaseCommand,
                  CommandFactory.CreateInitializeRepositoryCommand);
 
-            var commandFactory = new CommandFactory(
-                new WindowsIdentityProvider(),
-                new MD5Hasher(),
-                x => new TextFileVersionResolver(x));
-
             var migrateCommand = new MigrateCommand(
                 CreateSessionFactory(server),
+                scriptFolders,
                 (session, req) => new Migrator(session, CommandFactory, req));
 
             var setupRequest = new SetupRequest
             {
                 Server = server,
-                Folder = folder,
+                Folder = projectFolder,
                 RepositoryDatabase = Default.RepositoryDatabase,
                 RepositorySchema = Default.RepositoryScheme,
                 Restore = Default.Restore,
@@ -71,18 +80,24 @@
             var migrateRequest = new MigrateRequest
             {
                 Server = server,
-                VersionFile = Path.Combine(folder, Default.VersionFile),
+                VersionFile = Path.Combine(projectFolder, Default.VersionFile),
                 RepositoryDatabase = Default.RepositoryDatabase,
                 RepositorySchema = Default.RepositoryScheme,
                 RepositoryPath = "$/foo/bar/quux",
-                ProjectFolder = folder,
+                ProjectFolder = projectFolder,
             };
 
             var res = from setupRes in setupCommand.Execute(setupRequest)
                       from migrateRes in migrateCommand.Execute(migrateRequest)
                       select new { Setup = setupRes, Migrate = migrateRes };
 
-            Log.Information("Done!");
+            res.MatchSome(x => Log.Information("Yay! I'm done!"));
+
+            res.MatchNone(x => Log.Information(
+                "Oh noes... Something went horribly wrong because bad {ExceptionType} thing :(",
+                x.GetType()));
+
+            res.MatchNone(x => Log.Error(x, x.Message));
         }
     }
 }

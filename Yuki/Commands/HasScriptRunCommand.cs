@@ -14,34 +14,23 @@
 
     public class HasScriptRunCommand : IHasScriptRunCommand
     {
-        private readonly ISession session;
+        private readonly IRepositoryFactory repositoryFactory;
 
-        public HasScriptRunCommand(ISession session)
+        public HasScriptRunCommand(
+            IRepositoryFactory repositoryFactory)
         {
-            Contract.Requires(session != null);
-
-            this.session = session;
+            Contract.Requires(repositoryFactory != null);
+            this.repositoryFactory = repositoryFactory;
         }
 
         public Option<Res, Exception> Execute(Req req)
         {
-            var sp = FullyQualifiedObjectName(
+            var repo = this.repositoryFactory.Create(
                 req.RepositoryDatabase,
-                req.RepositorySchema,
-                "HasScriptRunAlready");
+                req.RepositorySchema);
 
-            var args = new Dictionary<string, object>
-            {
-                ["ScriptName"] = req.ScriptName,
-            };
-
-            var hasScriptRunResponse = this.session.TryExecuteScalar<int>(
-                sp,
-                args,
-                CommandType.StoredProcedure);
-
-            return from count in hasScriptRunResponse
-                   select CreateResponse(req, count > 0);
+            return from hasRunAlready in repo.HasScriptRun(req.ScriptName)
+                   select CreateResponse(req, hasRunAlready);
         }
 
         private static Res CreateResponse(Req req, bool hasRunAlready)

@@ -1,46 +1,33 @@
 ﻿namespace Yuki.Commands
 {
     using System;
-    using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
     using Optional;
     using Optional.Linq;
-
-    using static Utils;
 
     using Req = GetCurrentHashRequest;
     using Res = GetCurrentHashResponse;
 
     public class GetCurrentHashCommand : IGetCurrentHashCommand
     {
-        private readonly ISession session;
+        private readonly IRepositoryFactory repositoryFactory;
 
-        public GetCurrentHashCommand(ISession session)
+        public GetCurrentHashCommand(
+            IRepositoryFactory repositoryFactory)
         {
-            Contract.Requires(session != null);
-
-            this.session = session;
+            Contract.Requires(repositoryFactory != null);
+            this.repositoryFactory = repositoryFactory;
         }
 
         public Option<Res, Exception> Execute(Req req)
         {
-            var sp = FullyQualifiedObjectName(
+            var repo = this.repositoryFactory.Create(
                 req.RepositoryDatabase,
-                req.RepositorySchema,
-                "GetCurrentScriptHash");
+                req.RepositorySchema);
 
-            var args = new Dictionary<string, object>
-            {
-                ["ScriptName"] = req.ScriptName,
-            };
-
-            var getHashResult = this.session.TryExecuteScalar<string>(
-                sp,
-                args,
-                CommandType.StoredProcedure);
-
-            return from hash in getHashResult select CreateResponse(req, hash);
+            return from hash in repo.GetCurrentHash(req.ScriptName)
+                   select CreateResponse(req, hash);
         }
 
         private static Res CreateResponse(Req req, string hash)

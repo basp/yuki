@@ -17,12 +17,21 @@
 
         public static string RelativePath(string basePath, string fullPath)
         {
-            // Don't cut off the directory seperator in case basePath already ends with it.
-            var baseLen = Path.GetFullPath(basePath).EndsWith(Path.DirectorySeparatorChar.ToString())
-                ? basePath.Length - 1
-                : basePath.Length;
+            Contract.Requires(!string.IsNullOrWhiteSpace(basePath));
+            Contract.Requires(!string.IsNullOrWhiteSpace(fullPath));
 
-            return Path.GetFullPath(fullPath).Remove(0, baseLen);
+            if (!basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                basePath += Path.DirectorySeparatorChar.ToString();
+            }
+
+            var fullUri = new Uri(fullPath);
+            var baseUri = new Uri(basePath);
+            var relativeUri = baseUri.MakeRelativeUri(fullUri);
+
+            // There's no predefined `UrlSeperatorChar` because it's defined
+            // in the spec as '/' and only '/' on every system.
+            return relativeUri.ToString().Replace('/', Path.DirectorySeparatorChar);
         }
 
         public static Option<string, Exception> ReadEmbeddedString(this Assembly asm, string resourceName)

@@ -1,39 +1,30 @@
 ﻿namespace Yuki.Commands
 {
     using System;
-    using System.Collections.Generic;
-    using System.Data;
     using System.Diagnostics.Contracts;
     using Optional;
-    using Optional.Linq;
-    using Templates;
-
-    using static Optional.Option;
 
     using Req = InitializeRepositoryRequest;
     using Res = InitializeRepositoryResponse;
 
     public class InitializeRepositoryCommand : IInitializeRepositoryCommand
     {
-        private readonly ISession session;
+        private readonly IRepositoryFactory repositoryFactory;
 
-        public InitializeRepositoryCommand(ISession session)
+        public InitializeRepositoryCommand(
+            IRepositoryFactory repositoryFactory)
         {
-            Contract.Requires(session != null);
-
-            this.session = session;
+            Contract.Requires(repositoryFactory != null);
+            this.repositoryFactory = repositoryFactory;
         }
 
         public Option<Res, Exception> Execute(Req req)
         {
-            var tmpl = new CreateRepositoryTemplate(
+            var repo = this.repositoryFactory.Create(
                 req.RepositoryDatabase,
                 req.RepositorySchema);
 
-            return from sql in tmpl.Format()
-                   let stmts = StatementSplitter.Split(sql)
-                   from res in this.ExecuteStatements(stmts)
-                   select CreateResponse(req);
+            return repo.Initialize().Map(x => CreateResponse(req));
         }
 
         private static Res CreateResponse(Req req)
@@ -44,26 +35,6 @@
                 RepositoryDatabase = req.RepositoryDatabase,
                 RepositorySchema = req.RepositorySchema,
             };
-        }
-
-        private Option<bool, Exception> ExecuteStatements(
-            IEnumerable<string> stmts)
-        {
-            try
-            {
-                foreach (var s in stmts)
-                {
-                    var args = new Dictionary<string, object>();
-                    var ct = CommandType.Text;
-                    this.session.ExecuteNonQuery(s, args, ct);
-                }
-
-                return Some<bool, Exception>(true);
-            }
-            catch (Exception ex)
-            {
-                return None<bool, Exception>(ex);
-            }
         }
     }
 }
