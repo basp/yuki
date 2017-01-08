@@ -5,6 +5,7 @@
     using System.Data;
     using System.Diagnostics.Contracts;
     using System.IO;
+    using AutoMapper;
     using Commands;
     using Optional;
     using Optional.Linq;
@@ -60,15 +61,8 @@
         public Option<GetVersionResponse, Exception> GetCurrentVersion()
         {
             var cmd = this.commandFactory.CreateGetVersionCommand(this.session);
-            var res = cmd.Execute(new GetVersionRequest
-            {
-                Server = this.request.Server,
-                RepositoryDatabase = this.request.RepositoryDatabase,
-                RepositorySchema = this.request.RepositorySchema,
-                RepositoryPath = this.request.RepositoryPath,
-            });
-
-            return res;
+            var req = Mapper.Map<GetVersionRequest>(this.request);
+            return cmd.Execute(req);
         }
 
         public Option<InsertVersionResponse, Exception> InsertNextVersion(
@@ -82,14 +76,12 @@
                 nextVersion);
 
             var cmd = this.commandFactory.CreateInsertVersionCommand(this.session);
-            var res = cmd.Execute(new InsertVersionRequest
+            var req = Mapper.Map(this.request, new InsertVersionRequest
             {
-                Server = this.request.Server,
-                RepositoryDatabase = this.request.RepositoryDatabase,
-                RepositorySchema = this.request.RepositorySchema,
-                RepositoryPath = this.request.RepositoryPath,
                 RepositoryVersion = nextVersion,
             });
+
+            var res = cmd.Execute(req);
 
             Log.Information(
                 "Versioning {Server} with version {NextVersion} based on {RepositoryPath}",
@@ -150,12 +142,7 @@
                     this.request.ProjectFolder,
                     script);
 
-                var runScriptRequest = new RunScriptRequest()
-                {
-                    Server = this.request.Server,
-                    RepositoryDatabase = this.request.RepositoryDatabase,
-                    RepositorySchema = this.request.RepositorySchema,
-                };
+                var runScriptRequest = Mapper.Map<RunScriptRequest>(this.request);
 
                 var res = from rf in readFileRes
                           from rs in this.RunScript(
@@ -326,31 +313,27 @@
             return Some<bool, Exception>(changed);
         }
 
-        private Option<bool, Exception> ScriptExecutedAlready(
-            string scriptName)
+        private Option<bool, Exception> ScriptExecutedAlready(string scriptName)
         {
-            var hasScriptRunReq = new HasScriptRunRequest
-            {
-                RepositoryDatabase = this.request.RepositoryDatabase,
-                RepositorySchema = this.request.RepositorySchema,
-                ScriptName = scriptName,
-            };
-
             var cmd = this.commandFactory.CreateHasScriptRunCommand(this.session);
-            return cmd.Execute(hasScriptRunReq)
-                .Map(x => x.HasRunAlready);
+            var req = Mapper.Map(this.request, new HasScriptRunRequest
+            {
+                ScriptName = scriptName,
+            });
+
+            return cmd.Execute(req).Map(x => x.HasRunAlready);
         }
 
         private Option<GetCurrentHashResponse, Exception> GetCurrentHash(
             string scriptName)
         {
             var cmd = this.commandFactory.CreateGetCurrentHashCommand(this.session);
-            return cmd.Execute(new GetCurrentHashRequest
+            var req = Mapper.Map(this.request, new GetCurrentHashRequest
             {
-                RepositoryDatabase = this.request.RepositoryDatabase,
-                RepositorySchema = this.request.RepositorySchema,
                 ScriptName = scriptName,
             });
+
+            return cmd.Execute(req);
         }
 
         private Option<InsertScriptRunResponse, Exception> InsertScriptRun(
@@ -361,18 +344,16 @@
             bool isOneTimeScript = false)
         {
             var cmd = this.commandFactory.CreateInsertScriptRunCommand(this.session);
-            var res = cmd.Execute(new InsertScriptRunRequest
+            var req = Mapper.Map(this.request, new InsertScriptRunRequest
             {
                 VersionId = versionId,
                 ScriptName = scriptName,
                 Sql = sql,
                 Hash = hash,
                 IsOneTimeScript = isOneTimeScript,
-                RepositoryDatabase = this.request.RepositoryDatabase,
-                RepositorySchema = this.request.RepositorySchema,
             });
 
-            return res;
+            return cmd.Execute(req);
         }
 
         private Option<InsertScriptRunErrorResponse, Exception> InsertScriptRunError(
@@ -383,19 +364,16 @@
             string errorMessage)
         {
             var cmd = this.commandFactory.CreateInsertScriptRunErrorCommand(this.session);
-            var res = cmd.Execute(new InsertScriptRunErrorRequest
+            var req = Mapper.Map(this.request, new InsertScriptRunErrorRequest
             {
                 ScriptName = scriptName,
                 Sql = sql,
                 SqlErrorPart = sqlErrorPart,
                 ErrorMessage = errorMessage,
                 VersionName = versionName,
-                RepositoryDatabase = this.request.RepositoryDatabase,
-                RepositorySchema = this.request.RepositorySchema,
-                RepositoryPath = this.request.RepositoryPath,
             });
 
-            return res;
+            return cmd.Execute(req);
         }
     }
 }

@@ -1,69 +1,55 @@
 ﻿namespace Yuki.Commands
 {
     using System;
-    using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
+    using AutoMapper;
     using Optional;
     using Optional.Linq;
-
-    using static Utils;
 
     using Req = InsertScriptRunRequest;
     using Res = InsertScriptRunResponse;
 
     public class InsertScriptRunCommand : IInsertScriptRunCommand
     {
-        private readonly ISession session;
+        private readonly IRepositoryFactory repositoryFactory;
         private readonly IIdentityProvider identityProvider;
 
         public InsertScriptRunCommand(
-            ISession session,
+            IRepositoryFactory repositoryFactory,
             IIdentityProvider identityProvider)
         {
-            Contract.Requires(session != null);
+            Contract.Requires(repositoryFactory != null);
             Contract.Requires(identityProvider != null);
 
-            this.session = session;
+            this.repositoryFactory = repositoryFactory;
             this.identityProvider = identityProvider;
         }
 
         public Option<Res, Exception> Execute(Req req)
         {
-            var sp = FullyQualifiedObjectName(
+            var repo = this.repositoryFactory.Create(
                 req.RepositoryDatabase,
-                req.RepositorySchema,
-                "InsertScriptRun");
+                req.RepositorySchema);
 
             var user = this.identityProvider.GetCurrent()
                 .ValueOr(Environment.MachineName);
 
-            var args = new Dictionary<string, object>
+            var record = Mapper.Map(req, new ScriptRunRecord
             {
-                ["VersionId"] = req.VersionId,
-                ["ScriptName"] = req.ScriptName,
-                ["TextOfScript"] = req.Sql,
-                ["TextHash"] = req.Hash,
-                ["OneTimeScript"] = req.IsOneTimeScript,
-                ["EnteredBy"] = user,
-            };
+                EnteredBy = user,
+            });
 
-            var scalar = this.session.TryExecuteScalar<int>(
-                sp,
-                args,
-                CommandType.StoredProcedure);
-
-            return from id in scalar select CreateResponse(req, id);
+            return from id in repo.InsertScriptRun(record)
+                   select CreateResponse(req, id);
         }
 
         private static Res CreateResponse(Req req, int scriptRunId)
         {
-            return new Res
+            return Mapper.Map(req, new Res
             {
-                ScriptName = req.ScriptName,
-                VersionId = req.VersionId,
                 ScriptRunId = scriptRunId,
-            };
+            });
         }
     }
 }

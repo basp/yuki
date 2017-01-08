@@ -1,13 +1,11 @@
 ﻿namespace Yuki.Commands
 {
     using System;
-    using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
+    using AutoMapper;
     using Optional;
     using Optional.Linq;
-
-    using static Utils;
 
     using Req = HasScriptRunRequest;
     using Res = HasScriptRunResponse;
@@ -35,11 +33,12 @@
 
         private static Res CreateResponse(Req req, bool hasRunAlready)
         {
-            return new Res
+            var res = new Res
             {
-                ScriptName = req.ScriptName,
                 HasRunAlready = hasRunAlready,
             };
+
+            return Mapper.Map(req, res);
         }
     }
 }

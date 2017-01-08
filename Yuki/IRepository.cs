@@ -7,10 +7,22 @@
     {
         Option<bool, Exception> Initialize();
 
-        Option<string, Exception> GetCurrentHash(string scriptName);
+        Option<int, Exception> InsertScriptRun(
+            ScriptRunRecord record);
 
-        Option<bool, Exception> HasScriptRun(string scriptName);
+        Option<int, Exception> InsetScriptRunError(
+            ScriptRunErrorRecord record);
 
-        Option<string, Exception> GetVersion(string repositoryPath);
+        Option<int, Exception> InsertVersion(
+            VersionRecord record);
+
+        Option<bool, Exception> HasScriptRun(
+            string scriptName);
+
+        Option<string, Exception> GetCurrentHash(
+            string scriptName);
+
+        Option<string, Exception> GetVersion(
+            string repositoryPath);
     }
 }

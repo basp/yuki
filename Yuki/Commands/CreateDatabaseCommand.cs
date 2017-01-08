@@ -1,11 +1,9 @@
 ﻿namespace Yuki.Commands
 {
     using System;
-    using System.Collections.Generic;
-    using System.Data;
     using System.Diagnostics.Contracts;
+    using AutoMapper;
     using Optional;
-    using Optional.Linq;
 
     using Req = CreateDatabaseRequest;
     using Res = CreateDatabaseResponse;
@@ -30,12 +28,8 @@
 
         private static Res CreateResponse(Req req, bool created)
         {
-            return new Res
-            {
-                Server = req.Server,
-                Database = req.Database,
-                Created = created,
-            };
+            var res = new Res { Created = created };
+            return Mapper.Map(req, res);
         }
     }
 }

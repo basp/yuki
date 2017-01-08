@@ -1,72 +1,55 @@
 ﻿namespace Yuki.Commands
 {
     using System;
-    using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.Contracts;
+    using AutoMapper;
     using Optional;
     using Optional.Linq;
-
-    using static Utils;
 
     using Req = InsertScriptRunErrorRequest;
     using Res = InsertScriptRunErrorResponse;
 
     public class InsertScriptRunErrorCommand : IInsertScriptRunErrorCommand
     {
-        private readonly ISession session;
+        private readonly IRepositoryFactory repositoryFactory;
         private readonly IIdentityProvider identityProvider;
 
         public InsertScriptRunErrorCommand(
-            ISession session,
+            IRepositoryFactory repositoryFactory,
             IIdentityProvider identityProvider)
         {
-            Contract.Requires(session != null);
+            Contract.Requires(repositoryFactory != null);
             Contract.Requires(identityProvider != null);
 
-            this.session = session;
+            this.repositoryFactory = repositoryFactory;
             this.identityProvider = identityProvider;
         }
 
         public Option<Res, Exception> Execute(Req req)
         {
-            var sp = FullyQualifiedObjectName(
-                req.RepositoryDatabase,
-                req.RepositorySchema,
-                "InsertScriptRunError");
-
             var user = this.identityProvider.GetCurrent()
                 .ValueOr(Environment.MachineName);
 
-            var args = new Dictionary<string, object>
+            var repo = this.repositoryFactory.Create(
+                req.RepositoryDatabase,
+                req.RepositorySchema);
+
+            var record = Mapper.Map(req, new ScriptRunErrorRecord
             {
-                ["RepositoryPath"] = req.RepositoryPath,
-                ["ScriptName"] = req.ScriptName,
-                ["VersionName"] = req.VersionName,
-                ["TextOfScript"] = req.Sql,
-                ["ErroneousPart"] = req.SqlErrorPart,
-                ["ErrorMessage"] = req.ErrorMessage,
-                ["EnteredBy"] = user,
-            };
+                EnteredBy = user,
+            });
 
-            var scalar = this.session.TryExecuteScalar<int>(
-                sp,
-                args,
-                CommandType.StoredProcedure);
-
-            return from id in scalar select CreateResponse(req, id);
+            return from id in repo.InsetScriptRunError(record)
+                   select CreateResponse(req, id);
         }
 
         private static Res CreateResponse(Req req, int scriptRunErrorId)
         {
-            return new Res
+            return Mapper.Map(req, new Res
             {
                 ScriptRunErrorId = scriptRunErrorId,
-                VersionName = req.VersionName,
-                ScriptName = req.ScriptName,
-                SqlErrorPart = req.SqlErrorPart,
-                ErrorMessage = req.ErrorMessage,
-            };
+            });
         }
     }
 }

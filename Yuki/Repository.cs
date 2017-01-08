@@ -45,6 +45,76 @@
                    select res;
         }
 
+        public Option<int, Exception> InsertScriptRun(
+            ScriptRunRecord record)
+        {
+            var sp = FullyQualifiedObjectName(
+                this.repositoryDatabase,
+                this.repositorySchema,
+                "InsertScriptRun");
+
+            var args = new Dictionary<string, object>
+            {
+                ["VersionId"] = record.VersionId,
+                ["ScriptName"] = record.ScriptName,
+                ["TextOfScript"] = record.Sql,
+                ["TextHash"] = record.Hash,
+                ["OneTimeScript"] = record.IsOneTimeScript,
+                ["EnteredBy"] = record,
+            };
+
+            return this.session.TryExecuteScalar<int>(
+                sp,
+                args,
+                CommandType.StoredProcedure);
+        }
+
+        public Option<int, Exception> InsetScriptRunError(
+            ScriptRunErrorRecord record)
+        {
+            var sp = FullyQualifiedObjectName(
+                this.repositoryDatabase,
+                this.repositorySchema,
+                "InsertScriptRunError");
+
+            var args = new Dictionary<string, object>
+            {
+                ["RepositoryPath"] = record.RepositoryPath,
+                ["ScriptName"] = record.ScriptName,
+                ["VersionName"] = record.VersionName,
+                ["TextOfScript"] = record.Sql,
+                ["ErroneousPart"] = record.SqlErrorPart,
+                ["ErrorMessage"] = record.ErrorMessage,
+                ["EnteredBy"] = record.EnteredBy,
+            };
+
+            return this.session.TryExecuteScalar<int>(
+                sp,
+                args,
+                CommandType.StoredProcedure);
+        }
+
+        public Option<int, Exception> InsertVersion(
+            VersionRecord record)
+        {
+            var sp = FullyQualifiedObjectName(
+                this.repositoryDatabase,
+                this.repositorySchema,
+                "InsertVersion");
+
+            var args = new Dictionary<string, object>
+            {
+                ["VersionName"] = record.VersionName,
+                ["RepositoryPath"] = record.RepositoryPath,
+                ["EnteredBy"] = record.EnteredBy,
+            };
+
+            return this.session.TryExecuteScalar<int>(
+                sp,
+                args,
+                CommandType.StoredProcedure);
+        }
+
         public Option<string, Exception> GetCurrentHash(string scriptName)
         {
             var sp = FullyQualifiedObjectName(

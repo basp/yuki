@@ -12,6 +12,7 @@
         [Fact]
         public void Execute()
         {
+            // Arrange
             var fix = new Fixture();
 
             var hasRun = fix.Create<bool>();
@@ -30,8 +31,10 @@
 
             var cmd = new HasScriptRunCommand(repositoryFactory.Object);
 
+            // Act
             var res = cmd.Execute(req);
 
+            // Assert
             Assert.True(res.HasValue);
 
             res.MatchSome(x =>

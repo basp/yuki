@@ -1,15 +1,13 @@
 ﻿namespace Yuki.Tests
 {
     using System;
-    using System.Collections.Generic;
-    using System.Data;
     using Commands;
     using Moq;
     using Optional;
     using Ploeh.AutoFixture;
     using Xunit;
 
-    public class CreateDatabaseCommandShould
+    public class CreateDatabaseCommandShould : IClassFixture<CommandFixture>
     {
         [Fact]
         public void Execute()

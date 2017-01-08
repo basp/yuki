@@ -46,13 +46,19 @@
             new InitializeRepositoryCommand(this.repositoryFactoryFactory(session));
 
         public IInsertScriptRunCommand CreateInsertScriptRunCommand(ISession session) =>
-            new InsertScriptRunCommand(session, this.identityProvider);
+            new InsertScriptRunCommand(
+                this.repositoryFactoryFactory(session),
+                this.identityProvider);
 
         public IInsertScriptRunErrorCommand CreateInsertScriptRunErrorCommand(ISession session) =>
-            new InsertScriptRunErrorCommand(session, this.identityProvider);
+            new InsertScriptRunErrorCommand(
+                this.repositoryFactoryFactory(session),
+                this.identityProvider);
 
         public IInsertVersionCommand CreateInsertVersionCommand(ISession session) =>
-            new InsertVersionCommand(session, this.identityProvider);
+            new InsertVersionCommand(
+                this.repositoryFactoryFactory(session),
+                this.identityProvider);
 
         public IReadFileCommand CreateReadFileCommand() =>
             new ReadFileCommand(this.hasher);

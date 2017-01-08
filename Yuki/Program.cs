@@ -3,6 +3,7 @@
     using System;
     using System.Data.SqlClient;
     using System.IO;
+    using AutoMapper;
     using Commands;
     using Optional;
     using Optional.Linq;
@@ -38,6 +39,8 @@
 
         private static void Main(string[] args)
         {
+            Mapper.Initialize(cfg => cfg.AddProfile<MappingProfile>());
+
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.LiterateConsole()
                 .CreateLogger();

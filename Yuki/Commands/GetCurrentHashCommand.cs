@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using System.Diagnostics.Contracts;
+    using AutoMapper;
     using Optional;
     using Optional.Linq;
 
@@ -32,11 +33,8 @@
 
         private static Res CreateResponse(Req req, string hash)
         {
-            return new Res
-            {
-                ScriptName = req.ScriptName,
-                Hash = hash,
-            };
+            var res = new Res { Hash = hash };
+            return Mapper.Map(req, res);
         }
     }
 }

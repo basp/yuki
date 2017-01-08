@@ -95,6 +95,10 @@
     <CodeAnalysisRuleSet>Yuki.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=5.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -204,6 +208,8 @@
     <Compile Include="ITextTemplate.cs" />
     <Compile Include="ITextTemplateFactory.cs" />
     <Compile Include="IVersionResolver.cs" />
+    <Compile Include="IVersionResolverFactory.cs" />
+    <Compile Include="MappingProfile.cs" />
     <Compile Include="MD5Hasher.cs" />
     <Compile Include="Migrator.cs" />
     <Compile Include="Program.cs" />
@@ -211,6 +217,8 @@
     <Compile Include="Repository.cs" />
     <Compile Include="RepositoryFactory.cs" />
     <Compile Include="ScriptFolder.cs" />
+    <Compile Include="ScriptRunErrorRecord.cs" />
+    <Compile Include="ScriptRunRecord.cs" />
     <Compile Include="SqlSession.cs" />
     <Compile Include="SqlSessionFactory.cs" />
     <Compile Include="StatementSplitter.cs" />
@@ -221,6 +229,7 @@
     <Compile Include="TextFileVersionResolver.cs" />
     <Compile Include="TextTemplateFactory.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="VersionRecord.cs" />
     <Compile Include="WindowsIdentityProvider.cs" />
   </ItemGroup>
   <ItemGroup>

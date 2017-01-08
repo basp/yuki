@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using System.Diagnostics.Contracts;
+    using AutoMapper;
     using Optional;
     using Optional.Linq;
 
@@ -31,14 +32,14 @@
                    select CreateResponse(req, v);
         }
 
-        private static Res CreateResponse(
-            Req req,
-            string versionName)
+        private static Res CreateResponse(Req req, string versionName)
         {
-            return new Res
+            var res = new Res
             {
                 VersionName = versionName,
             };
+
+            return Mapper.Map(req, res);
         }
     }
 }
