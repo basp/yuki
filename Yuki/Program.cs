@@ -77,7 +77,7 @@
                 Folder = projectFolder,
                 RepositoryDatabase = Default.RepositoryDatabase,
                 RepositorySchema = Default.RepositoryScheme,
-                Restore = Default.Restore,
+                Restore = true,
             };
 
             var migrateRequest = new MigrateRequest

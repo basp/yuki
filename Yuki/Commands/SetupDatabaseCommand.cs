@@ -52,10 +52,19 @@
                 return createDatabaseRes.Map(x => CreateResponse(req, x));
             }
 
-            // For now we fail when the restore flag is set and we can't
-            // find a backup file to restore from. We might want to
-            // reconsider this behavior.
-            return from fi in TryFindBackup(req.Folder)
+            var findBackupRes = TryFindBackup(req.Folder);
+            if (!findBackupRes.HasValue)
+            {
+                Log.Debug(
+                    "Skipping restore of {Database} on {Server}: no backup found in {Folder}",
+                    database,
+                    req.Server,
+                    req.Folder);
+
+                return createDatabaseRes.Map(x => CreateResponse(req, x));
+            }
+
+            return from fi in findBackupRes
                    from x in createDatabaseRes
                    from y in this.RestoreDatabase(req.Server, fi.FullName, database)
                    select CreateResponse(req, x, y.Restored, y.Backup);

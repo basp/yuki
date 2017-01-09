@@ -242,8 +242,7 @@
                 try
                 {
                     var args = new Dictionary<string, object>();
-                    var ct = CommandType.Text;
-                    this.session.ExecuteNonQuery(stmt, args, ct);
+                    this.session.ExecuteNonQuery(stmt, args, CommandType.Text);
                 }
                 catch (Exception ex)
                 {
@@ -255,14 +254,12 @@
                         ex.Message);
 
                     this.session.RollbackTransaction();
-                    this.InsertScriptRunError(
+                    return this.InsertScriptRunError(
                         versionName,
                         scriptFile,
                         sql,
                         stmt,
-                        ex.Message);
-
-                    return None<bool, Exception>(ex);
+                        ex.Message).Map(x => false);
                 }
             }
 
