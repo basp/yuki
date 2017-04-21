@@ -33,7 +33,7 @@ One of the first things you might want to do is get a list of workspaces. Using 
 
 As a small tip, if you **query** you'll probalby get back **JSON** results and using **PowerShell** you can deal with them in a much nicer way:
 
-    (iwr http://<yuki_endpoint>/api/workspaces).content | convertfrom-jsonj | ftf
+    (iwr http://<yuki_endpoint>/api/workspaces).content | convertfrom-json | ft
 
 Unless you did some experimenting this should return a single workspace named `Default`.
 
