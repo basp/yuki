@@ -18,7 +18,7 @@
         [Route]
         public IHttpActionResult Get()
         {
-            var workspaces = this.repository.GetWorkspaces();
+            var workspaces = this.repository.GetAllWorkspaces();
             return this.Json(workspaces);
         }
 

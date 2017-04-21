@@ -34,6 +34,13 @@
             this.context.SaveChanges();
         }
 
+        public IEnumerable<User> GetAllUsers()
+        {
+            return this.context.Users
+                .AsNoTracking()
+                .ToList();
+        }
+
         public Entry GetEntry(int entryId)
         {
             return this.context.Entries
@@ -84,7 +91,7 @@
                 .FirstOrDefault();
         }
 
-        public IEnumerable<Workspace> GetWorkspaces()
+        public IEnumerable<Workspace> GetAllWorkspaces()
         {
             return this.context.Workspaces
                 .AsNoTracking()
