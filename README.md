@@ -21,7 +21,7 @@ Once you stop a **timer** this results in an **entry** which hold the duration a
 
 Note that entries can be created easily without any meta-information and it's easy to update existing entries with that information later on. This means you can just focus on work and worry about bookkeeping later.
 
-# Gettings started
+# Getting started
 You should be able to run `update-database` and just use EF migrations to get yourself a local database. After starting up the HTTP service (API) you should be able to execute the commands below. 
 
 Note that by default, a `Default` workspace and a `Foo Bar` user are created. Both have an `Id` value of `1` and we'll work with that for the remainder of this tutorial.
