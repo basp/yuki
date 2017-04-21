@@ -14,7 +14,7 @@
             this.repository = repository;
         }
 
-        [Route("{timerId}")]
+        [Route("{timerId}", Name = "GetTimer")]
         public IHttpActionResult Get(int timerId)
         {
             var timer = this.repository.GetTimer(timerId);
@@ -37,7 +37,9 @@
 
             timer = new Timer(workspaceId, userId);
             this.repository.InsertTimer(timer);
-            return this.Ok(timer);
+            var routeValues = new { timerId = timer.Id };
+            var location = this.Url.Route("GetTimer", routeValues);
+            return this.Created(location, timer);
         }
 
         [HttpPost]
@@ -47,22 +49,22 @@
             [FromUri] string description = null)
         {
             var timer = this.repository.GetTimer(timerId);
-            if (timer != null)
+            if (timer == null)
             {
-                var entry = new Entry
-                {
-                    UserId = timer.UserId,
-                    WorkspaceId = timer.WorkspaceId,
-                    Description = description,
-                    Duration = DateTime.UtcNow.Subtract(timer.Started),
-                };
-
-                this.repository.InsertEntry(entry);
-                this.repository.DeleteTimer(timer);
-                return this.Ok(entry);
+                return this.NotFound();
             }
 
-            return this.Ok();
+            var entry = new Entry
+            {
+                UserId = timer.UserId,
+                WorkspaceId = timer.WorkspaceId,
+                Description = description,
+                Duration = DateTime.UtcNow.Subtract(timer.Started),
+            };
+
+            this.repository.InsertEntry(entry);
+            this.repository.DeleteTimer(timer);
+            return this.Ok(entry);
         }
     }
 }
