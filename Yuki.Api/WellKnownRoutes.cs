@@ -5,5 +5,6 @@
         public const string GetWorkspace = "GetWorkspace";
         public const string GetTimer = "GetTimer";
         public const string GetEntry = "GetEntry";
+        public const string GetUser = "GetUser";
     }
 }

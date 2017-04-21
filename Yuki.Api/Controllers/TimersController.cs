@@ -15,7 +15,8 @@
         }
 
         [Route("{timerId}", Name = WellKnownRoutes.GetTimer)]
-        public IHttpActionResult Get(int timerId)
+        public IHttpActionResult Get(
+            [FromUri] int timerId)
         {
             var timer = this.repository.GetTimer(timerId);
             return timer == null
@@ -47,7 +48,8 @@
 
         [HttpPost]
         [Route("stop")]
-        public IHttpActionResult Stop([FromUri] int timerId)
+        public IHttpActionResult Stop(
+            [FromUri] int timerId)
         {
             var timer = this.repository.GetTimer(timerId);
             if (timer == null)
@@ -72,7 +74,8 @@
         }
 
         [HttpPut]
-        public IHttpActionResult UpdateTimer(Timer timer)
+        public IHttpActionResult UpdateTimer(
+            [FromBody] Timer timer)
         {
             var existing = this.repository.GetTimer(timer.Id);
             if(existing == null)

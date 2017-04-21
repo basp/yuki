@@ -43,6 +43,14 @@
                 .FirstOrDefault();
         }
 
+        public User GetUser(int userId)
+        {
+            return this.context.Users
+                .AsNoTracking()
+                .Where(x => x.Id == userId)
+                .FirstOrDefault();
+        }
+
         public Workspace GetWorkspace(int workspaceId)
         {
             return this.context.Workspaces
