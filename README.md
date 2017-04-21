@@ -35,6 +35,8 @@ As a small tip, if you **query** you'll probalby get back **JSON** results and u
 
     (iwr http://<yuki_endpoint>/api/workspaces).content | convertfrom-json | ft
 
+This will *convert* the stuff in the **content** property (which is **JSON**) to a **PowerShell** object. As such we can apply `ft` (which is **Format-Table**) to it in order to present it in a readable way.
+
 Unless you did some experimenting this should return a single workspace named `Default`.
 
 ## Creating a new workspace
