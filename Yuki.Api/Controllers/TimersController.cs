@@ -14,7 +14,7 @@
             this.repository = repository;
         }
 
-        [Route("{timerId}", Name = "GetTimer")]
+        [Route("{timerId}", Name = WellKnownRoutes.GetTimer)]
         public IHttpActionResult Get(int timerId)
         {
             var timer = this.repository.GetTimer(timerId);
@@ -25,7 +25,9 @@
 
         [HttpPost]
         [Route("start")]
-        public IHttpActionResult Start([FromUri] int workspaceId, [FromUri] int userId)
+        public IHttpActionResult Start(
+            [FromUri] int workspaceId, 
+            [FromUri] int userId)
         {
             Timer timer;
 
@@ -37,6 +39,7 @@
 
             timer = new Timer(workspaceId, userId);
             this.repository.InsertTimer(timer);
+
             var routeValues = new { timerId = timer.Id };
             var location = this.Url.Route("GetTimer", routeValues);
             return this.Created(location, timer);
@@ -44,9 +47,7 @@
 
         [HttpPost]
         [Route("stop")]
-        public IHttpActionResult Stop(
-            [FromUri] int timerId,
-            [FromUri] string description = null)
+        public IHttpActionResult Stop([FromUri] int timerId)
         {
             var timer = this.repository.GetTimer(timerId);
             if (timer == null)
@@ -58,13 +59,29 @@
             {
                 UserId = timer.UserId,
                 WorkspaceId = timer.WorkspaceId,
-                Description = description,
+                Description = timer.Description,
                 Duration = DateTime.UtcNow.Subtract(timer.Started),
             };
 
             this.repository.InsertEntry(entry);
             this.repository.DeleteTimer(timer);
-            return this.Ok(entry);
+
+            var routeValues = new { entryId = entry.Id };
+            var location = this.Url.Route("GetEntry", routeValues);
+            return this.Created(location, entry);
+        }
+
+        [HttpPut]
+        public IHttpActionResult UpdateTimer(Timer timer)
+        {
+            var existing = this.repository.GetTimer(timer.Id);
+            if(existing == null)
+            {
+                return this.NotFound();
+            }
+
+            this.repository.UpdateTimer(timer);
+            return this.Ok();
         }
     }
 }

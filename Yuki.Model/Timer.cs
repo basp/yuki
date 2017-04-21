@@ -33,6 +33,12 @@
             set;
         }
 
+        public string Description
+        {
+            get;
+            set;
+        }
+
         public DateTime Started
         {
             get;

@@ -60,6 +60,14 @@
                 .FirstOrDefault();
         }
 
+        public IEnumerable<Timer> GetWorkspaceTimers(int workspaceId)
+        {
+            return this.context.Timers
+                .AsNoTracking()
+                .Where(x => x.WorkspaceId == workspaceId)
+                .ToList();
+        }
+
         public Timer GetUserTimer(int userId)
         {
             return this.context.Timers

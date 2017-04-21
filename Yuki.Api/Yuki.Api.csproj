@@ -110,6 +110,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Controllers\TimersController.cs" />
     <Compile Include="Controllers\WorkspacesController.cs" />
+    <Compile Include="WellKnownRoutes.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yuki.Model\Yuki.Model.csproj">

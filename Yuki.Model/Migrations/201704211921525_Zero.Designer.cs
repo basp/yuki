@@ -7,13 +7,13 @@ namespace Yuki.Model.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class InitialDatabase : IMigrationMetadata
+    public sealed partial class Zero : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialDatabase));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Zero));
         
         string IMigrationMetadata.Id
         {
-            get { return "201704211825374_InitialDatabase"; }
+            get { return "201704211921525_Zero"; }
         }
         
         string IMigrationMetadata.Source

@@ -3,7 +3,7 @@ namespace Yuki.Model.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialDatabase : DbMigration
+    public partial class Zero : DbMigration
     {
         public override void Up()
         {
@@ -19,10 +19,20 @@ namespace Yuki.Model.Migrations
                         Duration = c.Time(nullable: false, precision: 7),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Projects", t => t.ProjectId)
                 .ForeignKey("dbo.Users", t => t.UserId, cascadeDelete: true)
+                .ForeignKey("dbo.Projects", t => t.ProjectId)
                 .Index(t => t.UserId)
                 .Index(t => t.ProjectId);
+            
+            CreateTable(
+                "dbo.Users",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Email = c.String(),
+                        Name = c.String(),
+                    })
+                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.Projects",
@@ -43,21 +53,12 @@ namespace Yuki.Model.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         WorkspaceId = c.Int(nullable: false),
                         UserId = c.Int(nullable: false),
+                        Description = c.String(),
                         Started = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Workspaces", t => t.WorkspaceId, cascadeDelete: true)
                 .Index(t => t.WorkspaceId);
-            
-            CreateTable(
-                "dbo.Users",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Email = c.String(),
-                        Name = c.String(),
-                    })
-                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.Workspaces",
@@ -74,16 +75,16 @@ namespace Yuki.Model.Migrations
         {
             DropForeignKey("dbo.Timers", "WorkspaceId", "dbo.Workspaces");
             DropForeignKey("dbo.Projects", "WorkspaceId", "dbo.Workspaces");
-            DropForeignKey("dbo.Entries", "UserId", "dbo.Users");
             DropForeignKey("dbo.Entries", "ProjectId", "dbo.Projects");
+            DropForeignKey("dbo.Entries", "UserId", "dbo.Users");
             DropIndex("dbo.Timers", new[] { "WorkspaceId" });
             DropIndex("dbo.Projects", new[] { "WorkspaceId" });
             DropIndex("dbo.Entries", new[] { "ProjectId" });
             DropIndex("dbo.Entries", new[] { "UserId" });
             DropTable("dbo.Workspaces");
-            DropTable("dbo.Users");
             DropTable("dbo.Timers");
             DropTable("dbo.Projects");
+            DropTable("dbo.Users");
             DropTable("dbo.Entries");
         }
     }

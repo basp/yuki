@@ -23,7 +23,7 @@
         }
 
         [HttpGet]
-        [Route("{workspaceId}", Name = "GetWorkspace")]
+        [Route("{workspaceId}", Name = WellKnownRoutes.GetWorkspace)]
         public IHttpActionResult Get(int workspaceId)
         {
             var workspace = this.repository.GetWorkspace(workspaceId);
@@ -33,6 +33,7 @@
         }
 
         [HttpPost]
+        [Route]
         public IHttpActionResult NewWorkspace(Workspace workspace)
         {
             this.repository.InsertWorkspace(workspace);

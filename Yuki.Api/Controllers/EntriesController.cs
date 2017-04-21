@@ -15,7 +15,7 @@
         }
 
         [HttpGet]
-        [Route("{entryId}")]
+        [Route("{entryId}", Name = WellKnownRoutes.GetEntry)]
         public IHttpActionResult Get(int entryId)
         {
             var entry = this.repository.GetEntry(entryId);
