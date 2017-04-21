@@ -1,16 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki", "Yuki\Yuki.csproj", "{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki.Model", "Yuki.Model\Yuki.Model.csproj", "{6517F957-CA71-4661-ACD2-46E1C86EB833}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{80ECC457-714A-4187-9230-C42AED4B4446}"
-	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki.Tests", "Yuki.Tests\Yuki.Tests.csproj", "{62EF651D-5A78-4B7F-828E-BCA0BAA9130E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki.Api", "Yuki.Api\Yuki.Api.csproj", "{FCEB7665-2982-4BDD-A455-8A6C15E114C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C61A7EA7-34B5-4634-845E-AFC1C84A31EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{62EF651D-5A78-4B7F-828E-BCA0BAA9130E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62EF651D-5A78-4B7F-828E-BCA0BAA9130E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62EF651D-5A78-4B7F-828E-BCA0BAA9130E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62EF651D-5A78-4B7F-828E-BCA0BAA9130E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6517F957-CA71-4661-ACD2-46E1C86EB833}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6517F957-CA71-4661-ACD2-46E1C86EB833}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6517F957-CA71-4661-ACD2-46E1C86EB833}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6517F957-CA71-4661-ACD2-46E1C86EB833}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCEB7665-2982-4BDD-A455-8A6C15E114C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCEB7665-2982-4BDD-A455-8A6C15E114C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCEB7665-2982-4BDD-A455-8A6C15E114C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCEB7665-2982-4BDD-A455-8A6C15E114C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
