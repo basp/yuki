@@ -47,3 +47,18 @@ This is very easy using PowerShell and a bit of JSON:
     Invoke-WebRequest -Uri $uri -Method POST -ContentType 'application/json' -Body $body
 
 The snippet above will create a new workspace called **frotz**.
+
+## Creating a user
+You cannot currently create a user. You'll have to either use the supplied **Foo Bar** user or insert another user into your database manually.
+
+## Creating a timer
+So now we get to the real functionality - tracking time. The way **Yuki** deals with time is very easy:
+
+* A user has a **timer**
+* When the user has no explicit timer there's always an implicit **idle** timer
+* Thus a user **always** has a timer
+* When a timer is stopped this results in an **entry**
+* An **entry** can hold all kinds of information
+* By default an entry is linked to a **user**, a **workspace** and optionally a **project** and zero or more **tag** instances.
+
+TOOD: Describe the actual things you have to do (HTTP client) to create a client.
