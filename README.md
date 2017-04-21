@@ -40,6 +40,8 @@ Unless you did some experimenting this should return a single workspace named `D
 ## Creating a new workspace
 This is very easy using PowerShell and a bit of JSON:
 
-    Invoke-WebRequest -Uri http://f<yuki_endpoijnt>/api/workspaces -Method POST -ContentType 'application/json' -Body '{"name": "frotz"}'
+    $uri = 'http://<yuki_endpoijnt>/api/workspaces'
+    $body = '{"name": "frotz"}';
+    Invoke-WebRequest -Uri $uri -Method POST -ContentType 'application/json' -Body $body
 
 The snippet above will create a new workspace called **frotz**.
