@@ -49,14 +49,11 @@
   <ItemGroup>
     <Compile Include="DataContext.cs" />
     <Compile Include="Entry.cs" />
-    <Compile Include="Migrations\201704211921525_Zero.cs" />
-    <Compile Include="Migrations\201704211921525_Zero.Designer.cs">
-      <DependentUpon>201704211921525_Zero.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository.cs" />
+    <Compile Include="Tag.cs" />
     <Compile Include="Timer.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Workspace.cs" />
@@ -64,11 +61,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201704211921525_Zero.resx">
-      <DependentUpon>201704211921525_Zero.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

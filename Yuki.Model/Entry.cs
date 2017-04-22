@@ -1,9 +1,15 @@
 ﻿namespace Yuki.Model
 {
     using System;
+    using System.Collections.Generic;
 
     public class Entry
     {
+        public Entry()
+        {
+            this.Tags = new List<Tag>();
+        }
+
         public int Id
         {
             get;
@@ -38,6 +44,12 @@
         {
             get;
             set;
+        }
+
+        public virtual ICollection<Tag> Tags
+        {
+            get;
+            private set;
         }
 
         public virtual User User

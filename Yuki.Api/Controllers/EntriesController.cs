@@ -34,9 +34,8 @@
                 entry.Duration,
                 User = new
                 {
-                    Id = entry.User.Id,
-                    Name = entry.User.Name,
-                    Email = entry.User.Email,
+                    entry.User.Id,
+                    entry.User.DisplayName,
                 }
             };
 

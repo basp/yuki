@@ -1,32 +1,44 @@
 ﻿namespace Yuki.Cmd.Actions
 {
     using System;
-    using System.Linq;
-    using Newtonsoft.Json;
-    using Yuki.Model;
+    using System.Configuration;
+    using System.Threading.Tasks;
+    using Flurl;
+    using Flurl.Http;
+    using IdentityModel.Client;
 
     public class GetWorkspacesAction : IAction<GetWorkspacesArgs>
     {
-        private readonly Repository repository;
+        private static readonly string UserName =
+            ConfigurationManager.AppSettings.Get("userName");
 
-        public GetWorkspacesAction(Repository repository)
+        private static readonly string Password =
+            ConfigurationManager.AppSettings.Get("password");
+
+        private readonly TokenClient tokenClient;
+
+        public GetWorkspacesAction(TokenClient tokenClient)
         {
-            this.repository = repository;
+            this.tokenClient = tokenClient;
         }
 
-        public void Execute(GetWorkspacesArgs args)
+        public async Task Execute(GetWorkspacesArgs args)
         {
-            var workspaces = this.repository.GetAllWorkspaces();
-            var model = workspaces.Select(x => new
-            {
-                x.Id,
-                x.Name,
-                Projects = x.Projects.Select(y => new { y.Id, y.Name }),
-                Timers = x.Timers.Select(y => new { y.Id, y.Description, y.Started }),
-            });
+            var response = GetClientToken();
 
-            var json = JsonConvert.SerializeObject(model, Formatting.Indented);
-            Console.WriteLine(json);
+            var result = await "http://localhost:52946/"
+                .AppendPathSegments("api", "workspaces")
+                .WithOAuthBearerToken(response.AccessToken)
+                .GetStringAsync();
+
+            Console.WriteLine(result);
+        }
+
+        private TokenResponse GetClientToken()
+        {
+            return this.tokenClient
+                .RequestResourceOwnerPasswordAsync(UserName, Password, "yuki")
+                .Result;
         }
     }
 }

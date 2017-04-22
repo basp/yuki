@@ -1,6 +1,8 @@
 ﻿namespace Yuki.Model
 {
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class User
     {
@@ -15,13 +17,15 @@
             set;
         }
 
-        public string Email
+        public string DisplayName
         {
             get;
             set;
         }
 
-        public string Name
+        [Index(IsUnique = true)]
+        [MaxLength(256)]
+        public string Email
         {
             get;
             set;

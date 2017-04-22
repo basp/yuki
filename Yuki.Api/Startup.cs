@@ -6,6 +6,7 @@
     using SimpleInjector.Integration.WebApi;
     using SimpleInjector.Lifestyles;
     using Yuki.Model;
+    using IdentityServer3.AccessTokenValidation;
 
     public class Startup
     {
@@ -23,6 +24,16 @@
 
             config.DependencyResolver =
                 new SimpleInjectorWebApiDependencyResolver(container);
+
+            config.Filters.Add(new AuthorizeAttribute());
+
+            app.UseIdentityServerBearerTokenAuthentication(
+                new IdentityServerBearerTokenAuthenticationOptions
+                {
+                    Authority = "http://localhost:5000",
+                    ValidationMode = ValidationMode.ValidationEndpoint,
+                    RequiredScopes = new[] { "yuki" },
+                });
 
             app.UseWebApi(config);
         }

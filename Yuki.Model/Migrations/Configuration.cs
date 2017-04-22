@@ -21,8 +21,7 @@ namespace Yuki.Model.Migrations
             var user = new User
             {
                 Id = 1,
-                Email = "foo@bar.com",
-                Name = "Foo Bar",
+                Email = "baspster@gmail.com",
             };
 
             context.Workspaces.AddOrUpdate(workspace);

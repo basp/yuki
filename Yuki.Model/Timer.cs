@@ -42,6 +42,12 @@
         public DateTime Started
         {
             get;
+            private set;
+        }
+
+        public virtual User User
+        {
+            get;
             set;
         }
     }

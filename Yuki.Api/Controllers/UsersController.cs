@@ -46,7 +46,7 @@
         private static object CreateViewModel(User user) =>
             new
             {
-                user.Name,
+                user.DisplayName,
                 user.Email,
                 Entries = user.Entries.Select(x => new
                 {

@@ -1,6 +1,6 @@
 ﻿namespace Yuki.Api.Controllers
 {
-    using System;
+    using System.Security.Claims;
     using System.Web.Http;
     using Yuki.Model;
 

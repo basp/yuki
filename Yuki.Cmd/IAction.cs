@@ -1,7 +1,9 @@
 ﻿namespace Yuki.Cmd
 {
+    using System.Threading.Tasks;
+
     public interface IAction<TArgs>
     {
-        void Execute(TArgs args);
+        Task Execute(TArgs args);
     }
 }

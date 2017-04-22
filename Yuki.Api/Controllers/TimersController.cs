@@ -74,16 +74,19 @@
         }
 
         [HttpPut]
-        public IHttpActionResult UpdateTimer(
-            [FromBody] Timer timer)
+        public IHttpActionResult UpdateDescription(
+            [FromUri] int timerId,
+            string description)
         {
-            var existing = this.repository.GetTimer(timer.Id);
+            var existing = this.repository.GetTimer(timerId);
             if(existing == null)
             {
                 return this.NotFound();
             }
 
-            this.repository.UpdateTimer(timer);
+            existing.Description = description;
+
+            this.repository.UpdateTimer(existing);
             return this.Ok();
         }
     }
