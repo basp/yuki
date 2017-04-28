@@ -6,7 +6,6 @@
     using SimpleInjector.Integration.WebApi;
     using SimpleInjector.Lifestyles;
     using Yuki.Model;
-    using IdentityServer3.AccessTokenValidation;
 
     public class Startup
     {
@@ -25,7 +24,7 @@
             config.DependencyResolver =
                 new SimpleInjectorWebApiDependencyResolver(container);
 
-            config.Filters.Add(new AuthorizeAttribute());
+            //config.Filters.Add(new AuthorizeAttribute());
 
             //app.UseIdentityServerBearerTokenAuthentication(
             //    new IdentityServerBearerTokenAuthenticationOptions

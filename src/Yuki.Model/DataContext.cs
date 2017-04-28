@@ -14,41 +14,5 @@
             : base("Yuki")
         {
         }
-
-        public virtual DbSet<Entry> Entries
-        {
-            get;
-            set;
-        }
-
-        public virtual DbSet<Project> Projects
-        {
-            get;
-            set;
-        }
-
-        public virtual DbSet<Tag> Tags
-        {
-            get;
-            set;
-        }
-
-        public virtual DbSet<Timer> Timers
-        {
-            get;
-            set;
-        }
-
-        public virtual DbSet<User> Users
-        {
-            get;
-            set;
-        }
-
-        public virtual DbSet<Workspace> Workspaces
-        {
-            get;
-            set;
-        }
     }
 }

@@ -128,13 +128,20 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\EntriesController.cs" />
-    <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Clients\ClientsController.cs" />
+    <Compile Include="Dashboard\DashboardController.cs" />
+    <Compile Include="Groups\GroupsController.cs" />
+    <Compile Include="Projects\ProjectsController.cs" />
+    <Compile Include="ProjectUsers\ProjectUsersController.cs" />
+    <Compile Include="Tags\TagsController.cs" />
+    <Compile Include="Tasks\TasksController.cs" />
+    <Compile Include="TimeEntries\TimeEntriesController.cs" />
+    <Compile Include="Users\UsersController.cs" />
+    <Compile Include="WorkspaceUsers\WorkspaceUsersControler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Controllers\TimersController.cs" />
-    <Compile Include="Controllers\WorkspacesController.cs" />
-    <Compile Include="WellKnownRoutes.cs" />
+    <Compile Include="Workspaces\WorkspacesController.cs" />
+    <Compile Include="RouteNames.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yuki.Model\Yuki.Model.csproj">

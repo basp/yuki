@@ -1,13 +1,11 @@
 ﻿namespace Yuki.Model
 {
-    using System.Collections.Generic;
-
-    public class Project
+    public class WorkspaceUser
     {
         public int Id
         {
             get;
-            set;
+            private set;
         }
 
         public int WorkspaceId
@@ -16,16 +14,16 @@
             set;
         }
 
-        public string Name
+        public int UserId
         {
             get;
             set;
         }
 
-        public virtual ICollection<Entry> Entries
+        public bool IsActive
         {
             get;
-            private set;
+            set;
         }
     }
 }

@@ -1,15 +1,9 @@
 ﻿namespace Yuki.Model
 {
     using System;
-    using System.Collections.Generic;
 
-    public class Workspace
+    public class Client
     {
-        public Workspace()
-        {
-            this.Users = new List<User>();
-        }
-
         public int Id
         {
             get;
@@ -22,13 +16,13 @@
             set;
         }
 
-        public DateTime LastUpdated
+        public int WorkspaceId
         {
             get;
-            private set;
+            set;
         }
 
-        public virtual ICollection<User> Users
+        public DateTime LastUpdated
         {
             get;
             private set;

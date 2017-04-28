@@ -1,4 +1,3 @@
-
 namespace Yuki.Model.Migrations
 {
     using System.Data.Entity.Migrations;
@@ -12,20 +11,6 @@ namespace Yuki.Model.Migrations
 
         protected override void Seed(DataContext context)
         {
-            var workspace = new Workspace
-            {
-                Id = 1,
-                Name = "Default",
-            };
-
-            var user = new User
-            {
-                Id = 1,
-                Email = "baspster@gmail.com",
-            };
-
-            context.Workspaces.AddOrUpdate(workspace);
-            context.Users.AddOrUpdate(user);
         }
     }
 }
