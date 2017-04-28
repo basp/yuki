@@ -1,9 +1,9 @@
 ﻿namespace Yuki.IdentityServer
 {
     using System.Collections.Generic;
-    using IdentityServer3.Core.Services.InMemory;
     using System.Security.Claims;
     using IdentityServer3.Core;
+    using IdentityServer3.Core.Services.InMemory;
 
     internal static class Users
     {
