@@ -1,4 +1,4 @@
-﻿namespace Yuki.Api.Controllers
+﻿namespace Yuki.Api.Clients
 {
     using System;
     using System.Web.Http;
@@ -7,15 +7,15 @@
     public class ClientsController : ApiController
     {
         [HttpPost]
-        [Route]
+        [Route(Name = nameof(CreateClient))]
         public IHttpActionResult CreateClient(
-            [FromBody] dynamic request)
+            [FromBody] CreateClient.Request request)
         {
             throw new NotImplementedException();
         }
 
         [HttpDelete]
-        [Route("{clientId}")]
+        [Route("{clientId}", Name = nameof(DeleteClient))]
         public IHttpActionResult DeleteClient(
             [FromUri] int clientId)
         {
@@ -23,7 +23,7 @@
         }
 
         [HttpGet]
-        [Route("{clientId}")]
+        [Route("{clientId}", Name = nameof(GetClientDetails))]
         public IHttpActionResult GetClientDetails(
             [FromUri] int clientId)
         {
@@ -31,7 +31,7 @@
         }
 
         [HttpGet]
-        [Route("{clientId}/projects")]
+        [Route("{clientId}/projects", Name = nameof(GetClientProjects))]
         public IHttpActionResult GetClientProjects(
             [FromUri] int clientId)
         {
@@ -39,17 +39,17 @@
         }
 
         [HttpGet]
-        [Route]
+        [Route(Name = nameof(GetUserVisibleClients))]
         public IHttpActionResult GetUserVisibleClients()
         {
             throw new NotImplementedException();
         }
 
         [HttpPut]
-        [Route("{clientId}")]
+        [Route("{clientId}", Name = nameof(UpdateClient))]
         public IHttpActionResult UpdateClient(
             [FromUri] int clientId,
-            [FromBody] dynamic request)
+            [FromBody] UpdateClient.Request request)
         {
             throw new NotImplementedException();
         }

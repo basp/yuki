@@ -4,6 +4,16 @@
 
     public class Client
     {
+        private Client()
+        {
+            this.LastUpdated = DateTime.Now;
+        }
+
+        public Client(DateTime lastUpdated)
+        {
+            this.LastUpdated = lastUpdated;
+        }
+
         public int Id
         {
             get;
@@ -17,6 +27,12 @@
         }
 
         public int WorkspaceId
+        {
+            get;
+            set;
+        }
+
+        public string Notes
         {
             get;
             set;
