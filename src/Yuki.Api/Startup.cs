@@ -27,13 +27,13 @@
 
             config.Filters.Add(new AuthorizeAttribute());
 
-            app.UseIdentityServerBearerTokenAuthentication(
-                new IdentityServerBearerTokenAuthenticationOptions
-                {
-                    Authority = "http://localhost:5000",
-                    ValidationMode = ValidationMode.ValidationEndpoint,
-                    RequiredScopes = new[] { "yuki" },
-                });
+            //app.UseIdentityServerBearerTokenAuthentication(
+            //    new IdentityServerBearerTokenAuthenticationOptions
+            //    {
+            //        Authority = "http://localhost:5000",
+            //        ValidationMode = ValidationMode.ValidationEndpoint,
+            //        RequiredScopes = new[] { "yuki" },
+            //    });
 
             app.UseWebApi(config);
         }
