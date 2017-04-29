@@ -155,9 +155,38 @@
     <Compile Include="Clients\UpdateClient\Request.cs" />
     <Compile Include="Clients\UpdateClient\Response.cs" />
     <Compile Include="Dashboard\DashboardController.cs" />
+    <Compile Include="Groups\CreateGroup\Command.cs" />
+    <Compile Include="Groups\CreateGroup\Request.cs" />
+    <Compile Include="Groups\CreateGroup\Response.cs" />
+    <Compile Include="Groups\DeleteGroup\Command.cs" />
+    <Compile Include="Groups\DeleteGroup\Request.cs" />
+    <Compile Include="Groups\DeleteGroup\Response.cs" />
+    <Compile Include="Groups\GroupData.cs" />
     <Compile Include="Groups\GroupsController.cs" />
+    <Compile Include="Groups\UpdateGroup\Command.cs" />
+    <Compile Include="Groups\UpdateGroup\Request.cs" />
+    <Compile Include="Groups\UpdateGroup\Response.cs" />
     <Compile Include="ICommand.cs" />
+    <Compile Include="Projects\CreateProject\Command.cs" />
+    <Compile Include="Projects\CreateProject\Request.cs" />
+    <Compile Include="Projects\CreateProject\Response.cs" />
+    <Compile Include="Projects\DeleteProject\Command.cs" />
+    <Compile Include="Projects\DeleteProject\Request.cs" />
+    <Compile Include="Projects\DeleteProject\Response.cs" />
+    <Compile Include="Projects\GetProjectTasks\Command.cs" />
+    <Compile Include="Projects\GetProjectTasks\Request.cs" />
+    <Compile Include="Projects\GetProjectTasks\Response.cs" />
+    <Compile Include="Projects\GetProjectUsers\Command.cs" />
+    <Compile Include="Projects\GetProjectUsers\Request.cs" />
+    <Compile Include="Projects\GetProjectUsers\Response.cs" />
+    <Compile Include="Projects\GetProject\Command.cs" />
+    <Compile Include="Projects\GetProject\Request.cs" />
+    <Compile Include="Projects\GetProject\Response.cs" />
+    <Compile Include="Projects\ProjectData.cs" />
     <Compile Include="Projects\ProjectsController.cs" />
+    <Compile Include="Projects\UpdateProject\Command.cs" />
+    <Compile Include="Projects\UpdateProject\Request.cs" />
+    <Compile Include="Projects\UpdateProject\Response.cs" />
     <Compile Include="ProjectUsers\ProjectUsersController.cs" />
     <Compile Include="Tags\TagsController.cs" />
     <Compile Include="Tasks\TasksController.cs" />
@@ -175,6 +204,7 @@
       <Name>Yuki.Data</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
