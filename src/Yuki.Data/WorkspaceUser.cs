@@ -1,4 +1,4 @@
-﻿namespace Yuki.Model
+﻿namespace Yuki.Data
 {
     public class WorkspaceUser
     {

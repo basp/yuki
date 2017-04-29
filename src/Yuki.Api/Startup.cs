@@ -1,16 +1,27 @@
 ﻿namespace Yuki.Api
 {
     using System.Web.Http;
+    using AutoMapper;
     using Owin;
     using SimpleInjector;
     using SimpleInjector.Integration.WebApi;
     using SimpleInjector.Lifestyles;
-    using Yuki.Model;
+    using Yuki.Data;
 
     public class Startup
     {
+        private static void InitializeAutoMapper()
+        {
+            Mapper.Initialize(cfg =>
+            {
+
+            });
+        }
+
         public void Configuration(IAppBuilder app)
         {
+            InitializeAutoMapper();
+
             var container = new Container();
             container.Options.DefaultScopedLifestyle =
                 new AsyncScopedLifestyle();

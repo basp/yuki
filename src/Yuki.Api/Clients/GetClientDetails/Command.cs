@@ -1,4 +1,4 @@
-﻿namespace Yuki.Api.Clients.UpdateClient
+﻿namespace Yuki.Api.Clients.GetClientDetails
 {
     using System;
     using Optional;

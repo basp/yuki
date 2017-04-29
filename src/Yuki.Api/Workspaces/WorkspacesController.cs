@@ -2,7 +2,7 @@
 {
     using System;
     using System.Web.Http;
-    using Yuki.Model;
+    using Yuki.Data;
 
     [RoutePrefix("api/v1/workspaces")]
     public class WorkspacesController : ApiController

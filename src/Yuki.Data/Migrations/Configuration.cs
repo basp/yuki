@@ -1,4 +1,4 @@
-namespace Yuki.Model.Migrations
+namespace Yuki.Data.Migrations
 {
     using System.Data.Entity.Migrations;
 

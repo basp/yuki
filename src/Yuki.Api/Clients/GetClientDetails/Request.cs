@@ -1,4 +1,4 @@
-﻿namespace Yuki.Api.Clients.DeleteClient
+﻿namespace Yuki.Api.Clients.GetClientDetails
 {
     public class Request
     {

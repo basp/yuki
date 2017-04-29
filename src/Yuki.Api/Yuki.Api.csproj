@@ -142,6 +142,15 @@
     <Compile Include="Clients\DeleteClient\Command.cs" />
     <Compile Include="Clients\DeleteClient\Request.cs" />
     <Compile Include="Clients\DeleteClient\Response.cs" />
+    <Compile Include="Clients\GetClientDetails\Command.cs" />
+    <Compile Include="Clients\GetClientDetails\Request.cs" />
+    <Compile Include="Clients\GetClientDetails\Response.cs" />
+    <Compile Include="Clients\GetClientProjects\Command.cs" />
+    <Compile Include="Clients\GetClientProjects\Request.cs" />
+    <Compile Include="Clients\GetClientProjects\Response.cs" />
+    <Compile Include="Clients\GetUserVisibleClients\Command.cs" />
+    <Compile Include="Clients\GetUserVisibleClients\Request.cs" />
+    <Compile Include="Clients\GetUserVisibleClients\Response.cs" />
     <Compile Include="Clients\UpdateClient\Command.cs" />
     <Compile Include="Clients\UpdateClient\Request.cs" />
     <Compile Include="Clients\UpdateClient\Response.cs" />
@@ -161,9 +170,9 @@
     <Compile Include="RouteNames.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Yuki.Model\Yuki.Model.csproj">
-      <Project>{6517f957-ca71-4661-acd2-46e1c86eb833}</Project>
-      <Name>Yuki.Model</Name>
+    <ProjectReference Include="..\Yuki.Data\Yuki.Data.csproj">
+      <Project>{2620f843-a400-4c54-9810-68e4ff4e9999}</Project>
+      <Name>Yuki.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

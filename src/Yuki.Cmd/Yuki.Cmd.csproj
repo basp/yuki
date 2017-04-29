@@ -78,12 +78,6 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Yuki.Model\Yuki.Model.csproj">
-      <Project>{6517f957-ca71-4661-acd2-46e1c86eb833}</Project>
-      <Name>Yuki.Model</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -15,7 +15,7 @@
         }
 
         [HttpDelete]
-        [Route("{clientId}", Name = nameof(DeleteClient))]
+        [Route("{clientId}", Name = nameof(DeleteClient))] 
         public IHttpActionResult DeleteClient(
             [FromUri] int clientId)
         {
