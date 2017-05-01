@@ -4,11 +4,6 @@
 
     public class Request
     {
-        public Request(ClientData client)
-        {
-            this.Client = client;
-        }
-
         [JsonProperty("client")]
         public ClientData Client
         {

@@ -7,6 +7,7 @@
     using SimpleInjector.Integration.WebApi;
     using SimpleInjector.Lifestyles;
     using Yuki.Data;
+    using Newtonsoft.Json;
 
     public class Startup
     {
@@ -14,7 +15,7 @@
         {
             Mapper.Initialize(cfg =>
             {
-
+                cfg.AddProfile(new Clients.ClientProfile());
             });
         }
 
@@ -34,6 +35,12 @@
 
             config.DependencyResolver =
                 new SimpleInjectorWebApiDependencyResolver(container);
+
+            //config.AddApiVersioning(x =>
+            //{
+            //    x.AssumeDefaultVersionWhenUnspecified = true;
+            //    x.DefaultApiVersion = new Microsoft.Web.Http.ApiVersion(1, 0);
+            //});
 
             //config.Filters.Add(new AuthorizeAttribute());
 

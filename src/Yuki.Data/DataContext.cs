@@ -14,5 +14,7 @@
             : base("Yuki")
         {
         }
+
+        public virtual DbSet<Client> Clients { get; set; }
     }
 }

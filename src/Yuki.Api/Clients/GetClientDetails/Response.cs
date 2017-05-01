@@ -1,4 +1,6 @@
-﻿namespace Yuki.Api.Clients.GetClientDetails
+﻿using Newtonsoft.Json;
+
+namespace Yuki.Api.Clients.GetClientDetails
 {
     public class Response
     {
@@ -7,6 +9,7 @@
             this.Data = data;
         }
 
+        [JsonProperty("data")]
         public ClientData Data
         {
             get;

@@ -32,7 +32,7 @@
             set;
         }
 
-        [JsonProperty("notes")]
+        [JsonProperty("notes", NullValueHandling = NullValueHandling.Ignore)]
         public string Notes
         {
             get;

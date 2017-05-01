@@ -4,6 +4,13 @@
 
     public class Request
     {
+        [JsonIgnore]
+        public int ClientId
+        {
+            get;
+            set;
+        }
+
         [JsonProperty("client")]
         public ClientData Client
         {

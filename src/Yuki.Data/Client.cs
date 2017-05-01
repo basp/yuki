@@ -4,14 +4,9 @@
 
     public class Client
     {
-        private Client()
+        public Client()
         {
             this.LastUpdated = DateTime.Now;
-        }
-
-        public Client(DateTime lastUpdated)
-        {
-            this.LastUpdated = lastUpdated;
         }
 
         public int Id

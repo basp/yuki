@@ -1,16 +1,14 @@
 ﻿namespace Yuki.Api.Clients.GetClientDetails
 {
+    using Newtonsoft.Json;
+
     public class Request
     {
-        public Request(int clientId)
-        {
-            this.ClientId = clientId;
-        }
-
+        [JsonIgnore]
         public int ClientId
         {
             get;
-            private set;
+            set;
         }
     }
 }
