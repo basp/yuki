@@ -137,10 +137,9 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clients\Profile.cs" />
+    <Compile Include="Clients\MappingProfile.cs" />
     <Compile Include="Clients\CreateClient\Command.cs" />
     <Compile Include="Clients\CreateClient\Request.cs" />
-    <Compile Include="Clients\ClientData.cs" />
     <Compile Include="Clients\ClientsController.cs" />
     <Compile Include="Clients\CreateClient\Response.cs" />
     <Compile Include="Clients\DeleteClient\Command.cs" />
@@ -165,9 +164,8 @@
     <Compile Include="Groups\DeleteGroup\Command.cs" />
     <Compile Include="Groups\DeleteGroup\Request.cs" />
     <Compile Include="Groups\DeleteGroup\Response.cs" />
-    <Compile Include="Groups\GroupData.cs" />
     <Compile Include="Groups\GroupsController.cs" />
-    <Compile Include="Groups\Profile.cs" />
+    <Compile Include="Groups\MappingProfile.cs" />
     <Compile Include="Groups\UpdateGroup\Command.cs" />
     <Compile Include="Groups\UpdateGroup\Request.cs" />
     <Compile Include="Groups\UpdateGroup\Response.cs" />
@@ -187,8 +185,7 @@
     <Compile Include="Projects\GetProject\Command.cs" />
     <Compile Include="Projects\GetProject\Request.cs" />
     <Compile Include="Projects\GetProject\Response.cs" />
-    <Compile Include="Projects\Profile.cs" />
-    <Compile Include="Projects\ProjectData.cs" />
+    <Compile Include="Projects\MappingProfile.cs" />
     <Compile Include="Projects\ProjectsController.cs" />
     <Compile Include="Projects\UpdateProject\Command.cs" />
     <Compile Include="Projects\UpdateProject\Request.cs" />
@@ -200,14 +197,12 @@
     <Compile Include="Tags\DeleteTag\Command.cs" />
     <Compile Include="Tags\DeleteTag\Request.cs" />
     <Compile Include="Tags\DeleteTag\Response.cs" />
-    <Compile Include="Tags\Profile.cs" />
-    <Compile Include="Tags\TagData.cs" />
+    <Compile Include="Tags\MappingProfile.cs" />
     <Compile Include="Tags\TagsController.cs" />
     <Compile Include="Tags\UpdateTag\Command.cs" />
     <Compile Include="Tags\UpdateTag\Request.cs" />
     <Compile Include="Tags\UpdateTag\Response.cs" />
-    <Compile Include="Tasks\Profile.cs" />
-    <Compile Include="Tasks\TaskData.cs" />
+    <Compile Include="Tasks\MappingProfile.cs" />
     <Compile Include="Tasks\TasksController.cs" />
     <Compile Include="TimeEntries\TimeEntriesController.cs" />
     <Compile Include="Users\UsersController.cs" />

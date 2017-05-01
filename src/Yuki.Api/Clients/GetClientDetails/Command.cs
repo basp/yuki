@@ -1,9 +1,11 @@
 ﻿namespace Yuki.Api.Clients.GetClientDetails
 {
     using System;
+    using System.Collections.Generic;
     using AutoMapper;
     using Optional;
     using Yuki.Data;
+
     using static Optional.Option;
 
     public class Command : ICommand<Request, Response, Exception>
@@ -20,7 +22,7 @@
             try
             {
                 var client = this.repository.GetById(req.ClientId);
-                var data = Mapper.Map<ClientData>(client);
+                var data = Mapper.Map<IDictionary<string, object>>(client);
                 var res = new Response(data);
                 return Some<Response, Exception>(res);
             }

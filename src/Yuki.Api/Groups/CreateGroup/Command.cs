@@ -1,6 +1,8 @@
 ﻿namespace Yuki.Api.Groups.CreateGroup
 {
     using System;
+    using System.Collections.Generic;
+    using AutoMapper;
     using Optional;
     using Yuki.Data;
 
@@ -19,7 +21,13 @@
         {
             try
             {
-                return None<Response, Exception>(new NotImplementedException());
+                var group = Mapper.Map<Group>(req.Group);
+                this.repository.Insert(group);
+
+                var data = Mapper.Map<IDictionary<string, object>>(group);
+                var res = new Response(data);
+
+                return Some<Response, Exception>(res);
             }
             catch (Exception ex)
             {

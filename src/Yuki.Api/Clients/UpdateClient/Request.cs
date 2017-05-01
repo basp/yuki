@@ -1,5 +1,6 @@
 ﻿namespace Yuki.Api.Clients.UpdateClient
 {
+    using System.Collections.Generic;
     using Newtonsoft.Json;
 
     public class Request
@@ -12,7 +13,7 @@
         }
 
         [JsonProperty("client")]
-        public ClientData Client
+        public IDictionary<string, object> Client
         {
             get;
             set;

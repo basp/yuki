@@ -1,6 +1,7 @@
 ﻿namespace Yuki.Api.Clients.CreateClient
 {
     using System;
+    using System.Collections.Generic;
     using AutoMapper;
     using Optional;
     using Yuki.Data;
@@ -23,7 +24,7 @@
                 var client = Mapper.Map<Client>(req.Client);
                 this.repository.Insert(client);
 
-                var data = Mapper.Map<ClientData>(client);
+                var data = Mapper.Map<IDictionary<string, object>>(client);
                 var res = new Response(data);
 
                 return Some<Response, Exception>(res);

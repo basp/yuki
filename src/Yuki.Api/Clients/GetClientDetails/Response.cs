@@ -1,16 +1,17 @@
-﻿using Newtonsoft.Json;
-
-namespace Yuki.Api.Clients.GetClientDetails
+﻿namespace Yuki.Api.Clients.GetClientDetails
 {
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
+
     public class Response
     {
-        public Response(ClientData data)
+        public Response(IDictionary<string, object> data)
         {
             this.Data = data;
         }
 
         [JsonProperty("data")]
-        public ClientData Data
+        public IDictionary<string, object> Data
         {
             get;
             private set;

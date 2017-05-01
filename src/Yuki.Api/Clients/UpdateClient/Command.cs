@@ -1,9 +1,11 @@
 ﻿namespace Yuki.Api.Clients.UpdateClient
 {
     using System;
+    using System.Collections.Generic;
     using AutoMapper;
     using Optional;
     using Yuki.Data;
+
     using static Optional.Option;
 
     public class Command : ICommand<Request, Response, Exception>
@@ -23,7 +25,7 @@
                 Mapper.Map(req.Client, client);
                 this.repository.Update(client);
 
-                var data = Mapper.Map<ClientData>(client);
+                var data = Mapper.Map<IDictionary<string, object>>(client);
                 var res = new Response(data);
 
                 return Some<Response, Exception>(res);
