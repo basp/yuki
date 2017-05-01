@@ -15,7 +15,7 @@
         {
             Mapper.Initialize(cfg =>
             {
-                cfg.AddProfile(new Clients.ClientProfile());
+                cfg.AddProfile(new Clients.Profile());
             });
         }
 

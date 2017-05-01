@@ -18,8 +18,15 @@
             set;
         }
 
-        [JsonProperty("cid")]
-        public int Cid
+        [JsonProperty("wid")]
+        public int Wid
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty("cid", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Cid
         {
             get;
             set;
@@ -27,6 +34,13 @@
 
         [JsonProperty("active")]
         public bool Active
+        {
+            get;
+            set;
+        }
+
+        [JsonProperty("is_private")]
+        private bool IsPrivate
         {
             get;
             set;

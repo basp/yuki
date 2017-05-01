@@ -3,7 +3,7 @@
     using System;
     using System.Web.Http;
 
-    [RoutePrefix("api/v1/project_users")]
+    [RoutePrefix("api/project_users")]
     public class ProjectUsersController : ApiController
     {
         [HttpPost]

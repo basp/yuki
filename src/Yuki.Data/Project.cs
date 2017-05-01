@@ -1,10 +1,10 @@
-﻿namespace Yuki.Data
-{
-    using System;
+﻿using System;
 
-    public class Client : IEntity
+namespace Yuki.Data
+{
+    public class Project : IEntity
     {
-        public Client()
+        public Project()
         {
             this.LastUpdated = DateTime.UtcNow;
         }
@@ -27,7 +27,19 @@
             set;
         }
 
-        public string Notes
+        public int? ClientId
+        {
+            get;
+            set;
+        }
+
+        public bool Active
+        {
+            get;
+            set;
+        }
+
+        public bool IsPrivate
         {
             get;
             set;

@@ -2,9 +2,9 @@
 {
     using System;
 
-    public class Client : IEntity
+    public class Group : IEntity
     {
-        public Client()
+        public Group()
         {
             this.LastUpdated = DateTime.UtcNow;
         }
@@ -22,12 +22,6 @@
         }
 
         public int WorkspaceId
-        {
-            get;
-            set;
-        }
-
-        public string Notes
         {
             get;
             set;

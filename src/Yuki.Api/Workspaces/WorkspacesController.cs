@@ -4,12 +4,12 @@
     using System.Web.Http;
     using Yuki.Data;
 
-    [RoutePrefix("api/v1/workspaces")]
+    [RoutePrefix("api/workspaces")]
     public class WorkspacesController : ApiController
     {
-        private readonly Repository repository;
+        private readonly Repository<Workspace> repository;
 
-        public WorkspacesController(Repository repository)
+        public WorkspacesController(Repository<Workspace> repository)
         {
             this.repository = repository;
         }

@@ -4,14 +4,13 @@
     using AutoMapper;
     using Optional;
     using Yuki.Data;
-
     using static Optional.Option;
 
     public class Command : ICommand<Request, Response, Exception>
     {
-        private readonly Repository repository;
+        private readonly Repository<Client> repository;
 
-        public Command(Repository repository)
+        public Command(Repository<Client> repository)
         {
             this.repository = repository;
         }
@@ -20,9 +19,9 @@
         {
             try
             {
-                var client = this.repository.GetClientById(req.ClientId);
+                var client = this.repository.GetById(req.ClientId);
                 Mapper.Map(req.Client, client);
-                this.repository.UpdateClient(client);
+                this.repository.Update(client);
 
                 var data = Mapper.Map<ClientData>(client);
                 var res = new Response(data);

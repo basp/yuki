@@ -2,20 +2,32 @@
 {
     using System;
     using System.Web.Http;
+    using Yuki.Data;
 
-    [RoutePrefix("api/v1/groups")]
+    [RoutePrefix("api/groups")]
     public class GroupsController : ApiController
     {
-        [HttpPost]
-        [Route]
-        public IHttpActionResult CreateGroup(
-            [FromBody] dynamic request)
+        private readonly Repository<Group> repository;
+
+        public GroupsController(Repository<Group> repository)
         {
-            throw new NotImplementedException();
+            this.repository = repository;
+        }
+
+        [HttpPost]
+        [Route(Name = nameof(CreateGroup))]
+        public IHttpActionResult CreateGroup(
+            [FromBody] CreateGroup.Request request)
+        {
+            var cmd = new CreateGroup.Command(this.repository);
+            var res = cmd.Execute(request);
+            return res.Match<IHttpActionResult>(
+                some => this.Json(some),
+                none => this.InternalServerError(none));
         }
 
         [HttpDelete]
-        [Route("{groupId}")]
+        [Route("{groupId}", Name = nameof(DeleteGroup))]
         public IHttpActionResult DeleteGroup(
             [FromUri] int groupId)
         {
@@ -23,12 +35,17 @@
         }
 
         [HttpPut]
-        [Route("{groupId}")]
+        [Route("{groupId}", Name = nameof(UpdateGroup))]
         public IHttpActionResult UpdateGroup(
             [FromUri] int groupId,
-            [FromBody] dynamic request)
+            [FromBody] UpdateGroup.Request request)
         {
-            throw new NotImplementedException();
+            request.GroupId = groupId;
+            var cmd = new UpdateGroup.Command(this.repository);
+            var res = cmd.Execute(request);
+            return res.Match<IHttpActionResult>(
+                some => this.Json(some),
+                none => this.InternalServerError(none));
         }
     }
 }

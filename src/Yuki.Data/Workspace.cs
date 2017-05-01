@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    public class Workspace
+    public class Workspace : IEntity
     {
         public Workspace()
         {

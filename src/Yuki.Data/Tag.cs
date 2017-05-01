@@ -1,26 +1,20 @@
 ﻿namespace Yuki.Data
 {
-    public class WorkspaceUser : IEntity
+    public class Tag : IEntity
     {
         public int Id
         {
             get;
-            private set;
+            set;
+        }
+
+        public string Name
+        {
+            get;
+            set;
         }
 
         public int WorkspaceId
-        {
-            get;
-            set;
-        }
-
-        public int UserId
-        {
-            get;
-            set;
-        }
-
-        public bool IsActive
         {
             get;
             set;

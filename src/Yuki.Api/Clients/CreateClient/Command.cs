@@ -9,9 +9,9 @@
 
     public class Command : ICommand<Request, Response, Exception>
     {
-        private readonly Repository repository;
+        private readonly Repository<Client> repository;
 
-        public Command(Repository repository)
+        public Command(Repository<Client> repository)
         {
             this.repository = repository;
         }
@@ -21,7 +21,7 @@
             try
             {
                 var client = Mapper.Map<Client>(req.Client);
-                this.repository.InsertClient(client);
+                this.repository.Insert(client);
 
                 var data = Mapper.Map<ClientData>(client);
                 var res = new Response(data);

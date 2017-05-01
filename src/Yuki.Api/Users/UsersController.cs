@@ -3,7 +3,7 @@
     using System;
     using System.Web.Http;
 
-    [RoutePrefix("api/v1/me")]
+    [RoutePrefix("api/me")]
     public class UsersController : ApiController
     {
         [HttpGet]

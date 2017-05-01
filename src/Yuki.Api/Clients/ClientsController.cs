@@ -8,9 +8,9 @@
     // [Route("api/v{version:apiVersion}/[controller]")]
     public class ClientsController : ApiController
     {
-        private readonly Repository repository;
+        private readonly Repository<Client> repository;
 
-        public ClientsController(Repository repository)
+        public ClientsController(Repository<Client> repository)
         {
             this.repository = repository;
         }

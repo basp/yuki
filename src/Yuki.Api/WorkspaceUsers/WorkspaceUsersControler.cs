@@ -3,7 +3,7 @@
     using System;
     using System.Web.Http;
 
-    [RoutePrefix("api/v1/workspaces")]
+    [RoutePrefix("api/workspaces")]
     public class WorkspaceUsersControler : ApiController
     {
         [HttpPost]

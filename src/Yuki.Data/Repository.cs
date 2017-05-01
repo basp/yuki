@@ -1,41 +1,41 @@
 ﻿namespace Yuki.Data
 {
-    using System;
-    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
 
-    public class Repository
+    public class Repository<T> where T : class, IEntity
     {
-        private readonly DataContext context;
+        protected readonly DataContext context;
 
         public Repository(DataContext context)
         {
             this.context = context;
         }
 
-        public Client GetClientById(int clientId)
+        public void Delete(T entity)
         {
-            return this.context.Clients
-                .AsNoTracking()
-                .FirstOrDefault(x => x.Id == clientId);
-        }
-
-        public void DeleteClient(int clientId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void InsertClient(Client client)
-        {
-            this.context.Clients.Add(client);
+            this.context.Set<T>().Attach(entity);
+            this.context.Entry(entity).State = EntityState.Deleted;
             this.context.SaveChanges();
         }
 
-        public void UpdateClient(Client client)
+        public T GetById(int id)
         {
-            this.context.Clients.Attach(client);
-            this.context.Entry(client).State = EntityState.Modified;
+            return this.context.Set<T>()
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == id);
+        }
+
+        public void Insert(T entity)
+        {
+            this.context.Set<T>().Add(entity);
+            this.context.SaveChanges();
+        }
+
+        public void Update(T entity)
+        {
+            this.context.Set<T>().Attach(entity);
+            this.context.Entry(entity).State = EntityState.Modified;
             this.context.SaveChanges();
         }
     }

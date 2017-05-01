@@ -3,7 +3,7 @@
     using System;
     using System.Web.Http;
 
-    [RoutePrefix("api/v1/tasks")]
+    [RoutePrefix("api/tasks")]
     public class TasksController : ApiController
     {
         [HttpPost]

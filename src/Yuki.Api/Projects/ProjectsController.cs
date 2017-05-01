@@ -2,20 +2,28 @@
 {
     using System;
     using System.Web.Http;
+    using Yuki.Data;
 
-    [RoutePrefix("api/v1/projects")]
+    [RoutePrefix("api/projects")]
     public class ProjectsController : ApiController
     {
+        private readonly Repository<Project> repository;
+
+        public ProjectsController(Repository<Project> repository)
+        {
+            this.repository = repository;
+        }
+
         [HttpPost]
-        [Route]
+        [Route(Name = nameof(CreateProject))]
         public IHttpActionResult CreateProject(
-            [FromBody] dynamic request)
+            [FromBody] CreateProject.Request request)
         {
             throw new NotImplementedException();
         }
 
         [HttpDelete]
-        [Route("{projectId}")]
+        [Route("{projectId}", Name = nameof(DeleteProject))]
         public IHttpActionResult DeleteProject(
             [FromUri] int projectId)
         {
@@ -23,7 +31,7 @@
         }
 
         [HttpGet]
-        [Route("{projectId}")]
+        [Route("{projectId}", Name = nameof(GetProject))]
         public IHttpActionResult GetProject(
             [FromUri] int projectId)
         {
@@ -31,7 +39,7 @@
         }
 
         [HttpGet]
-        [Route("{projectId}/tasks")]
+        [Route("{projectId}/tasks", Name = nameof(GetProjectTasks))]
         public IHttpActionResult GetProjectTasks(
             [FromUri] int projectId)
         {
@@ -39,7 +47,7 @@
         }
 
         [HttpGet]
-        [Route("{projectId}/project_users")]
+        [Route("{projectId}/project_users", Name = nameof(GetProjectUsers))]
         public IHttpActionResult GetProjectUsers(
             [FromUri] int projectId)
         {
@@ -47,10 +55,10 @@
         }
 
         [HttpPut]
-        [Route("{projectId}")]
+        [Route("{projectId}", Name = nameof(UpdateProject))]
         public IHttpActionResult UpdateProject(
             [FromUri] int projectId,
-            [FromBody] dynamic request)
+            [FromBody] UpdateProject.Request request)
         {
             throw new NotImplementedException();
         }
