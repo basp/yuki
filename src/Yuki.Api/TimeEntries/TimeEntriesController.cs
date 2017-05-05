@@ -1,20 +1,41 @@
 ﻿namespace Yuki.Api.TimeEntries
 {
     using System;
+    using System.Collections.Generic;
     using System.Web.Http;
+    using Yuki.Data;
 
     [RoutePrefix("api/time_entries")]
     public class TimeEntriesController : ApiController
     {
-        [HttpPost]
-        [Route]
-        public IHttpActionResult CreateTimeEntry()
+        private readonly TimeEntryRepository timeEntryRepository;
+        private readonly Repository<Workspace> workspaceRepository;
+
+        public TimeEntriesController(
+            TimeEntryRepository timeEntryRepository,
+            Repository<Workspace> workspaceRepository)
         {
-            throw new NotImplementedException();
+            this.timeEntryRepository = timeEntryRepository;
+            this.workspaceRepository = workspaceRepository;
+        }
+
+        [HttpPost]
+        [Route(Name = nameof(CreateTimeEntry))]
+        public IHttpActionResult CreateTimeEntry(
+            [FromBody] CreateTimeEntry.Request request)
+        {
+            var cmd = new CreateTimeEntry.Command(
+                this.timeEntryRepository,
+                this.workspaceRepository);
+
+            var res = cmd.Execute(request);
+            return res.Match(
+                some => (IHttpActionResult)this.Json(some),
+                none => this.InternalServerError(none));
         }
 
         [HttpDelete]
-        [Route("{timeEntryId}")]
+        [Route("{timeEntryId}", Name = nameof(DeleteTimeEntry))]
         public IHttpActionResult DeleteTimeEntry(
             [FromUri] int timeEntryId)
         {
@@ -22,38 +43,55 @@
         }
 
         [HttpGet]
-        [Route("current")]
+        [Route("current", Name = nameof(GetCurrentTimeEntry))]
         public IHttpActionResult GetCurrentTimeEntry()
         {
             throw new NotImplementedException();
         }
 
         [HttpGet]
-        [Route("{timeEntryId}")]
+        [Route("{timeEntryId}", Name = nameof(GetTimeEntry))]
         public IHttpActionResult GetTimeEntry(
             [FromUri] int timeEntryId)
         {
             throw new NotImplementedException();
         }
 
+        [HttpGet]
+        [Route(Name = nameof(GetTimeEntries))]
+        public IHttpActionResult GetTimeEntries(
+            [FromUri] DateTime? startDate,
+            [FromUri] DateTime? endDate)
+        {
+            endDate = endDate.HasValue
+                ? endDate
+                : DateTime.UtcNow;
+
+            startDate = startDate.HasValue
+                ? startDate
+                : endDate.Value.Subtract(TimeSpan.FromDays(9));
+
+            throw new NotImplementedException();
+        }
+
         [HttpPost]
-        [Route("{timeEntryId}/start")]
+        [Route("start", Name = nameof(StartTimeEntry))]
         public IHttpActionResult StartTimeEntry(
-            [FromUri] int timeEntryId,
-            [FromBody] dynamic request)
+            [FromBody] StartTimeEntry.Request request)
         {
             throw new NotImplementedException();
         }
 
         [HttpPut]
-        [Route("{timeEntryId}/stop")]
+        [Route("{timeEntryId}/stop", Name = nameof(StopTimeEntry))]
         public IHttpActionResult StopTimeEntry(
             [FromUri] int timeEntryId)
         {
             throw new NotImplementedException();
         }
+
         [HttpPut]
-        [Route("{timeEntryId}")]
+        [Route("{timeEntryId}", Name = nameof(UpdateTimeEntry))]
         public IHttpActionResult UpdateTimeEntry(
             [FromUri] int timeEntryId,
             [FromBody] dynamic request)

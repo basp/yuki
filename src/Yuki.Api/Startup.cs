@@ -16,6 +16,10 @@
             Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile(new Clients.MappingProfile());
+                cfg.AddProfile(new Groups.MappingProfile());
+                cfg.AddProfile(new Projects.MappingProfile());
+                cfg.AddProfile(new Tags.MappingProfile());
+                cfg.AddProfile(new TimeEntries.MappingProfile());
             });
         }
 

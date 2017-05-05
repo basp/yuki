@@ -19,5 +19,11 @@
             get;
             set;
         }
+
+        public int TimeEntryId
+        {
+            get;
+            set;
+        }
     }
 }
