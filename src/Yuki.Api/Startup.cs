@@ -2,12 +2,12 @@
 {
     using System.Web.Http;
     using AutoMapper;
+    using IdentityServer3.AccessTokenValidation;
     using Owin;
     using SimpleInjector;
     using SimpleInjector.Integration.WebApi;
     using SimpleInjector.Lifestyles;
     using Yuki.Data;
-    using Newtonsoft.Json;
 
     public class Startup
     {

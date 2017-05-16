@@ -1,14 +1,21 @@
 ﻿namespace Yuki.Data
 {
     using System;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class User : IEntity
     {
+        public User()
+        {
+            this.LastUpdated = DateTime.UtcNow;
+        }
+
         public int Id
         {
             get;
             set;
         }
+
 
         public string Email
         {

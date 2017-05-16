@@ -51,6 +51,10 @@
     <Compile Include="DataContext.cs" />
     <Compile Include="IEntity.cs" />
     <Compile Include="Group.cs" />
+    <Compile Include="Migrations\201705161854594_Initial.cs" />
+    <Compile Include="Migrations\201705161854594_Initial.Designer.cs">
+      <DependentUpon>201705161854594_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,12 +64,24 @@
     <Compile Include="TimeEntry.cs" />
     <Compile Include="TimeEntryRepository.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="UserRepository.cs" />
     <Compile Include="Workspace.cs" />
     <Compile Include="WorkspaceUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Yuki\Yuki.csproj">
+      <Project>{bc91ff9c-3262-4ec7-8b33-6ba965eaae25}</Project>
+      <Name>Yuki</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201705161854594_Initial.resx">
+      <DependentUpon>201705161854594_Initial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

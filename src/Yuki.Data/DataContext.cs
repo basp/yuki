@@ -57,6 +57,12 @@
             set;
         }
 
+        public virtual DbSet<User> Users
+        {
+            get;
+            set;
+        }
+
         public virtual DbSet<WorkspaceUser> WorkspaceUsers
         {
             get;
