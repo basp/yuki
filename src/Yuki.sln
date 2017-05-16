@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki.Api", "Yuki.Api\Yuki.Api.csproj", "{FCEB7665-2982-4BDD-A455-8A6C15E114C2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki.Cmd", "Yuki.Cmd\Yuki.Cmd.csproj", "{01CBC55F-1FCC-47DC-B818-E605416706A0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki.Data", "Yuki.Data\Yuki.Data.csproj", "{2620F843-A400-4C54-9810-68E4FF4E9999}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki.Api", "Yuki.Api\Yuki.Api.csproj", "{A5015958-51CE-45DE-8414-3EBAF806A387}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FCEB7665-2982-4BDD-A455-8A6C15E114C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FCEB7665-2982-4BDD-A455-8A6C15E114C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FCEB7665-2982-4BDD-A455-8A6C15E114C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FCEB7665-2982-4BDD-A455-8A6C15E114C2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{01CBC55F-1FCC-47DC-B818-E605416706A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{01CBC55F-1FCC-47DC-B818-E605416706A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{01CBC55F-1FCC-47DC-B818-E605416706A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{01CBC55F-1FCC-47DC-B818-E605416706A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2620F843-A400-4C54-9810-68E4FF4E9999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2620F843-A400-4C54-9810-68E4FF4E9999}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2620F843-A400-4C54-9810-68E4FF4E9999}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2620F843-A400-4C54-9810-68E4FF4E9999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5015958-51CE-45DE-8414-3EBAF806A387}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5015958-51CE-45DE-8414-3EBAF806A387}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5015958-51CE-45DE-8414-3EBAF806A387}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5015958-51CE-45DE-8414-3EBAF806A387}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,62 +1,36 @@
 ﻿namespace Yuki.Api
 {
-    using System.Web.Http;
-    using AutoMapper;
-    using Owin;
-    using SimpleInjector;
-    using SimpleInjector.Integration.WebApi;
-    using SimpleInjector.Lifestyles;
-    using Yuki.Data;
-    using Newtonsoft.Json;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
 
     public class Startup
     {
-        private static void InitializeAutoMapper()
+        public void ConfigureServices(IServiceCollection services)
         {
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile(new Clients.MappingProfile());
-                cfg.AddProfile(new Groups.MappingProfile());
-                cfg.AddProfile(new Projects.MappingProfile());
-                cfg.AddProfile(new Tags.MappingProfile());
-                cfg.AddProfile(new TimeEntries.MappingProfile());
-            });
+            services.AddIdentityServer()
+                .AddInMemoryClients(Clients.Get())
+                .AddInMemoryIdentityResources(Resources.GetIdentityResources())
+                .AddInMemoryApiResources(Resources.GetApiResources())
+                .AddTestUsers(Users.Get())
+                .AddTemporarySigningCredential();
+
+            services.AddMvc();
         }
 
-        public void Configuration(IAppBuilder app)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            InitializeAutoMapper();
+            loggerFactory.AddConsole(LogLevel.Debug);
 
-            var container = new Container();
-            container.Options.DefaultScopedLifestyle =
-                new AsyncScopedLifestyle();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
-            var config = new HttpConfiguration();
-            config.MapHttpAttributeRoutes();
-            container.RegisterWebApiControllers(config);
-            container.Register<DataContext>(Lifestyle.Scoped);
-            container.Verify();
+            app.UseIdentityServer();
 
-            config.DependencyResolver =
-                new SimpleInjectorWebApiDependencyResolver(container);
-
-            //config.AddApiVersioning(x =>
-            //{
-            //    x.AssumeDefaultVersionWhenUnspecified = true;
-            //    x.DefaultApiVersion = new Microsoft.Web.Http.ApiVersion(1, 0);
-            //});
-
-            //config.Filters.Add(new AuthorizeAttribute());
-
-            //app.UseIdentityServerBearerTokenAuthentication(
-            //    new IdentityServerBearerTokenAuthenticationOptions
-            //    {
-            //        Authority = "http://localhost:5000",
-            //        ValidationMode = ValidationMode.ValidationEndpoint,
-            //        RequiredScopes = new[] { "yuki" },
-            //    });
-
-            app.UseWebApi(config);
+            app.UseMvc();
         }
     }
 }
