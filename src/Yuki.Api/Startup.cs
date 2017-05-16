@@ -1,46 +1,62 @@
 ﻿namespace Yuki.Api
 {
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
-    using Serilog;
+    using System.Web.Http;
+    using AutoMapper;
+    using Owin;
+    using SimpleInjector;
+    using SimpleInjector.Integration.WebApi;
+    using SimpleInjector.Lifestyles;
+    using Yuki.Data;
+    using Newtonsoft.Json;
 
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        private static void InitializeAutoMapper()
         {
-            Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .WriteTo.LiterateConsole()
-                .CreateLogger();
-        }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddMvc();
-            services.AddIdentityServer()
-                .AddInMemoryClients(Clients.Get())
-                .AddInMemoryIdentityResources(Resources.GetIdentityResources())
-                .AddInMemoryApiResources(Resources.GetApiResources())
-                .AddTestUsers(Users.Get())
-                .AddTemporarySigningCredential();
-        }
-
-        public void Configure(
-            IApplicationBuilder app,
-            IHostingEnvironment env,
-            ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddSerilog();
-
-            if (env.IsDevelopment())
+            Mapper.Initialize(cfg =>
             {
-                app.UseDeveloperExceptionPage();
-            }
+                cfg.AddProfile(new Clients.MappingProfile());
+                cfg.AddProfile(new Groups.MappingProfile());
+                cfg.AddProfile(new Projects.MappingProfile());
+                cfg.AddProfile(new Tags.MappingProfile());
+                cfg.AddProfile(new TimeEntries.MappingProfile());
+            });
+        }
 
-            app.UseMvc();
-            app.UseIdentityServer();
+        public void Configuration(IAppBuilder app)
+        {
+            InitializeAutoMapper();
+
+            var container = new Container();
+            container.Options.DefaultScopedLifestyle =
+                new AsyncScopedLifestyle();
+
+            var config = new HttpConfiguration();
+            config.MapHttpAttributeRoutes();
+            container.RegisterWebApiControllers(config);
+            container.Register<DataContext>(Lifestyle.Scoped);
+            container.Verify();
+
+            config.DependencyResolver =
+                new SimpleInjectorWebApiDependencyResolver(container);
+
+            //config.AddApiVersioning(x =>
+            //{
+            //    x.AssumeDefaultVersionWhenUnspecified = true;
+            //    x.DefaultApiVersion = new Microsoft.Web.Http.ApiVersion(1, 0);
+            //});
+
+            //config.Filters.Add(new AuthorizeAttribute());
+
+            //app.UseIdentityServerBearerTokenAuthentication(
+            //    new IdentityServerBearerTokenAuthenticationOptions
+            //    {
+            //        Authority = "http://localhost:5000",
+            //        ValidationMode = ValidationMode.ValidationEndpoint,
+            //        RequiredScopes = new[] { "yuki" },
+            //    });
+
+            app.UseWebApi(config);
         }
     }
 }
