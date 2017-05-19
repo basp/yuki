@@ -5,6 +5,7 @@
     using IdentityServer3.AccessTokenValidation;
     using IdentityServer3.Core.Configuration;
     using Owin;
+    using Serilog;
     using SimpleInjector;
     using SimpleInjector.Integration.WebApi;
     using SimpleInjector.Lifestyles;
@@ -12,8 +13,12 @@
 
     public class Startup
     {
-        private static void InitializeAutoMapper()
+        static Startup()
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Trace()
+                .CreateLogger();
+
             Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile(new Clients.MappingProfile());
@@ -21,6 +26,7 @@
                 cfg.AddProfile(new Projects.MappingProfile());
                 cfg.AddProfile(new Tags.MappingProfile());
                 cfg.AddProfile(new TimeEntries.MappingProfile());
+                cfg.AddProfile(new Workspaces.MappingProfile());
             });
         }
 
@@ -36,8 +42,6 @@
         public void Configuration(IAppBuilder app)
         {
             var container = CreateContainer();
-
-            InitializeAutoMapper();
 
             app.UseIdentityServer(new IdentityServerOptions
             {

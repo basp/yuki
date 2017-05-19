@@ -7,11 +7,11 @@
     [RoutePrefix("api/workspaces")]
     public class WorkspacesController : ApiController
     {
-        private readonly Repository<Workspace> workspaceRepository;
+        private readonly WorkspaceRepository workspaceRepository;
         private readonly WorkspaceUserRepository workspaceUserRepository;
 
         public WorkspacesController(
-            Repository<Workspace> workspaceRepository,
+            WorkspaceRepository workspaceRepository,
             WorkspaceUserRepository workspaceUserRepository)
         {
             this.workspaceRepository = workspaceRepository;
@@ -19,7 +19,7 @@
         }
 
         [HttpGet]
-        [Route("{workspaceId}")]
+        [Route("{workspaceId}", Name = nameof(GetSingleWorkspace))]
         public IHttpActionResult GetSingleWorkspace(
             [FromUri] int workspaceId)
         {
@@ -27,7 +27,7 @@
         }
 
         [HttpGet]
-        [Route("{workspaceId}/clients")]
+        [Route("{workspaceId}/clients", Name = nameof(GetWorkspaceClients))]
         public IHttpActionResult GetWorkspaceClients(
             [FromUri] int workspaceId)
         {
@@ -35,7 +35,7 @@
         }
 
         [HttpGet]
-        [Route("{workspaceId}/groups")]
+        [Route("{workspaceId}/groups", Name = nameof(GetWorkspaceGroups))]
         public IHttpActionResult GetWorkspaceGroups(
             [FromUri] int workspaceId)
         {
@@ -43,7 +43,7 @@
         }
 
         [HttpGet]
-        [Route("{workspaceId}/projects")]
+        [Route("{workspaceId}/projects", Name = nameof(GetWorkspaceProjects))]
         public IHttpActionResult GetWorkspaceProjects(
             [FromUri] int workspaceId)
         {
@@ -51,20 +51,21 @@
         }
 
         [HttpGet]
-        [Route]
+        [Route(Name = nameof(GetWorkspaces))]
         public IHttpActionResult GetWorkspaces()
         {
             var cmd = new GetWorkspaces.Command(
-                this.workspaceRepository);
+                this.workspaceRepository,
+                this.workspaceUserRepository);
 
             var res = cmd.Execute(new GetWorkspaces.Request(KnownIds.TestUser));
             return res.Match(
-                some => (IHttpActionResult)this.Json(some),
+                some => (IHttpActionResult)this.Json(some.Items),
                 none => this.InternalServerError(none));
         }
 
         [HttpGet]
-        [Route("{workspaceId}/tags")]
+        [Route("{workspaceId}/tags", Name = nameof(GetWorkspaceTags))]
         public IHttpActionResult GetWorkspaceTags(
             [FromUri] int workspaceId)
         {
@@ -72,7 +73,7 @@
         }
 
         [HttpGet]
-        [Route("{workspaceId}/tasks")]
+        [Route("{workspaceId}/tasks", Name = nameof(GetWorkspaceTasks))]
         public IHttpActionResult GetWorkspaceTasks(
             [FromUri] int workspaceId)
         {
@@ -80,7 +81,7 @@
         }
 
         [HttpGet]
-        [Route("{workspaceId}/users")]
+        [Route("{workspaceId}/users", Name = nameof(GetWorkspaceUsers))]
         public IHttpActionResult GetWorkspaceUsers(
             [FromUri] int workspaceId)
         {

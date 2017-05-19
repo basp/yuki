@@ -1,6 +1,13 @@
 ﻿namespace Yuki.Cmd.Actions.StartTimeEntry
 {
-    public class Action
+    using System;
+    using System.Threading.Tasks;
+
+    public class Action : IAction<Args>
     {
+        public Task Execute(Args args)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

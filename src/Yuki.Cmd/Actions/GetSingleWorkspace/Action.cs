@@ -1,4 +1,4 @@
-﻿namespace Yuki.Cmd.Actions.StopTimeEntry
+﻿namespace Yuki.Cmd.Actions.GetSingleWorkspace
 {
     using System;
     using System.Threading.Tasks;

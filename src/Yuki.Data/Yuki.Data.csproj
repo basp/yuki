@@ -66,6 +66,7 @@
     <Compile Include="User.cs" />
     <Compile Include="UserRepository.cs" />
     <Compile Include="Workspace.cs" />
+    <Compile Include="WorkspaceRepository.cs" />
     <Compile Include="WorkspaceUser.cs" />
     <Compile Include="WorkspaceUserRepository.cs" />
   </ItemGroup>
