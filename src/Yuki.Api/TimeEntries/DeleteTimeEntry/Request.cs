@@ -2,6 +2,11 @@
 {
     public class Request
     {
-        public int TimeEntryId { get; set; }
+        public Request(int timeEntryId)
+        {
+            this.TimeEntryId = timeEntryId;
+        }
+
+        public int TimeEntryId { get; private set; }
     }
 }

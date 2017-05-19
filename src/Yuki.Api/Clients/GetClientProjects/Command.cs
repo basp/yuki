@@ -18,7 +18,8 @@
         {
             try
             {
-                return None<Response, Exception>(new NotImplementedException());
+                return None<Response, Exception>(
+                    new NotImplementedException());
             }
             catch (Exception ex)
             {

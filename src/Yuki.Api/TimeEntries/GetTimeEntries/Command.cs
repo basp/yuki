@@ -1,6 +1,7 @@
 ﻿namespace Yuki.Api.TimeEntries.GetTimeEntries
 {
     using System;
+    using System.Collections.Generic;
     using AutoMapper;
     using Optional;
     using Yuki.Data;
@@ -20,12 +21,25 @@
         {
             try
             {
-                return None<Response, Exception>(new NotImplementedException());
+                var entries = this.repository.GetEntries(
+                    req.StartDate,
+                    req.StartDate);
+
+                var res = new Response
+                {
+                    Items = MapEntries(entries),
+                };
+
+                return Some<Response, Exception>(res);
             }
             catch (Exception ex)
             {
                 return None<Response, Exception>(ex);
             }
         }
+
+        private static IEnumerable<IDictionary<string, object>> MapEntries(
+            IEnumerable<TimeEntry> entries) =>
+            Mapper.Map<IEnumerable<IDictionary<string, object>>>(entries);
     }
 }

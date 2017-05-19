@@ -41,10 +41,8 @@
             var cmd = new DeleteTimeEntry.Command(
                 this.timeEntryRepository);
 
-            var res = cmd.Execute(new DeleteTimeEntry.Request
-            {
-                TimeEntryId = timeEntryId,
-            });
+            var res = cmd.Execute(
+                new DeleteTimeEntry.Request(timeEntryId));
 
             return res.Match(
                 some => (IHttpActionResult)this.Ok(),
@@ -55,13 +53,13 @@
         [Route("current", Name = nameof(GetCurrentTimeEntry))]
         public IHttpActionResult GetCurrentTimeEntry()
         {
+            const int TestUserId = 1;
+
             var cmd = new GetRunningTimeEntry.Command(
                 this.timeEntryRepository);
 
-            var res = cmd.Execute(new GetRunningTimeEntry.Request
-            {
-                UserId = 1,
-            });
+            var res = cmd.Execute(
+                new GetRunningTimeEntry.Request(TestUserId));
 
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
@@ -73,7 +71,15 @@
         public IHttpActionResult GetTimeEntry(
             [FromUri] int timeEntryId)
         {
-            throw new NotImplementedException();
+            var cmd = new GetTimeEntryDetails.Command(
+                this.timeEntryRepository);
+
+            var res = cmd.Execute(
+                new GetTimeEntryDetails.Request(timeEntryId));
+
+            return res.Match(
+                some => (IHttpActionResult)this.Json(some),
+                none => this.InternalServerError(none));
         }
 
         [HttpGet]
@@ -90,7 +96,16 @@
                 ? startDate
                 : endDate.Value.Subtract(TimeSpan.FromDays(9));
 
-            throw new NotImplementedException();
+            var cmd = new GetTimeEntries.Command(this.timeEntryRepository);
+            var res = cmd.Execute(new GetTimeEntries.Request
+            {
+                StartDate = startDate.Value,
+                EndDate = endDate.Value,
+            });
+
+            return res.Match(
+                some => (IHttpActionResult)this.Json(some),
+                none => this.InternalServerError(none));
         }
 
         [HttpPost]

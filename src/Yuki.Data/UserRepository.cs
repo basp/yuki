@@ -13,7 +13,7 @@
         {
             return this.context.Users
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Id == 1);
+                .FirstOrDefault(x => x.Email == subject);
         }
     }
 }

@@ -2,10 +2,15 @@
 {
     public class Request
     {
+        public Request(int userId)
+        {
+            this.UserId = userId;
+        }
+
         public int UserId
         {
             get;
-            set;
+            private set;
         }
     }
 }

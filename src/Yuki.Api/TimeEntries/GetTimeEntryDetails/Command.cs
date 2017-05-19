@@ -1,6 +1,7 @@
 ﻿namespace Yuki.Api.TimeEntries.GetTimeEntryDetails
 {
     using System;
+    using System.Collections.Generic;
     using AutoMapper;
     using Optional;
     using Yuki.Data;
@@ -20,7 +21,9 @@
         {
             try
             {
-                return None<Response, Exception>(new NotImplementedException());
+                var entry = this.repository.GetById(req.TimeEntryId);
+                var data = Mapper.Map<IDictionary<string, object>>(entry);
+                return Some<Response, Exception>(new Response(data));
             }
             catch (Exception ex)
             {
