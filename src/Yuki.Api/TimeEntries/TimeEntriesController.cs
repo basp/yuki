@@ -7,8 +7,6 @@
     [RoutePrefix("api/time_entries")]
     public class TimeEntriesController : ApiController
     {
-        private const int TestUserId = 1;
-
         private readonly TimeEntryRepository timeEntryRepository;
         private readonly Repository<Workspace> workspaceRepository;
 
@@ -29,7 +27,7 @@
                 this.timeEntryRepository,
                 this.workspaceRepository);
 
-            var res = cmd.Execute(req.WithUserId(TestUserId));
+            var res = cmd.Execute(req.WithUserId(KnownIds.TestUser));
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
                 none => this.InternalServerError(none));
@@ -59,7 +57,7 @@
                 this.timeEntryRepository);
 
             var res = cmd.Execute(
-                new GetRunningTimeEntry.Request(TestUserId));
+                new GetRunningTimeEntry.Request(KnownIds.TestUser));
 
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
@@ -99,7 +97,7 @@
             var cmd = new GetTimeEntries.Command(this.timeEntryRepository);
             var res = cmd.Execute(new GetTimeEntries.Request(
                 startDate.Value,
-                endDate.Value).WithUserId(TestUserId));
+                endDate.Value).WithUserId(KnownIds.TestUser));
 
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
@@ -112,7 +110,7 @@
             [FromBody] StartTimeEntry.Request request)
         {
             var cmd = new StartTimeEntry.Command(this.timeEntryRepository);
-            var res = cmd.Execute(request.WithUserId(TestUserId));
+            var res = cmd.Execute(request.WithUserId(KnownIds.TestUser));
 
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),

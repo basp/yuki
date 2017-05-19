@@ -7,12 +7,15 @@
     [RoutePrefix("api/workspaces")]
     public class WorkspacesController : ApiController
     {
-        private readonly Repository<Workspace> repository;
+        private readonly Repository<Workspace> workspaceRepository;
+        private readonly WorkspaceUserRepository workspaceUserRepository;
 
         public WorkspacesController(
-            Repository<Workspace> repository)
+            Repository<Workspace> workspaceRepository,
+            WorkspaceUserRepository workspaceUserRepository)
         {
-            this.repository = repository;
+            this.workspaceRepository = workspaceRepository;
+            this.workspaceUserRepository = workspaceUserRepository;
         }
 
         [HttpGet]
@@ -51,8 +54,15 @@
         [Route]
         public IHttpActionResult GetWorkspaces()
         {
-            throw new NotImplementedException();
+            var cmd = new GetWorkspaces.Command(
+                this.workspaceRepository);
+
+            var res = cmd.Execute(new GetWorkspaces.Request(KnownIds.TestUser));
+            return res.Match(
+                some => (IHttpActionResult)this.Json(some),
+                none => this.InternalServerError(none));
         }
+
         [HttpGet]
         [Route("{workspaceId}/tags")]
         public IHttpActionResult GetWorkspaceTags(

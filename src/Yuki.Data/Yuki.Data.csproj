@@ -67,6 +67,7 @@
     <Compile Include="UserRepository.cs" />
     <Compile Include="Workspace.cs" />
     <Compile Include="WorkspaceUser.cs" />
+    <Compile Include="WorkspaceUserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,4 +1,4 @@
-﻿namespace Yuki.Cmd.Actions
+﻿namespace Yuki.Cmd.Actions.GetWorkspaces
 {
     using System;
     using System.Configuration;
@@ -7,7 +7,7 @@
     using Flurl.Http;
     using IdentityModel.Client;
 
-    public class GetWorkspacesAction : IAction<GetWorkspacesArgs>
+    public class Action : IAction<Args>
     {
         private static readonly string UserName =
             ConfigurationManager.AppSettings.Get("userName");
@@ -17,16 +17,16 @@
 
         private readonly TokenClient tokenClient;
 
-        public GetWorkspacesAction(TokenClient tokenClient)
+        public Action(TokenClient tokenClient)
         {
             this.tokenClient = tokenClient;
         }
 
-        public async Task Execute(GetWorkspacesArgs args)
+        public async Task Execute(Args args)
         {
             var response = GetClientToken();
 
-            var result = await "http://localhost:52946/"
+            var result = await Config.Server
                 .AppendPathSegments("api", "workspaces")
                 .WithOAuthBearerToken(response.AccessToken)
                 .GetStringAsync();
