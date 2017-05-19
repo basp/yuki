@@ -27,9 +27,8 @@
             {
                 var @cur = this.timeEntryRepository.GetCurrent(req.UserId);
                 if (@cur != null)
-                {
-                    var msg = "There's already a timer running.";
-                    var ex = new Exception(msg);
+                { 
+                    var ex = new CurrentTimerException();
                     return None<Response, Exception>(ex);
                 }
 

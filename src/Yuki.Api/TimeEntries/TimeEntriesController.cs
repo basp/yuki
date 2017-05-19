@@ -7,6 +7,8 @@
     [RoutePrefix("api/time_entries")]
     public class TimeEntriesController : ApiController
     {
+        private const int TestUserId = 1;
+
         private readonly TimeEntryRepository timeEntryRepository;
         private readonly Repository<Workspace> workspaceRepository;
 
@@ -27,7 +29,7 @@
                 this.timeEntryRepository,
                 this.workspaceRepository);
 
-            var res = cmd.Execute(req);
+            var res = cmd.Execute(req.WithUserId(TestUserId));
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
                 none => this.InternalServerError(none));
@@ -53,8 +55,6 @@
         [Route("current", Name = nameof(GetCurrentTimeEntry))]
         public IHttpActionResult GetCurrentTimeEntry()
         {
-            const int TestUserId = 1;
-
             var cmd = new GetRunningTimeEntry.Command(
                 this.timeEntryRepository);
 
@@ -97,11 +97,9 @@
                 : endDate.Value.Subtract(TimeSpan.FromDays(9));
 
             var cmd = new GetTimeEntries.Command(this.timeEntryRepository);
-            var res = cmd.Execute(new GetTimeEntries.Request
-            {
-                StartDate = startDate.Value,
-                EndDate = endDate.Value,
-            });
+            var res = cmd.Execute(new GetTimeEntries.Request(
+                startDate.Value,
+                endDate.Value).WithUserId(TestUserId));
 
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
@@ -113,7 +111,12 @@
         public IHttpActionResult StartTimeEntry(
             [FromBody] StartTimeEntry.Request request)
         {
-            throw new NotImplementedException();
+            var cmd = new StartTimeEntry.Command(this.timeEntryRepository);
+            var res = cmd.Execute(request.WithUserId(TestUserId));
+
+            return res.Match(
+                some => (IHttpActionResult)this.Json(some),
+                none => this.InternalServerError(none));
         }
 
         [HttpPut]
@@ -121,7 +124,12 @@
         public IHttpActionResult StopTimeEntry(
             [FromUri] int timeEntryId)
         {
-            throw new NotImplementedException();
+            var cmd = new StopTimeEntry.Command(this.timeEntryRepository);
+            var res = cmd.Execute(new StopTimeEntry.Request(timeEntryId));
+
+            return res.Match(
+                some => (IHttpActionResult)this.Json(some),
+                none => this.InternalServerError(none));
         }
 
         [HttpPut]

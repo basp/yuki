@@ -8,7 +8,26 @@
         public static List<Client> Get() =>
             new List<Client>
             {
+                new Client
+                {
+                    ClientName = "Yuki Command",
+                    ClientId = "yukicmd",
+                    Enabled = true,
+                    AccessTokenType = AccessTokenType.Reference,
 
+                    Flow = Flows.ResourceOwner,
+
+                    ClientSecrets = new List<Secret>
+                    {
+                       // TODO
+                       new Secret("frotz".Sha256()),
+                    },
+
+                    AllowedScopes = new List<string>
+                    {
+                        "api",
+                    },
+                },
             };
     }
 }

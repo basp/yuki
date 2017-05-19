@@ -9,7 +9,8 @@
     {
         private readonly Repository<Workspace> repository;
 
-        public WorkspacesController(Repository<Workspace> repository)
+        public WorkspacesController(
+            Repository<Workspace> repository)
         {
             this.repository = repository;
         }

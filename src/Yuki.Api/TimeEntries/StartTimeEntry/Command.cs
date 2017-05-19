@@ -1,6 +1,7 @@
 ﻿namespace Yuki.Api.TimeEntries.StartTimeEntry
 {
     using System;
+    using System.Collections.Generic;
     using AutoMapper;
     using Optional;
     using Yuki.Data;
@@ -20,7 +21,21 @@
         {
             try
             {
-                return None<Response, Exception>(new NotImplementedException());
+                var @cur = this.repository.GetCurrent(req.UserId);
+                if (@cur != null)
+                {
+                    var ex = new CurrentTimerException();
+                    return None<Response, Exception>(ex);
+                }
+
+                req.TimeEntry["start"] = DateTime.UtcNow.ToString();
+
+                var @new = Mapper.Map<TimeEntry>(req.TimeEntry);
+                @new.UserId = req.UserId;
+
+                this.repository.Insert(@new);
+                var data = Mapper.Map<IDictionary<string, object>>(@new);
+                return Some<Response, Exception>(new Response(data));
             }
             catch (Exception ex)
             {

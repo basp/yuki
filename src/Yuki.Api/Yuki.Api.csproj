@@ -216,6 +216,7 @@
     <Compile Include="TimeEntries\DeleteTimeEntry\Command.cs" />
     <Compile Include="TimeEntries\DeleteTimeEntry\Request.cs" />
     <Compile Include="TimeEntries\DeleteTimeEntry\Response.cs" />
+    <Compile Include="TimeEntries\CurrentTimerException.cs" />
     <Compile Include="TimeEntries\GetRunningTimeEntry\Command.cs" />
     <Compile Include="TimeEntries\GetRunningTimeEntry\Request.cs" />
     <Compile Include="TimeEntries\GetRunningTimeEntry\Response.cs" />

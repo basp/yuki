@@ -20,7 +20,7 @@
             try
             {
                 var timeEntry = this.repository.GetById(req.TimeEntryId);
-                if (timeEntry == null)
+                if (timeEntry != null)
                 {
                     this.repository.Delete(timeEntry);
                 }

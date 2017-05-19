@@ -22,6 +22,7 @@
             try
             {
                 var entries = this.repository.GetEntries(
+                    req.UserId,
                     req.StartDate,
                     req.StartDate);
 

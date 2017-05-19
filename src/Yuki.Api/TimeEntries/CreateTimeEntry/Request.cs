@@ -9,7 +9,7 @@
         public int UserId
         {
             get;
-            set;
+            private set;
         }
 
         [JsonProperty("time_entry")]
@@ -17,6 +17,12 @@
         {
             get;
             set;
+        }
+
+        public Request WithUserId(int userId)
+        {
+            this.UserId = userId;
+            return this;
         }
     }
 }
