@@ -20,11 +20,7 @@
             try
             {
                 var timeEntry = this.repository.GetById(req.TimeEntryId);
-                if (timeEntry != null)
-                {
-                    this.repository.Delete(timeEntry);
-                }
-
+                this.repository.Delete(timeEntry);
                 return Some<Response, Exception>(new Response());
             }
             catch (Exception ex)

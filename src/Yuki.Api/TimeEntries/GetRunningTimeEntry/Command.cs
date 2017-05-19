@@ -22,9 +22,15 @@
             try
             {
                 var current = this.repository.GetCurrent(req.UserId);
-                if (current == null)
+
+                // Clients might not always be aware of any running timer
+                // so they might request one just to see if there is one.
+                // Our mapping profile will fail when we feed it a `null` 
+                // value so in this case we just return an empty response.
+                if(current == null)
                 {
-                    return None<Response, Exception>(new Exception());
+                    return Some<Response, Exception>(
+                        new Response());
                 }
 
                 var data = Mapper.Map<IDictionary<string, object>>(current);

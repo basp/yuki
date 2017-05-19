@@ -23,7 +23,7 @@
         {
             return this.context.Set<T>()
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Id == id);
+                .Single(x => x.Id == id);
         }
 
         public void Insert(T entity)

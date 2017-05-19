@@ -22,12 +22,6 @@
             try
             {
                 var entry = this.repository.GetById(req.TimeEntryId);
-                if (entry == null)
-                {
-                    return Some<Response, Exception>(
-                        new Response(new Dictionary<string, object>()));
-                }
-
                 entry.Stop = DateTime.UtcNow;
 
                 this.repository.Update(entry);

@@ -24,13 +24,20 @@
             });
         }
 
-        public void Configuration(IAppBuilder app)
+        private static Container CreateContainer()
         {
-            InitializeAutoMapper();
-
             var container = new Container();
             container.Options.DefaultScopedLifestyle =
                 new AsyncScopedLifestyle();
+
+            return container;
+        }
+
+        public void Configuration(IAppBuilder app)
+        {
+            var container = CreateContainer();
+
+            InitializeAutoMapper();
 
             app.UseIdentityServer(new IdentityServerOptions
             {

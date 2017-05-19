@@ -1,5 +1,7 @@
 ﻿namespace Yuki.Api
 {
+    // Field names (keys) in the dictionary that is used as a
+    // data transfer object at the external boundaries of the API.
     internal class F
     {
         public static readonly string Active = nameof(Active)

@@ -13,7 +13,7 @@ namespace Yuki.Data.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201705191638035_InitialDatabase"; }
+            get { return "201705191924068_InitialDatabase"; }
         }
         
         string IMigrationMetadata.Source
