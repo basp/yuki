@@ -28,7 +28,7 @@
                     return None<Response, Exception>(ex);
                 }
 
-                req.TimeEntry["start"] = DateTime.UtcNow.ToString();
+                req.TimeEntry[F.Start] = DateTime.UtcNow.ToString();
 
                 var @new = Mapper.Map<TimeEntry>(req.TimeEntry);
                 @new.UserId = req.UserId;
