@@ -16,6 +16,12 @@
             set;
         }
 
+        [NotMapped]
+        public string Subject
+        {
+            get => this.Email;
+        }
+
 
         public string Email
         {

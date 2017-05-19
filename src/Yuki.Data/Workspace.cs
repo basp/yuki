@@ -7,6 +7,7 @@
     {
         public Workspace()
         {
+            this.LastUpdated = DateTime.UtcNow;
             this.Users = new List<WorkspaceUser>();
         }
 

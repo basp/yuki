@@ -2,5 +2,6 @@
 {
     public class Request
     {
+        public int TimeEntryId { get; set; }
     }
 }

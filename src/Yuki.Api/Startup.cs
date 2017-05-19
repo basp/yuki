@@ -3,6 +3,7 @@
     using System.Web.Http;
     using AutoMapper;
     using IdentityServer3.AccessTokenValidation;
+    using IdentityServer3.Core.Configuration;
     using Owin;
     using SimpleInjector;
     using SimpleInjector.Integration.WebApi;
@@ -31,30 +32,36 @@
             container.Options.DefaultScopedLifestyle =
                 new AsyncScopedLifestyle();
 
+            app.UseIdentityServer(new IdentityServerOptions
+            {
+                Factory = new IdentityServerServiceFactory()
+                    .UseInMemoryClients(ApiClients.Get())
+                    .UseInMemoryScopes(ApiScopes.Get())
+                    .UseInMemoryUsers(ApiUsers.Get()),
+
+                RequireSsl = false,
+            });
+
             var config = new HttpConfiguration();
-            config.MapHttpAttributeRoutes();
+
             container.RegisterWebApiControllers(config);
             container.Register<DataContext>(Lifestyle.Scoped);
             container.Verify();
 
+            config.MapHttpAttributeRoutes();
             config.DependencyResolver =
                 new SimpleInjectorWebApiDependencyResolver(container);
 
-            //config.AddApiVersioning(x =>
-            //{
-            //    x.AssumeDefaultVersionWhenUnspecified = true;
-            //    x.DefaultApiVersion = new Microsoft.Web.Http.ApiVersion(1, 0);
-            //});
+            // config.Filters.Add(new AuthorizeAttribute());
 
-            //config.Filters.Add(new AuthorizeAttribute());
-
-            //app.UseIdentityServerBearerTokenAuthentication(
-            //    new IdentityServerBearerTokenAuthenticationOptions
-            //    {
-            //        Authority = "http://localhost:5000",
-            //        ValidationMode = ValidationMode.ValidationEndpoint,
-            //        RequiredScopes = new[] { "yuki" },
-            //    });
+            app.UseIdentityServerBearerTokenAuthentication(
+                new IdentityServerBearerTokenAuthenticationOptions
+                {
+                    Authority = "http://localhost:52946/",
+                    ValidationMode = ValidationMode.ValidationEndpoint,
+                    RequiredScopes = new[] { "api" },
+                    DelayLoadMetadata = true,
+                });
 
             app.UseWebApi(config);
         }

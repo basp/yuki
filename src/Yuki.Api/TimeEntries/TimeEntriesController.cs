@@ -21,13 +21,13 @@
         [HttpPost]
         [Route(Name = nameof(CreateTimeEntry))]
         public IHttpActionResult CreateTimeEntry(
-            [FromBody] CreateTimeEntry.Request request)
+            [FromBody] CreateTimeEntry.Request req)
         {
             var cmd = new CreateTimeEntry.Command(
                 this.timeEntryRepository,
                 this.workspaceRepository);
 
-            var res = cmd.Execute(request);
+            var res = cmd.Execute(req);
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
                 none => this.InternalServerError(none));
@@ -38,7 +38,17 @@
         public IHttpActionResult DeleteTimeEntry(
             [FromUri] int timeEntryId)
         {
-            throw new NotImplementedException();
+            var cmd = new DeleteTimeEntry.Command(
+                this.timeEntryRepository);
+
+            var res = cmd.Execute(new DeleteTimeEntry.Request
+            {
+                TimeEntryId = timeEntryId,
+            });
+
+            return res.Match(
+                some => (IHttpActionResult)this.Ok(),
+                none => this.InternalServerError(none));
         }
 
         [HttpGet]
@@ -103,7 +113,7 @@
         [Route("{timeEntryId}", Name = nameof(UpdateTimeEntry))]
         public IHttpActionResult UpdateTimeEntry(
             [FromUri] int timeEntryId,
-            [FromBody] dynamic request)
+            [FromBody] UpdateTimeEntry.Request request)
         {
             throw new NotImplementedException();
         }

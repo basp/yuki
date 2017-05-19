@@ -140,6 +140,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiClients.cs" />
     <Compile Include="Clients\MappingProfile.cs" />
     <Compile Include="Clients\CreateClient\Command.cs" />
     <Compile Include="Clients\CreateClient\Request.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="Projects\UpdateProject\Request.cs" />
     <Compile Include="Projects\UpdateProject\Response.cs" />
     <Compile Include="ProjectUsers\ProjectUsersController.cs" />
+    <Compile Include="ApiScopes.cs" />
     <Compile Include="Tags\CreateTag\Command.cs" />
     <Compile Include="Tags\CreateTag\Request.cs" />
     <Compile Include="Tags\CreateTag\Response.cs" />
@@ -234,6 +236,7 @@
     <Compile Include="TimeEntries\UpdateTimeEntry\Command.cs" />
     <Compile Include="TimeEntries\UpdateTimeEntry\Request.cs" />
     <Compile Include="TimeEntries\UpdateTimeEntry\Response.cs" />
+    <Compile Include="ApiUsers.cs" />
     <Compile Include="Users\UsersController.cs" />
     <Compile Include="WorkspaceUsers\WorkspaceUsersControler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

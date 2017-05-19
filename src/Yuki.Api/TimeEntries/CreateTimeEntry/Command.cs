@@ -34,6 +34,7 @@
                 }
 
                 var @new = Mapper.Map<TimeEntry>(req.TimeEntry);
+                @new.UserId = req.UserId;
                 if (@new.TaskId.HasValue)
                 {
                     throw new NotImplementedException();

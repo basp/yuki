@@ -16,9 +16,18 @@ namespace Yuki.Data.Migrations
             {
                 new User
                 {
-                    Email = "jd@sandbox.com",
-                    FullName = "John Doe",
-                }
+                    Email = "basp@yuki.com",
+                    FullName = "Bas Pennings",
+                },
+            });
+
+            context.Workspaces.AddOrUpdate(x => x.Id, new[]
+            {
+                new Workspace
+                {
+                    Id = 1,
+                    Name = "Sandbox",
+                },
             });
         }
     } 

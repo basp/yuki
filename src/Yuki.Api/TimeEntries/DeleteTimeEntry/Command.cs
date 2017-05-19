@@ -1,7 +1,6 @@
 ﻿namespace Yuki.Api.TimeEntries.DeleteTimeEntry
 {
     using System;
-    using AutoMapper;
     using Optional;
     using Yuki.Data;
 
@@ -20,7 +19,13 @@
         {
             try
             {
-                return None<Response, Exception>(new NotImplementedException());
+                var timeEntry = this.repository.GetById(req.TimeEntryId);
+                if (timeEntry == null)
+                {
+                    this.repository.Delete(timeEntry);
+                }
+
+                return Some<Response, Exception>(new Response());
             }
             catch (Exception ex)
             {

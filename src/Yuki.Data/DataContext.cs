@@ -11,7 +11,12 @@
         }
 
         public DataContext()
-            : base("Yuki")
+            : this("DefaultConnection")
+        {
+        }
+
+        internal DataContext(string nameOrConnectionString)
+            : base(nameOrConnectionString)
         {
         }
 
