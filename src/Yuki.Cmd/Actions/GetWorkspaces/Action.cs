@@ -9,12 +9,6 @@
 
     public class Action : IAction<Args>
     {
-        private static readonly string UserName =
-            ConfigurationManager.AppSettings.Get("userName");
-
-        private static readonly string Password =
-            ConfigurationManager.AppSettings.Get("password");
-
         private readonly TokenClient tokenClient;
 
         public Action(TokenClient tokenClient)
@@ -37,7 +31,7 @@
         private TokenResponse GetClientToken()
         {
             return this.tokenClient
-                .RequestResourceOwnerPasswordAsync(UserName, Password, "yuki")
+                .RequestResourceOwnerPasswordAsync(Config.Username, Config.Password, "api")
                 .Result;
         }
     }

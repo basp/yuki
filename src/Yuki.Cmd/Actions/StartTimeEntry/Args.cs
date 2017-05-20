@@ -6,10 +6,9 @@
     {
         [ArgRequired]
         [ArgPosition(1)]
-        public int UserId { get; set; }
-
-        [ArgRequired]
-        [ArgPosition(2)]
         public int WorkspaceId { get; set; }
+
+        [ArgDefaultValue("No description")]
+        public string Description { get; set; }
     }
 }

@@ -1,7 +1,22 @@
-﻿namespace Yuki.Cmd
+﻿using System.Configuration;
+
+namespace Yuki.Cmd
 {
     public static class Config
     {
-        public const string Server = "http://localhost:52946/";
+        public static string Server
+        {
+            get => ConfigurationManager.AppSettings.Get("server");
+        }
+
+        public static string Username
+        {
+            get => ConfigurationManager.AppSettings.Get("username");
+        }
+
+        public static string Password
+        {
+            get => ConfigurationManager.AppSettings.Get("password");
+        }
     }
 }
