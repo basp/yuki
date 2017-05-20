@@ -17,21 +17,14 @@
 
         public async Task Execute(Args args)
         {
-            var response = GetClientToken();
+            var tokenResponse = this.GetClientToken(tokenClient);
 
-            var result = await Config.Server
+            var result = await Config.ApiEndPoint
                 .AppendPathSegments("api", "time_entries", "current")
-                .WithOAuthBearerToken(response.AccessToken)
+                .WithOAuthBearerToken(tokenResponse.AccessToken)
                 .GetStringAsync();
 
             Console.WriteLine(result);
-        }
-
-        private TokenResponse GetClientToken()
-        {
-            return this.tokenClient
-                .RequestResourceOwnerPasswordAsync(Config.Username, Config.Password, "api")
-                .Result;
         }
     }
 }

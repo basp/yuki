@@ -6,7 +6,7 @@
     {
         [ArgRequired]
         [ArgPosition(1)]
-        public int TimeEntryId { get; set; }
-
+        [ArgDescription("Time entry id")]
+        public int Id { get; set; }
     }
 }

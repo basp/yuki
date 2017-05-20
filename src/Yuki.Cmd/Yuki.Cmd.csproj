@@ -74,13 +74,13 @@
     <Compile Include="Actions\StartTimeEntry\Args.cs" />
     <Compile Include="Actions\StopTimeEntry\Action.cs" />
     <Compile Include="Actions\StopTimeEntry\Args.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="IAction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.example.config" />
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>

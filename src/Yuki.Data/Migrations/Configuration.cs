@@ -1,13 +1,12 @@
 namespace Yuki.Data.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
 
     internal sealed class Configuration : DbMigrationsConfiguration<DataContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            this.AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(DataContext context)
@@ -16,8 +15,10 @@ namespace Yuki.Data.Migrations
             {
                 new User
                 {
-                    Email = "basp@yuki.com",
-                    FullName = "Bas Pennings",
+                    Username = "test",
+                    Password = "test",
+                    Email = "test@test.com",
+                    FullName = "Test User",
                 },
             });
 
@@ -30,5 +31,5 @@ namespace Yuki.Data.Migrations
                 },
             });
         }
-    } 
+    }
 }

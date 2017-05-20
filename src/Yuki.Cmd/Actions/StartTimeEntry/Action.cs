@@ -19,14 +19,17 @@
 
         public async Task Execute(Args args)
         {
+            var tokenResponse = this.GetClientToken(tokenClient);
+
             var data = new Dictionary<string, object>
             {
-                ["wid"] = args.WorkspaceId,
+                ["wid"] = args.Wid,
                 ["description"] = args.Description,
             };
 
-            var result = await Config.Server
+            var result = await Config.ApiEndPoint
                 .AppendPathSegments("api", "time_entries", "start")
+                .WithOAuthBearerToken(tokenResponse.AccessToken)
                 .PostJsonAsync(data)
                 .ReceiveString();
 

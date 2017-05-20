@@ -27,7 +27,7 @@
             try
             { 
                 var workspaceIds = this.workspaceUserRepository
-                    .GetWorkspacesByUserId(KnownIds.TestUser)
+                    .GetWorkspacesByUserId(req.UserId)
                     .Select(x => x.WorkspaceId)
                     .ToArray();
 

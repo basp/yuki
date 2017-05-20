@@ -6,6 +6,7 @@
     {
         [ArgRequired]
         [ArgPosition(1)]
-        public int WorkspaceId { get; set; }
+        [ArgDescription("Workspace id")]
+        public int Id { get; set; }
     }
 }

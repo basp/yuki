@@ -1,7 +1,6 @@
 ﻿namespace Yuki.Cmd.Actions.GetWorkspaces
 {
     using System;
-    using System.Configuration;
     using System.Threading.Tasks;
     using Flurl;
     using Flurl.Http;
@@ -18,21 +17,14 @@
 
         public async Task Execute(Args args)
         {
-            var response = GetClientToken();
+            var tokenResponse = this.GetClientToken(tokenClient);
 
-            var result = await Config.Server
+            var result = await Config.ApiEndPoint
                 .AppendPathSegments("api", "workspaces")
-                .WithOAuthBearerToken(response.AccessToken)
+                .WithOAuthBearerToken(tokenResponse.AccessToken)
                 .GetStringAsync();
 
             Console.WriteLine(result);
-        }
-
-        private TokenResponse GetClientToken()
-        {
-            return this.tokenClient
-                .RequestResourceOwnerPasswordAsync(Config.Username, Config.Password, "api")
-                .Result;
         }
     }
 }

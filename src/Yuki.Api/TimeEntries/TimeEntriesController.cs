@@ -9,30 +9,37 @@
     {
         private readonly TimeEntryRepository timeEntryRepository;
         private readonly Repository<Workspace> workspaceRepository;
+        private readonly UserRepository userRepository;
 
         public TimeEntriesController(
             TimeEntryRepository timeEntryRepository,
-            Repository<Workspace> workspaceRepository)
+            Repository<Workspace> workspaceRepository,
+            UserRepository userRepository)
         {
             this.timeEntryRepository = timeEntryRepository;
             this.workspaceRepository = workspaceRepository;
+            this.userRepository = userRepository;
         }
 
+        [Authorize]
         [HttpPost]
         [Route(Name = nameof(CreateTimeEntry))]
         public IHttpActionResult CreateTimeEntry(
             [FromBody] CreateTimeEntry.Request req)
         {
+            var user = this.GetUser(this.userRepository);
+
             var cmd = new CreateTimeEntry.Command(
                 this.timeEntryRepository,
                 this.workspaceRepository);
 
-            var res = cmd.Execute(req.WithUserId(KnownIds.TestUser));
+            var res = cmd.Execute(req.WithUserId(user.Id));
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
                 none => this.InternalServerError(none));
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("{timeEntryId}", Name = nameof(DeleteTimeEntry))]
         public IHttpActionResult DeleteTimeEntry(
@@ -49,21 +56,25 @@
                 none => this.InternalServerError(none));
         }
 
+        [Authorize]
         [HttpGet]
         [Route("current", Name = nameof(GetCurrentTimeEntry))]
         public IHttpActionResult GetCurrentTimeEntry()
         {
+            var user = this.GetUser(this.userRepository);
+
             var cmd = new GetRunningTimeEntry.Command(
                 this.timeEntryRepository);
 
             var res = cmd.Execute(
-                new GetRunningTimeEntry.Request(KnownIds.TestUser));
+                new GetRunningTimeEntry.Request(user.Id));
 
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
                 none => this.NotFound());
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{timeEntryId}", Name = nameof(GetTimeEntry))]
         public IHttpActionResult GetTimeEntry(
@@ -80,6 +91,7 @@
                 none => this.InternalServerError(none));
         }
 
+        [Authorize]
         [HttpGet]
         [Route(Name = nameof(GetTimeEntries))]
         public IHttpActionResult GetTimeEntries(
@@ -94,29 +106,35 @@
                 ? startDate
                 : endDate.Value.Subtract(TimeSpan.FromDays(9));
 
+            var user = this.GetUser(this.userRepository);
+
             var cmd = new GetTimeEntries.Command(this.timeEntryRepository);
             var res = cmd.Execute(new GetTimeEntries.Request(
                 startDate.Value,
-                endDate.Value).WithUserId(KnownIds.TestUser));
+                endDate.Value).WithUserId(user.Id));
 
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
                 none => this.InternalServerError(none));
         }
 
+        [Authorize]
         [HttpPost]
         [Route("start", Name = nameof(StartTimeEntry))]
         public IHttpActionResult StartTimeEntry(
             [FromBody] StartTimeEntry.Request request)
         {
+            var user = this.GetUser(this.userRepository);
+
             var cmd = new StartTimeEntry.Command(this.timeEntryRepository);
-            var res = cmd.Execute(request.WithUserId(KnownIds.TestUser));
+            var res = cmd.Execute(request.WithUserId(user.Id));
 
             return res.Match(
                 some => (IHttpActionResult)this.Json(some),
                 none => this.InternalServerError(none));
         }
 
+        [Authorize]
         [HttpPut]
         [Route("{timeEntryId}/stop", Name = nameof(StopTimeEntry))]
         public IHttpActionResult StopTimeEntry(
@@ -130,6 +148,7 @@
                 none => this.InternalServerError(none));
         }
 
+        [Authorize]
         [HttpPut]
         [Route("{timeEntryId}", Name = nameof(UpdateTimeEntry))]
         public IHttpActionResult UpdateTimeEntry(

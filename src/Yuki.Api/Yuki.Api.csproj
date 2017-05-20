@@ -168,6 +168,7 @@
     <Compile Include="Clients\UpdateClient\Request.cs" />
     <Compile Include="Clients\UpdateClient\Response.cs" />
     <Compile Include="Dashboard\DashboardController.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="F.cs" />
     <Compile Include="Groups\CreateGroup\Command.cs" />
     <Compile Include="Groups\CreateGroup\Request.cs" />
@@ -181,7 +182,6 @@
     <Compile Include="Groups\UpdateGroup\Request.cs" />
     <Compile Include="Groups\UpdateGroup\Response.cs" />
     <Compile Include="ICommand.cs" />
-    <Compile Include="KnownIds.cs" />
     <Compile Include="Projects\CreateProject\Command.cs" />
     <Compile Include="Projects\CreateProject\Request.cs" />
     <Compile Include="Projects\CreateProject\Response.cs" />
@@ -245,6 +245,7 @@
     <Compile Include="TimeEntries\UpdateTimeEntry\Request.cs" />
     <Compile Include="TimeEntries\UpdateTimeEntry\Response.cs" />
     <Compile Include="ApiUsers.cs" />
+    <Compile Include="UserService.cs" />
     <Compile Include="Users\UsersController.cs" />
     <Compile Include="Workspaces\GetWorkspaces\Command.cs" />
     <Compile Include="Workspaces\GetWorkspaces\Request.cs" />

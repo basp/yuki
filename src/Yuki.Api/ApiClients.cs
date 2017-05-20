@@ -20,7 +20,7 @@
                     ClientSecrets = new List<Secret>
                     {
                        // TODO
-                       new Secret("frotz".Sha256()),
+                       new Secret("secret".Sha256()),
                     },
 
                     AllowedScopes = new List<string>
