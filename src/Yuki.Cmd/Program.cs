@@ -1,7 +1,9 @@
 ﻿namespace Yuki.Cmd
 {
+    using System;
     using IdentityModel.Client;
     using PowerArgs;
+    using Serilog;
     using SimpleInjector;
 
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
@@ -57,12 +59,26 @@
 
         private static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.LiterateConsole()
+                .CreateLogger();
+
             Container.Register(() => new TokenClient(
                 Config.TokenEndPoint,
                 Config.ClientId,
                 Config.ClientSecret));
 
-            Args.InvokeAction<Program>(args);
+            try
+            {
+                Args.InvokeAction<Program>(args);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(
+                    ex,
+                    "Failed to execute action: {ErrorMessage}",
+                    ex.Message);
+            }
         }
     }
 }
