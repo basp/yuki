@@ -51,6 +51,10 @@
     <Compile Include="DataContext.cs" />
     <Compile Include="IEntity.cs" />
     <Compile Include="Group.cs" />
+    <Compile Include="Migrations\201705201038504_InitialDatabase.cs" />
+    <Compile Include="Migrations\201705201038504_InitialDatabase.Designer.cs">
+      <DependentUpon>201705201038504_InitialDatabase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -75,6 +79,11 @@
       <Project>{bc91ff9c-3262-4ec7-8b33-6ba965eaae25}</Project>
       <Name>Yuki</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201705201038504_InitialDatabase.resx">
+      <DependentUpon>201705201038504_InitialDatabase.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -244,7 +244,6 @@
     <Compile Include="TimeEntries\UpdateTimeEntry\Command.cs" />
     <Compile Include="TimeEntries\UpdateTimeEntry\Request.cs" />
     <Compile Include="TimeEntries\UpdateTimeEntry\Response.cs" />
-    <Compile Include="ApiUsers.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="Users\UsersController.cs" />
     <Compile Include="Workspaces\GetWorkspaces\Command.cs" />

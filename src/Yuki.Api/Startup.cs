@@ -4,6 +4,7 @@
     using AutoMapper;
     using IdentityServer3.AccessTokenValidation;
     using IdentityServer3.Core.Configuration;
+    using IdentityServer3.Core.Services;
     using Owin;
     using Serilog;
     using SimpleInjector;
@@ -30,40 +31,47 @@
             });
         }
 
-        private static Container CreateContainer()
+        private static Container CreateContainer(HttpConfiguration config)
         {
             var container = new Container();
             container.Options.DefaultScopedLifestyle =
                 new AsyncScopedLifestyle();
 
-            return container;
-        }
-
-        public void Configuration(IAppBuilder app)
-        {
-            var container = CreateContainer();
-
-            app.UseIdentityServer(new IdentityServerOptions
-            {
-                Factory = new IdentityServerServiceFactory()
-                    .UseInMemoryClients(ApiClients.Get())
-                    .UseInMemoryScopes(ApiScopes.Get())
-                    .UseInMemoryUsers(ApiUsers.Get()),
-
-                RequireSsl = false,
-            });
-
-            var config = new HttpConfiguration();
-
             container.RegisterWebApiControllers(config);
             container.Register<DataContext>(Lifestyle.Scoped);
             container.Verify();
 
+            return container;
+        }
+
+        private static IdentityServerOptions GetIdentityserverOptions()
+        {
+            var factory =
+                new IdentityServerServiceFactory()
+                    .UseInMemoryClients(ApiClients.Get())
+                    .UseInMemoryScopes(ApiScopes.Get());
+
+            factory.Register(new Registration<DataContext>());
+            factory.Register(new Registration<UserRepository>());
+            factory.UserService = new Registration<IUserService, UserService>();
+
+            return new IdentityServerOptions
+            {
+                Factory = factory,
+                RequireSsl = false,
+            };
+        }
+
+        public void Configuration(IAppBuilder app)
+        {
+            var config = new HttpConfiguration();
+            var container = CreateContainer(config);
+
+            app.UseIdentityServer(GetIdentityserverOptions());
+
             config.MapHttpAttributeRoutes();
             config.DependencyResolver =
                 new SimpleInjectorWebApiDependencyResolver(container);
-
-            // config.Filters.Add(new AuthorizeAttribute());
 
             app.UseIdentityServerBearerTokenAuthentication(
                 new IdentityServerBearerTokenAuthenticationOptions

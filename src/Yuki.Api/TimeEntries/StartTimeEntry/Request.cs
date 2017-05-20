@@ -1,10 +1,15 @@
 ﻿namespace Yuki.Api.TimeEntries.StartTimeEntry
 {
-    using Newtonsoft.Json;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
 
     public class Request
     {
+        public Request()
+        {
+            this.TimeEntry = new Dictionary<string, object>();
+        }
+
         public Request(IDictionary<string,object> timeEntry)
         {
             this.TimeEntry = timeEntry;

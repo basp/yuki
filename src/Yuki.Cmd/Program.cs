@@ -48,6 +48,13 @@
                 .Execute(args)
                 .Wait();
 
+        [ArgActionMethod]
+        [ArgDescription("Create a new time entry")]
+        public static void CreateTimeEntry(Actions.CreateTimeEntry.Args args) =>
+            Container.GetInstance<Actions.CreateTimeEntry.Action>()
+                .Execute(args)
+                .Wait();
+
         private static void Main(string[] args)
         {
             Container.Register(() => new TokenClient(

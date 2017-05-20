@@ -64,6 +64,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\CreateTimeEntry\Action.cs" />
+    <Compile Include="Actions\CreateTimeEntry\Args.cs" />
     <Compile Include="Actions\GetCurrent\Action.cs" />
     <Compile Include="Actions\GetCurrent\Args.cs" />
     <Compile Include="Actions\GetSingleWorkspace\Action.cs" />
